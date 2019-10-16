@@ -87,6 +87,7 @@ export class PInput extends LitElement {
         }
         input::placeholder{
             color:#999;
+            font-size:90%;
         }
         
         p-icon{
