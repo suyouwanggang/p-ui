@@ -2,7 +2,7 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 type validateType = 'number' | 'email' | 'date'|'';
 export default function FormElementAble<LitElement extends Constructor>(Base: LitElement) {
     return class extends Base {
-        private form: HTMLFormElement=undefined;
+        private form: HTMLFormElement=null;
         @property({ type: Boolean }) novalidate: boolean = false;
         @property({ type: Boolean }) disabled: boolean = false;
         @property({ type: String }) value: string = '';

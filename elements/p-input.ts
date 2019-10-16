@@ -1,13 +1,18 @@
-import { LitElement, css, customElement, html, property } from 'lit-element';
- type inputtype='text'|'passoword'|'email'|'url'|'number';
+import { css, customElement, html, LitElement, property } from 'lit-element';
+import {styleMap, StyleInfo} from 'lit-html/directives/style-map';
+import  {ifDefined} from 'lit-html/directives/if-defined';
+import {classMap} from 'lit-html/directives/class-map';
+ type inputtype='text'|'password'|'email'|'url'|'number';
  @customElement('p-input')
 export class PInput extends LitElement {
-    protected form:Element;
-    @property({ type: String, reflect: true }) name: string = "";
-    @property({ type: String, reflect: true }) type: inputtype = "text";
-    @property({ type: String, reflect: true }) pattern:string=null;
-    @property({ type: String, reflect: false }) placeholder: string = "";
-    @property({ type: String, reflect: false }) value: string = "";
+   
+    @property({ type: String, reflect: false }) name: string = '';
+    @property({ type: String, reflect: true }) type: inputtype = 'text';
+    @property({ type: String, reflect: false }) pattern: string= null;
+    @property({ type: String, reflect: false }) placeholder: string = '';
+    @property({ type: String, reflect: false }) value: string = '';
+    @property({ type: String, reflect: false }) leftIcon: string = '';
+    @property({ type: String, reflect: false }) rightIcon: string = '';
     @property({ type: Boolean, reflect: true }) block: boolean = false;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
@@ -15,7 +20,7 @@ export class PInput extends LitElement {
     @property({ type: Boolean, reflect: true }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
 
-    
+
     static get styles(){
        return  css `
         :host{
@@ -33,7 +38,7 @@ export class PInput extends LitElement {
             --themeColor:var(--errorColor,#f4615c);
             border-color:var(--errorColor,#f4615c);
         }
-        
+
         :host(:focus-within:not([disabled])), :host(:not([disabled]):hover){
             border-color:var(--themeColor,#42b983);
         }
@@ -41,7 +46,6 @@ export class PInput extends LitElement {
             box-sizing:border-box;
             display:flex;
             height:100%;
-            font-size: 14px;
             cursor:pointer;
         }
         div[disabled]{
@@ -49,7 +53,7 @@ export class PInput extends LitElement {
             pointer-events:all;
             opacity:var(--disabled-opaticity,0.4)
        }
-       
+
 
         div[disabled]>input{
             cursor:not-allowed;
@@ -57,9 +61,7 @@ export class PInput extends LitElement {
             opacity:var(--disabled-opaticity,0.4)
        }
         div>input{
-            padding: 0;
-            padding:  .25em .625em;
-            margin:val(--input-margin,0);
+            padding: .25em 4px;
             text-align: inherit;
             color: currentColor;
             border: 0;
@@ -82,15 +84,34 @@ export class PInput extends LitElement {
             border:0;
             outline : 0;
         }
+        input::placeholder{
+            color:#999;
+        }
+        
+        p-icon{
+            display: flex;
+            font-size:1.2em;
+            margin-left: 4px;
+            color: #999;
+        }
+        .rightIcon{
+            margin-right:4px;
+        }
+        div:active .leftIcon{
+            color:var(--themeColor,#42b983);
+        }
+        :host(:focus-within:not([disabled])) .leftIcon,
+        :host(:not([disabled]):hover) .icon-pre,:host(:not([disabled]):hover) .input-label,:host(:focus-within:not([disabled])) .input-label{
+            color:var(--themeColor,#42b983);
+        }
     `;
     }
-    
-    protected input:HTMLInputElement=null;
+    get input():HTMLInputElement{
+        return this.shadowRoot.querySelector('#input');
+    }
     firstUpdated(_changedProperties: Map<string | number | symbol, unknown>){
         super.firstUpdated(_changedProperties);
-        this.input=this.shadowRoot.querySelector("input");
     }
-    
     focus(){
         this.input!.focus();
     }
@@ -103,9 +124,8 @@ export class PInput extends LitElement {
     get validity(){
         return this.input.checkValidity()&&this.customValidity.method(this);
     }
-    connectedCallback(){
-       super.connectedCallback();
-        this.form=this.closest("form,p-form");
+    get form(){
+        return this.closest('p-form');
     }
     checkValidity(){
         if(this.novalidate||this.disabled||this.form&& ((this.form as any).novalidate)){
@@ -114,7 +134,7 @@ export class PInput extends LitElement {
         if(this.validity){
             this.invalid = false;
             return true;
-        }else{
+        } else {
             this.focus();
             this.invalid = true;
             return false;
@@ -122,11 +142,40 @@ export class PInput extends LitElement {
     }
 
     render() {
+        let lefticonValue = this.leftIcon;
+        let rightticonValue = this.rightIcon;
+        if(!lefticonValue){
+            const type = this.type;
+            if(type ==='number'){
+                lefticonValue = 'creditcard';
+            } else if(type ==='password') {
+                lefticonValue = "lock";
+            }
+        }
+        if(!rightticonValue){
+            const type = this.type;
+            if(type ==='number'){
+                rightticonValue = 'creditcard';
+            } else if(type ==='password') {
+                rightticonValue = "lock";
+            }
+        }
+        
+        // lefticonValue='search';
+        const iconStyle:any= {};
+        if(!lefticonValue){
+            iconStyle['display']='none';
+        }
         return html`
-            <div  ?disabled=${this.disabled}>
+            <div  ?disabled=${this.disabled} >
+                 <p-icon style=${styleMap(iconStyle)} name=${lefticonValue}  class='leftIcon' ></p-icon>
                 <input id="input" .name="${this.name}"  placeholder="${this.placeholder}" value="${this.value}"
-                  ?readOnly=${this.readonly}  type="${this.type}" ?required=${this.required} pattern=${this.pattern}  ?disabled=${this.disabled}   />
+                  ?readOnly=${this.readonly}  type="${this.type}" ?required=${this.required} pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}   ></input>
+                  <p-icon style=${styleMap(iconStyle)} name=${rightticonValue}  class="rightIcon" ></p-icon>
             </div>
         `;
+    }
+    renderIcon(name:string, className:string){
+        return html`<p-icon style=${!name?'display:none':''} name=${name}  class="${className}" ></p-icon>`;
     }
 }
