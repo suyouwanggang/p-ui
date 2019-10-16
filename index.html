@@ -34,6 +34,12 @@
  
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
+  <style>
+    p-input{
+      margin:4px;
+
+    }
+  </style>
 </head>
 <body>
 
@@ -42,7 +48,11 @@
   <p-switch id="switch" checked value="1"></p-switch>
     
   <p>输入框</p>
-    <p-input id="input" lefticon="creditcard" rightIcon='lock' ></p-input>
+    <p-input id="input" lefticon="creditcard" block  rightIcon='lock' ></p-input>
+
+    
+    <p-input id="input" type="number"  ></p-input>
+    <p-input id="input" type="password"  ></p-input>
     
   <p>icon</p>
   <div style='color:var(--themeColor,#42b983)'>

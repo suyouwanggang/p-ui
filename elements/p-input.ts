@@ -16,6 +16,7 @@ export class PInput extends LitElement {
     @property({ type: Boolean, reflect: true }) block: boolean = false;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
+    @property({ type: Boolean, reflect: true }) search: boolean = false;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
     @property({ type: Boolean, reflect: true }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
@@ -92,16 +93,16 @@ export class PInput extends LitElement {
             display: flex;
             font-size:1.2em;
             margin-left: 4px;
+            margin-right:4px;
             color: #999;
         }
-        .rightIcon{
+        .rightIcon,.searchIcon{
             margin-right:4px;
         }
         div:active .leftIcon{
             color:var(--themeColor,#42b983);
         }
-        :host(:focus-within:not([disabled])) .leftIcon,
-        :host(:not([disabled]):hover) .icon-pre,:host(:not([disabled]):hover) .input-label,:host(:focus-within:not([disabled])) .input-label{
+        :host(:focus-within:not([disabled])) .leftIcon{
             color:var(--themeColor,#42b983);
         }
     `;
@@ -143,7 +144,7 @@ export class PInput extends LitElement {
 
     render() {
         let lefticonValue = this.leftIcon;
-        let rightticonValue = this.rightIcon;
+        let righticonValue = this.rightIcon;
         if(!lefticonValue){
             const type = this.type;
             if(type ==='number'){
@@ -152,26 +153,18 @@ export class PInput extends LitElement {
                 lefticonValue = "lock";
             }
         }
-        if(!rightticonValue){
-            const type = this.type;
-            if(type ==='number'){
-                rightticonValue = 'creditcard';
-            } else if(type ==='password') {
-                rightticonValue = "lock";
-            }
-        }
         
-        // lefticonValue='search';
-        const iconStyle:any= {};
-        if(!lefticonValue){
-            iconStyle['display']='none';
-        }
+        
+        let lefticonstyle=lefticonValue!=null?'':'display:none';
+        let righticonstyle=righticonValue!=null?'':'display:none';
+        
         return html`
             <div  ?disabled=${this.disabled} >
-                 <p-icon style=${styleMap(iconStyle)} name=${lefticonValue}  class='leftIcon' ></p-icon>
+                 <p-icon style=${lefticonstyle} name=${lefticonValue}  class='leftIcon' ></p-icon>
                 <input id="input" .name="${this.name}"  placeholder="${this.placeholder}" value="${this.value}"
                   ?readOnly=${this.readonly}  type="${this.type}" ?required=${this.required} pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}   ></input>
-                  <p-icon style=${styleMap(iconStyle)} name=${rightticonValue}  class="rightIcon" ></p-icon>
+                  <p-icon style=${lefticonstyle} name=${righticonValue}  class="rightIcon" ></p-icon>
+                  <p-icon style=${this.search?'':'display:none;'} name='search'  class="searchIcon" ></p-icon>
             </div>
         `;
     }
