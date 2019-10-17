@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+ <script  
+    src="build/index.js"
+ >
+</script> 
+  
+  
+  <meta name="description" content="start-lit-element">
+  <meta name="theme-color" content="#ffffff">
+  <title>start-lit-element</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8">
+  <style>
+    p-input{
+      margin:4px;
+
+    }
+    
+  </style>
+</head>
+<body>
+    <style>
+        .tab_container{
+            --themColor:#42b983;
+            display: flex;
+            flex-direction: column;
+        }
+        .tab_nav_con{
+            flex:1;
+            overflow: hidden;
+            display: flex;
+            scroll-behavior: smooth;
+        }
+
+        .tab_content{
+           padding:10px;
+           border-top: 1px solid var(--borderColor,rgba(0,0,0,.2));
+            margin-top:-1px;
+        }
+
+        .tab_tabs {
+            color:#42b983;
+            cursor: pointer;
+            padding:0.2em 1.4em;
+            white-space:nowrap;
+        }
+        .tab_tabs[disabled]{
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+       .on{
+            border-bottom:2px solid var(--themColor);
+        }
+        
+        
+       
+       .tab_container[tabPosition=left],
+       .tab_container[tabPosition=right]
+       {
+            flex-direction: row;
+       }
+       .tab_container[tabPosition=left] .tab_nav_con,
+       .tab_container[tabPosition=right] .tab_nav_con
+       {
+           flex:0 0 auto;
+           display: block;
+           overflow: hidden;
+           
+       }
+       .tab_container[tabPosition=right] .tab_nav_con{
+           order:1;
+           border-left:1px solid var(--borderColor,rgba(0,0,0,.2));
+       }
+       .tab_container[tabPosition=left]  .tab_tabs,
+       .tab_container[tabPosition=right]  .tab_tabs
+       {
+            display: block;
+            padding:0.6em 0.3em ;
+            
+       }
+       .tab_container[tabPosition=right]  .tab_tabs{
+           border-right:none;
+           border-left:2px solid #FFF;
+           text-align: right;
+       }
+
+
+       .tab_container[tabPosition=left] .on{
+            border-bottom: none;
+            border-right:2px solid var(--themColor);
+        
+       }
+       .tab_container[tabPosition=right] .on{
+             border-bottom: none;
+            border-left:2px solid var(--themColor);
+       }
+       .tab_container[tabPosition=left] .tab_content{
+           flex:1;
+           border-top:none;
+           margin-left:-1px;
+           border-left:1px solid var(--borderColor,rgba(0,0,0,.2));
+       }
+       .tab_container[tabPosition=right] .tab_content{
+           flex:1;
+           border-top:none;
+           margin-right:-1px;
+           order:0;
+           
+       }
+
+      
+
+       .tab_container[tabPosition=bottom] .tab_nav_con {
+            order:1;
+            border-bottom: none;
+       }
+       .tab_container[tabPosition=bottom]  .on{
+            border:none;
+            border-top:2px solid var(--themColor);
+       }
+       .tab_container[tabPosition=bottom] .tab_content{
+           order:0;
+           border-top:none;
+           border-bottom:1px solid var(--borderColor,rgba(0,0,0,.2));
+
+       } 
+    </style>
+    <div class="tab_container" tabPosition="top" borderd style='width:500px;height: 500px;' id="tab">
+        <!-- tab 页签-->
+        <div class="tab_nav_con">
+            <div class="tab_tabs on ">Tab1
+                <p-icon name='search'></p-icon>
+            </div>
+            <div class="tab_tabs" disabled>Tab2</div>
+            <div class="tab_tabs">Tab3 border-right</div>
+
+            <div class="tab_tabs  ">Tab4</div>
+            <div class="tab_tabs" disabled>Tab5</div>
+            <div class="tab_tabs">Tab6</div>
+
+            <div class="tab_tabs  ">Tab7</div>
+            <div class="tab_tabs" disabled>Tab8</div>
+            <div class="tab_tabs">Tab9</div>
+
+            <div class="tab_tabs  ">Tab10</div>
+            <div class="tab_tabs" >Tab11</div>
+            <div class="tab_tabs">Tab12</div>
+
+            <div class="tab_tabs  ">Tab13</div>
+            <div class="tab_tabs" >Tab14</div>
+            <div class="tab_tabs">Tab15</div>
+        </div>
+        <div class="tab_content" style=" overflow: auto;">
+              
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang 045623</p>
+        </div>
+    </div>
+    <script >
+        class TabContainer{
+            constructor(id){
+                let container=document.getElementById(id);
+                this.container=container;
+                this.init();
+
+            }
+            init(){
+                let _self=this;
+                let changeListern=function(event){
+                    let item=this;
+                    if(item.matches("[disabled]")){
+                        return ;
+                    }
+                    if(item.matches(".on")){
+                        return ;
+                    }
+                    let currentTab=_self.currentTab;
+                    if(item!=currentTab){
+                        _self.container.dispatchEvent(new CustomEvent('tabChange',{
+                            detail:{
+                                oldTab:currentTab,
+                                newTab:item
+                            }
+                        }))
+                    }
+
+                    item.classList.add("on");
+                    currentTab.classList.remove('on');
+
+                    _self.contentContainer.innerHTML=item.innerHTML;
+                }
+                this.Tabs.forEach( (item) =>{
+                    item.addEventListener('click',changeListern);
+                })
+
+            }
+            set tabPosition(position){
+                if(!position){
+                    this.container.removeAttribute("tabposition");
+                }else{
+                    this.container.setAttribute("tabposition",position);
+                }
+                
+            }
+            get tabPosition(){
+                return  this.container.getAttribute("tabposition");
+            }
+            get tabNav(){
+                return this.container.querySelector("div.tab_nav_con");
+            }
+            get Tabs(){
+                return this.container.querySelectorAll(".tab_nav_con  .tab_tabs");
+            }
+
+            get currentTab(){
+                let tabs=[...this.Tabs];
+                let result=tabs.filter( item => item.matches('.on'));
+                return result.length>0?result[0]:null;
+            }
+
+            get  contentContainer(){
+                return this.container.querySelector('div.tab_content');
+
+            }
+
+
+        }
+        var tabContain=new TabContainer("tab");
+    </script>
+</body>
