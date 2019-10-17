@@ -1,14 +1,14 @@
-import { css, customElement, html, LitElement, property } from 'lit-element';
-import {styleMap, StyleInfo} from 'lit-html/directives/style-map';
+import { css, customElement, html, LitElement, property,  } from 'lit-element';
 import  {ifDefined} from 'lit-html/directives/if-defined';
-import {classMap} from 'lit-html/directives/class-map';
+import {getNumberReg} from './helper/util';
  type inputtype='text'|'password'|'email'|'url'|'number';
+
  @customElement('p-input')
 export class PInput extends LitElement {
-   
+     
     @property({ type: String, reflect: false }) name: string = '';
     @property({ type: String, reflect: true }) type: inputtype = 'text';
-    @property({ type: String, reflect: false }) pattern: string= null;
+    @property({ type: String, reflect: false }) pattern: string= undefined;
     @property({ type: String, reflect: false }) placeholder: string = '';
     @property({ type: String, reflect: false }) value: string = '';
     @property({ type: String, reflect: false }) leftIcon: string = '';
@@ -17,9 +17,11 @@ export class PInput extends LitElement {
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
     @property({ type: Boolean, reflect: true }) search: boolean = false;
+    @property({ type: Boolean, reflect: true }) clear: boolean = false;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
     @property({ type: Boolean, reflect: true }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
+    @property({ type: Number, reflect: false }) scale: number = 0;
 
 
     static get styles(){
@@ -31,9 +33,14 @@ export class PInput extends LitElement {
             border-radius:var(--borderRadius,.25em);
             transition:border-color .3s,box-shadow .3s; 
             color: var(--fontColor,#333);
+            cursor:text;
         }
         :host([block]){
             display:block;
+        }
+        :host[disabled]{
+            opacity:var(--disabled-opaticity,0.4);
+            cursor:not-allowed;
         }
         :host([invalid]){
             --themeColor:var(--errorColor,#f4615c);
@@ -47,19 +54,15 @@ export class PInput extends LitElement {
             box-sizing:border-box;
             display:flex;
             height:100%;
-            cursor:pointer;
         }
-        div[disabled]{
+        :host([disabled]) div{
             cursor:not-allowed;
             pointer-events:all;
-            opacity:var(--disabled-opaticity,0.4)
        }
 
-
-        div[disabled]>input{
+       :host([disabled]) div input{
             cursor:not-allowed;
             pointer-events:none;
-            opacity:var(--disabled-opaticity,0.4)
        }
         div>input{
             padding: .25em 4px;
@@ -100,11 +103,20 @@ export class PInput extends LitElement {
         .rightIcon,.searchIcon{
             margin-right:4px;
         }
-        div:active .leftIcon{
-            color:var(--themeColor,#42b983);
-        }
+      
         :host(:focus-within:not([disabled])) .leftIcon{
             color:var(--themeColor,#42b983);
+        }
+        .clearIcon,.eyeIcon {
+            visibility:hidden;
+            cursor:pointer;
+        }
+        :host(:focus-within:not([disabled])) .clearIcon,
+        :host(:not([disabled]):hover) .clearIcon,
+        :host(:focus-within:not([disabled])) .eyeIcon,
+        :host(:not([disabled]):hover) .eyeIcon
+        {
+           visibility:visible;
         }
     `;
     }
@@ -118,13 +130,14 @@ export class PInput extends LitElement {
         this.input!.focus();
     }
     reset(){
+        this.value="";
         this.input!.value="";
         this.invalid=false;
     }
     @property({ type: Object }) customValidity: any;
     
     get validity(){
-        return this.input.checkValidity()&&this.customValidity.method(this);
+        return this.input.checkValidity()&&this.customValidity!.method(this);
     }
     get form(){
         return this.closest('p-form');
@@ -142,34 +155,57 @@ export class PInput extends LitElement {
             return false;
         }
     }
-
-    render() {
-        let lefticonValue = this.leftIcon;
-        let righticonValue = this.rightIcon;
-        if(!lefticonValue){
-            const type = this.type;
-            if(type ==='number'){
-                lefticonValue = 'creditcard';
-            } else if(type ==='password') {
-                lefticonValue = "lock";
+     clearValue(){
+        this.value="";
+        this.requestUpdate();
+    }
+     private typePassword(){
+       if(this.type=="password"){
+           this.type="text";
+           this.fromPassword=true;
+       }else{
+            this.type="password";
+       }
+    }
+    
+     dispatchChange(){
+        let changeEvent=new CustomEvent("change",{
+            detail:{value:this.input.value}
+        });
+        this.dispatchEvent(changeEvent);
+     }
+    asyncValue(event:any){
+        if(this.type=="number"||this.fromPassword){
+            let regExp=getNumberReg(this.scale);
+            let inputValue=this.input.value.replace(regExp,"$1");
+            if(inputValue!=this.input.value){
+                this.input.value=inputValue;
             }
         }
-        
-        
-        let lefticonstyle=lefticonValue!=null?'':'display:none';
-        let righticonstyle=righticonValue!=null?'':'display:none';
-        
+        this.value=this.input.value;
+        let inputEvent=new CustomEvent("input",{
+            detail:{value:this.input.value}
+        });
+        this.dispatchEvent(inputEvent );
+    }
+
+    private passwordEyeIcon:string=null;
+    private fromPassword:boolean=false;
+    render() {
+        if(this.type=='password'&&this.passwordEyeIcon==null ){
+            this.passwordEyeIcon="eyeclose-fill"; //eye-fill
+        }
         return html`
-            <div  ?disabled=${this.disabled} >
-                 <p-icon style=${lefticonstyle} name=${lefticonValue}  class='leftIcon' ></p-icon>
-                <input id="input" .name="${this.name}"  placeholder="${this.placeholder}" value="${this.value}"
-                  ?readOnly=${this.readonly}  type="${this.type}" ?required=${this.required} pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}   ></input>
-                  <p-icon style=${lefticonstyle} name=${righticonValue}  class="rightIcon" ></p-icon>
-                  <p-icon style=${this.search?'':'display:none;'} name='search'  class="searchIcon" ></p-icon>
+            <div>
+                <!--${this.type=='number'|| this.type=='password'||this.fromPassword ?html`<p-icon  name='${this.type=='number'?'creditcard':'lock'}'  class='leftIcon' ></p-icon>`:''}-->
+                ${this.leftIcon?html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>`:''}
+                <input id="input" .name="${this.name}"  placeholder="${this.placeholder}" .value="${this.value}"  @input="${this.asyncValue}" @change="${this.dispatchChange}"
+                  ?readOnly=${this.readonly}  .type="${this.type}" ?required=${this.required} pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}   />
+                ${this.passwordEyeIcon ?html`<p-icon  name='${this.passwordEyeIcon}' @click=${this.typePassword}  class='eyeIcon' ></p-icon>`:''}
+                ${this.clear?html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>`:''}
+                ${this.rightIcon?html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>`:''}
             </div>
         `;
     }
-    renderIcon(name:string, className:string){
-        return html`<p-icon style=${!name?'display:none':''} name=${name}  class="${className}" ></p-icon>`;
-    }
+    
 }

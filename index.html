@@ -39,6 +39,7 @@
       margin:4px;
 
     }
+    
   </style>
 </head>
 <body>
@@ -48,11 +49,12 @@
   <p-switch id="switch" checked value="1"></p-switch>
     
   <p>输入框</p>
-    <p-input id="input" lefticon="creditcard" placeholder='金额' block  rightIcon='lock' ></p-input>
+    <p-input id="input" lefticon="creditcard" placeholder='金额' block  clear="true" ></p-input>
 
     
-    <p-input id="input" type="number"  ></p-input>
-    <p-input id="input" type="password"  ></p-input>
+    <p-input id="number" type="number"  ></p-input>
+    
+    <p-input id="password" type="password"  ></p-input>
     
   <p>icon</p>
   <div style='color:var(--themeColor,#42b983)'>
@@ -66,8 +68,14 @@
       a.addEventListener('change', e=>console.log(e.detail));
       var b=document.getElementById('input');
       b.addEventListener('change', e=>console.log(e.detail));
+      var n=document.getElementById('number');
+      n.addEventListener('change', e=>console.log(e.detail));
 
-      var c=document.getElementById('icon');
+
+      var c=document.getElementById('password');
+      c.addEventListener('change', e=>console.log(e.detail));
+
+      var d=document.getElementById('icon');
 
 
     </script>

@@ -1,10 +1,12 @@
 
-import { LitElement, html,  css, property,TemplateResult } from 'lit-element';
+//import { LitElement, html,  css, property,TemplateResult } from 'lit-html';
 import './elements/p-icon';
 import './elements/p-input';
 import './elements/p-switch';
 
-declare global {
+
+/*
+ declare global {
   interface Window {
       LitHelper: any
   }
@@ -20,4 +22,4 @@ declare global {
     property:property,
     TemplateResult:TemplateResult
   }));
-     
+     */
