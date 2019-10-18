@@ -11,9 +11,7 @@
   <meta name="description" content="start-lit-element">
   <meta name="theme-color" content="#ffffff">
   <title>start-lit-element</title>
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
   <style>
@@ -39,16 +37,17 @@
         }
 
         .tab_content{
-			flex:1;
+		   flex:1;
            padding:10px;
            border-top: 1px solid var(--borderColor,rgba(0,0,0,.2));
-            margin-top:-1px;
+           margin-top:-1px;
         }
+        
 
         .tab_tabs {
             color:#42b983;
-            cursor: pointer;
-            padding:0.4em 1.2em;
+            cursor : pointer;
+            padding : .4em 0.8em;
             white-space:nowrap;
         }
         .tab_tabs[disabled]{
@@ -69,8 +68,9 @@
        .tab_container[tabPosition=left] .tab_nav_con,
        .tab_container[tabPosition=right] .tab_nav_con
        {
-           flex:0 0 auto;
-           display: block;
+           
+           display: flex;
+           flex-direction: column;
            overflow: hidden;
            
        }
@@ -141,21 +141,7 @@
             <div class="tab_tabs" disabled>Tab2</div>
             <div class="tab_tabs">Tab3 border-right</div>
 
-            <div class="tab_tabs  ">Tab4</div>
-            <div class="tab_tabs" disabled>Tab5</div>
-            <div class="tab_tabs">Tab6</div>
-
-            <div class="tab_tabs  ">Tab7</div>
-            <div class="tab_tabs" disabled>Tab8</div>
-            <div class="tab_tabs">Tab9</div>
-
-            <div class="tab_tabs  ">Tab10</div>
-            <div class="tab_tabs" >Tab11</div>
-            <div class="tab_tabs">Tab12</div>
-
-            <div class="tab_tabs  ">Tab13</div>
-            <div class="tab_tabs" >Tab14</div>
-            <div class="tab_tabs">Tab15</div>
+           
         </div>
         <div class="tab_content" style=" overflow: auto;">
               
@@ -249,7 +235,6 @@
                 }else{
                     this.container.setAttribute("tabposition",position);
                 }
-                
             }
             get tabPosition(){
                 return  this.container.getAttribute("tabposition");
@@ -258,7 +243,7 @@
                 return this.container.querySelector("div.tab_nav_con");
             }
             get Tabs(){
-                return this.container.querySelectorAll(".tab_nav_con  .tab_tabs");
+                return this.tabNav.querySelectorAll("div.tab_tabs");
             }
 
             get currentTab(){
