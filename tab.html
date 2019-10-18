@@ -26,6 +26,10 @@
     <style>
         .tab_container{
             --themColor:#42b983;
+            --tab-font-color:#42b983;
+            --tab-border-on-color:#42b983;
+            --tab-border-size:2px;
+            --borderColor:rgba(0,0,0,.2);
             display: flex;
             flex-direction: column;
         }
@@ -39,23 +43,21 @@
         .tab_content{
 		   flex:1;
            padding:10px;
-           border-top: 1px solid var(--borderColor,rgba(0,0,0,.2));
-           margin-top:-1px;
+           border-top: 1px solid var(--borderColor);
         }
-        
 
         .tab_tabs {
-            color:#42b983;
-            cursor : pointer;
-            padding : .4em 0.8em;
             white-space:nowrap;
+            border-bottom:var(--tab-border-size) solid #FFF;
+            padding:0.4em 0.8em;
+            cursor: pointer;
         }
         .tab_tabs[disabled]{
             opacity: 0.4;
             cursor: not-allowed;
         }
-       .on{
-            border-bottom:2px solid var(--themColor);
+       .tab_on{
+            border-bottom-color:var(--tab-border-on-color);
         }
         
         
@@ -68,7 +70,7 @@
        .tab_container[tabPosition=left] .tab_nav_con,
        .tab_container[tabPosition=right] .tab_nav_con
        {
-           
+          
            display: flex;
            flex-direction: column;
            overflow: hidden;
@@ -76,36 +78,41 @@
        }
        .tab_container[tabPosition=right] .tab_nav_con{
            order:1;
-           border-left:1px solid var(--borderColor,rgba(0,0,0,.2));
+           border-left:1px solid var(--borderColor);
        }
-       .tab_container[tabPosition=left]  .tab_tabs,
-       .tab_container[tabPosition=right]  .tab_tabs
-       {
+       .tab_container[tabPosition=left]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
-            
-       }
-       .tab_container[tabPosition=right]  .tab_tabs{
-           border-right:none;
-           border-left:2px solid #FFF;
-           text-align: right;
-       }
+            border-right:var(--tab-border-size) solid #FFF;
 
-
-       .tab_container[tabPosition=left] .on{
+       }
+       .tab_container[tabPosition=left] .tab_on{
             border-bottom: none;
-            border-right:2px solid var(--themColor);
+            border-right:var(--tab-border-size) solid var(--tab-border-on-color);
         
        }
-       .tab_container[tabPosition=right] .on{
-             border-bottom: none;
-            border-left:2px solid var(--themColor);
+
+       .tab_container[tabPosition=right]  .tab_tabs{
+            display: block;
+            padding:0.6em 0.3em ;
+            border-left:var(--tab-border-size) solid #FFF;
+            text-align: right;
+            
        }
+       
+       .tab_container[tabPosition=right] .tab_on{
+            border-bottom: none;
+            border-left:var(--tab-border-size) solid var(--tab-border-on-color);
+       }
+
+
+       
+       
        .tab_container[tabPosition=left] .tab_content{
            flex:1;
            border-top:none;
            margin-left:-1px;
-           border-left:1px solid var(--borderColor,rgba(0,0,0,.2));
+           border-left:1px solid var(--borderColor);
        }
        .tab_container[tabPosition=right] .tab_content{
            flex:1;
@@ -121,21 +128,25 @@
             order:1;
             border-bottom: none;
        }
-       .tab_container[tabPosition=bottom]  .on{
+       .tab_container[tabPosition=bottom]  .tab_tabs{
+          
+            border-top:var(--tab-border-size) solid #FFF;
+       }
+       .tab_container[tabPosition=bottom]  .tab_on{
             border:none;
-            border-top:2px solid var(--themColor);
+            border-top:var(--tab-border-size) solid var(--tab-border-on-color);
        }
        .tab_container[tabPosition=bottom] .tab_content{
            order:0;
            border-top:none;
-           border-bottom:1px solid var(--borderColor,rgba(0,0,0,.2));
+           border-bottom:1px solid var(--borderColor);
 
        } 
     </style>
     <div class="tab_container" tabPosition="top" borderd style='width:80%;' id="tab">
         <!-- tab 页签-->
         <div class="tab_nav_con">
-            <div class="tab_tabs on ">Tab1
+            <div class="tab_tabs tab_on ">Tab1
                 <p-icon name='search'></p-icon>
             </div>
             <div class="tab_tabs" disabled>Tab2</div>
@@ -206,7 +217,7 @@
                     if(item.matches("[disabled]")){
                         return ;
                     }
-                    if(item.matches(".on")){
+                    if(item.matches(".tab_on")){
                         return ;
                     }
                     let currentTab=_self.currentTab;
@@ -219,8 +230,8 @@
                         }))
                     }
 
-                    item.classList.add("on");
-                    currentTab.classList.remove('on');
+                    item.classList.add("tab_on");
+                    currentTab.classList.remove('tab_on');
 
                     _self.contentContainer.innerHTML=item.innerHTML;
                 }
@@ -248,7 +259,7 @@
 
             get currentTab(){
                 let tabs=[...this.Tabs];
-                let result=tabs.filter( item => item.matches('.on'));
+                let result=tabs.filter( item => item.matches('.tab_on'));
                 return result.length>0?result[0]:null;
             }
 
