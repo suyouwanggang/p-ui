@@ -26,10 +26,23 @@
     <style>
         .p-tip{
             --percent:0.5;
+			--tipMainDistance:10;
 			--backGroudTipColor:rgba(0,0,0,0.75);
-			--tipDistance:10;
             position: relative; 
             display: inline-block;
+			
+        }
+		 /* success */
+        .p-tip[type="success"]{
+            --backGroudTipColor:var(--successColor,#52c41a);
+        }
+        /* error */
+        .p-tip[type="error"]{
+            --backGroudTipColor:var(--errorColor,#f4615c);
+        }
+        /* warning */
+        .p-tip[type="warning"]{
+            --backGroudTipColor:var(--waringColor,#faad14);
         }
         .p-tip-container{
             position: absolute;
@@ -37,114 +50,171 @@
             color: #FFF;
 			padding: 6px 10px;
             line-height: 18px;
+			border-radius:4px;
             background-color: var(--backGroudTipColor);
 			pointer-events: none;
         }
-        .p-tip[dir=top][show]  .p-tip-container{
+		
+		
+		
+        .p-tip[dir=top][show]  .p-tip-container,
+		.p-tip[dir=top]:hover  .p-tip-container,
+		.p-tip[dir=top]:focus-within  .p-tip-container,
+		.p-tip[dir=top]:focus  .p-tip-container
+		{
             left: calc(var(--percent) * 100% );
             bottom: 100%;
             opacity: 1;
-            transform:translate(-50%, calc(var(--tipDistance)*-1px));
+			transition:opacity,0.3s,ease;
+            transform:translate(-50%, calc(var(--tipMainDistance)*-1px));
         }
 
-        .p-tip[dir=topleft][show]  .p-tip-container{
+        .p-tip[dir=topleft][show]  .p-tip-container,
+		.p-tip[dir=topleft]:hover  .p-tip-container,
+		.p-tip[dir=topleft]:focus-within  .p-tip-container,
+		.p-tip[dir=topleft]:focus  .p-tip-container
+		
+		{
             left:0;
             bottom: 100%;
             opacity: 1;
-            transform: translate(0,calc(var(--tipDistance)*-1px));
+			transition:opacity,0.3s,ease;
+            transform: translate(0,calc(var(--tipMainDistance)*-1px));
      
         }
 
 
-        .p-tip[dir=topright][show]  .p-tip-container{
+        .p-tip[dir=topright][show]  .p-tip-container,
+		.p-tip[dir=topright]:hover  .p-tip-container,
+		.p-tip[dir=topright]:focus-within .p-tip-container,
+		.p-tip[dir=topright]:focus .p-tip-container,
+		{
             bottom: 100%;
             right: 0;
             opacity: 1;
-            transform: translate(0,calc(var(--tipDistance)*-1px))
+			transition:opacity,0.3s,ease;
+            transform: translate(0,calc(var(--tipMainDistance)*-1px))
         }
 
-        .p-tip[dir=bottom][show]  .p-tip-container{
+        .p-tip[dir=bottom][show]  .p-tip-container,
+		.p-tip[dir=bottom]:hover  .p-tip-container,
+		.p-tip[dir=bottom]:focus-within  .p-tip-container,
+		.p-tip[dir=bottom]:focus .p-tip-container
+		{
             left: calc(var(--percent) * 100% );
             bottom: 0;
             opacity: 1;
-            transform: translate(-50%,100%);
+			transition:opacity,0.3s,ease;
+            transform: translate(-50%, calc( 100% + (var(--tipMainDistance)*1px) ));
         }
 
-        .p-tip[dir=bottomleft][show]  .p-tip-container{
+        .p-tip[dir=bottomleft][show]  .p-tip-container,
+		.p-tip[dir=bottomleft]:hover  .p-tip-container,
+		.p-tip[dir=bottomleft]:focus-within  .p-tip-container,
+		.p-tip[dir=bottomleft]:focus  .p-tip-container
+		{
             left: 0;
             bottom: 0;
             opacity: 1;
-            transform: translatey(100%);
+			transition:opacity,0.3s,ease;
+            transform: translate(0, calc(100% + (var(--tipMainDistance)*1px) ) );
         }
 
-        .p-tip[dir=bottomright][show]  .p-tip-container{
+        
+
+        .p-tip[dir=bottomright][show]  .p-tip-container,
+		.p-tip[dir=bottomright]:hover  .p-tip-container,
+		.p-tip[dir=bottomright]:focus-within  .p-tip-container,
+		.p-tip[dir=bottomright]:focus  .p-tip-container
+		{
             right: 0;
             bottom: 0;
             opacity: 1;
-            transform: translate(100%,100%);
+			transition:opacity,0.3s,ease;
+            transform: translate(0%,calc(100% + (var(--tipMainDistance)*1px) ) );
         }
 
-        .p-tip[dir=bottomright][show]  .p-tip-container{
-            right: 0;
-            bottom: 0;
-            opacity: 1;
-            transform: translate(0%,100%);
-        }
-
-        .p-tip[dir=left][show]  .p-tip-container{
+        .p-tip[dir=left][show]  .p-tip-container,
+		.p-tip[dir=left]:hover  .p-tip-container,
+		.p-tip[dir=left]:focus-within  .p-tip-container,
+		.p-tip[dir=left]:focus  .p-tip-container
+		{
             top: calc(var(--percent) * 100% );
             left: 0;
             opacity: 1;
-            transform: translate(-100%,-50%);
+			transition:opacity,0.3s,ease;
+            transform: translate(calc(-100% - (var(--tipMainDistance)*1px)) ,-50%);
         }
 
 
-        .p-tip[dir=leftbottom][show]  .p-tip-container{
+        .p-tip[dir=leftbottom][show]  .p-tip-container,
+		.p-tip[dir=leftbottom]:hover  .p-tip-container,
+		.p-tip[dir=leftbottom]:focus-within   .p-tip-container,
+		.p-tip[dir=leftbottom]:focus   .p-tip-container,
+		{
             bottom: 0;
             left: 0;
             opacity: 1;
-            transform: translatex(-100%);
+			transition:opacity,0.3s,ease;
+            transform: translate(calc(-100% - (var(--tipMainDistance)*1px)) ,0);
         }
 
-        .p-tip[dir=lefttop][show]  .p-tip-container{
+        .p-tip[dir=lefttop][show]  .p-tip-container,
+		.p-tip[dir=lefttop]:hover  .p-tip-container,
+		.p-tip[dir=lefttop]:focus-within  .p-tip-container,
+		.p-tip[dir=lefttop]:focus  .p-tip-container
+		{
             top: 0;
             left: 0;
             opacity: 1;
-            transform: translate(-100%,0);
+			transition:opacity,0.3s,ease;
+			transform: translate(calc(-100% - (var(--tipMainDistance)*1px)) ,0);
         }
 
-        .p-tip[dir=right][show]  .p-tip-container{
+        .p-tip[dir=right][show]  .p-tip-container,
+		.p-tip[dir=right]:hover  .p-tip-container,
+		.p-tip[dir=right]:focus-within  .p-tip-container,
+		.p-tip[dir=right]:focus  .p-tip-container
+		{
             top: calc(var(--percent) * 100% );
             right: 0;
             opacity: 1;
-            transform: translate(100%,-50%);
+			transition:opacity,0.3s,ease;
+            transform: translate( calc(100% + (var(--tipMainDistance)*1px)) ,-50%);
         }
 
-        .p-tip[dir=righttop][show]  .p-tip-container{
+        .p-tip[dir=righttop][show]  .p-tip-container,
+		.p-tip[dir=righttop]:hover  .p-tip-container,
+		.p-tip[dir=righttop]:focus-within  .p-tip-container,
+		.p-tip[dir=righttop]:focus  .p-tip-container
+		{
             right: 0;
             top: 0;
             opacity: 1;
-            transform: translate(100%,0);
+			transition:opacity,0.3s,ease;
+            transform: translate( calc(100% + (var(--tipMainDistance)*1px)),0);
         }
 
-        .p-tip[dir=rightbottom][show]  .p-tip-container{
+        .p-tip[dir=rightbottom][show]  .p-tip-container,
+		.p-tip[dir=rightbottom]:hover  .p-tip-container,
+		.p-tip[dir=rightbottom]:focus-within  .p-tip-container,
+		.p-tip[dir=rightbottom]:focus  .p-tip-container
+		{
             right: 0;
             bottom: 0;
+			transition:opacity,0.3s,ease;
             opacity: 1;
-            transform: translate(100%,0);
+            transform: translate(calc(100% + (var(--tipMainDistance)*1px)) ,0);
         }
 
     </style>
-    <div class="p-tip" dir=lefttop show style='width:200px; height:200px; margin:300px 600px; background-color:aquamarine;'>
+    <div class="p-tip" dir=lefttop type="warning"  style='width:200px; height:200px; margin:300px 600px; background-color:aquamarine;'>
         我要显示tips
 
-        <div class="p-tip-container" style='width:300px;height: 300px;' >
+        <div class="p-tip-container"  >
               
                <p>wanggangwanggangwanggang</p>
-               <p>wanggang</p>
-               <p>wanggang</p>
-               <p>wanggang</p>
-               <p>wanggang</p>
+               
               
 			  
         </div>
@@ -167,6 +237,17 @@
                     d='top';
                 }
                 return d;
+            }
+			
+			set type(type){
+
+                this.dom.setAttribute('type',type);
+               
+            }
+			get type(){
+
+                return this.dom.getAttribute('type');
+               
             }
         }
         tip=new TipElement('.p-tip');
