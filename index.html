@@ -39,8 +39,6 @@
       margin:4px;
 
     }
-    
-    
   </style>
 </head>
 <body>
@@ -72,8 +70,8 @@
   </p-tips>
 
   <p>Tab </p>
-  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;'>
-    <p-tab-content label="wanggang" icon="search" >
+  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' activekey='1' tabagile='space-between' tabposition="top">
+    <p-tab-content label="wanggang" icon="search" key="0">
         <p>Tips 01 </p>
         <p>Tips  02</p>
         <p>Tips 03</p>
@@ -84,7 +82,7 @@
       </p-tab-content>
 
 
-    <p-tab-content label="zhengmin" icon="creditcard" >
+    <p-tab-content label="zhengmin" icon="creditcard" key="1" >
         <p>Tips 03</p>
         <p>Tips 04</p>
         <p>Tips 03</p>
@@ -103,7 +101,7 @@
         <p>Tips 04</p>
     </p-tab-content>
 
-    <p-tab-content label="王刚"  disabled >
+    <p-tab-content label="王刚"  disabled key="2" >
         <p>王刚王刚王刚王刚王刚 03</p>
         <p>Tips 04</p>
         <p>Tips 03</p>
@@ -142,6 +140,9 @@
     
 
       var tab=document.getElementById('tabDIV'); 
+      tab.addEventListener('p-tab-change',function(event){
+        console.log(event.detail);
+      })
 
 
 
