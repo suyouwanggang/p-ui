@@ -162,7 +162,6 @@ class PTab extends LitElement {
             <slot id="slots" class="tab_content"></slot>
         </div>`;
     }
-    private  __lastAsisigedElment:number=0;
     firstUpdated() {
         const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', (event) => {
@@ -223,7 +222,7 @@ class PTab extends LitElement {
 
     }
     attributeChangedCallback(name:string,oldvalue:string|null, newValue:string|null){
-        super.attributeChangedCallback(name,oldvalue,newValue);
+        super.attributeChangedCallback(name,oldvalue,newValue); //一定要调用super 方法哦
         //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
 
          if(name=='activekey'&& oldvalue!=newValue&&this.shadowRoot!=null){
