@@ -4,6 +4,7 @@ import './elements/p-tips';
 import './elements/p-icon';
 import './elements/p-input';
 import './elements/p-switch';
+import './elements/p-tab';
 
 
 /*
