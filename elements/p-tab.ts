@@ -128,7 +128,13 @@ export default class PTab extends LitElement {
             xTab.requestUpdate();
         });
     }
-
+    _changeTabHanlder(event:Event){
+        let target=<HTMLElement>event.target;
+        if(!target.matches('.tab_tabs')){
+            target=target.closest('.tab_tabs');
+        }
+        this.activeKey=target.getAttribute('key');
+    }
     renderTab(): TemplateResult | Array<TemplateResult> {
         const xTab = this;
         const childchild = Array.from(this.children);
@@ -169,15 +175,16 @@ class PTabContent extends LitElement {
         return html`<slot></slot>`;
     }
     renderTabTitle(parent: PTab): TemplateResult {
-        return html`<div class='tab_tabs ${parent.activeKey == this.key ? 'tab_on' : ''}' ?disabled=${this.disabled}>
+        return html`<div class='tab_tabs ${parent.activeKey == this.key ? 'tab_on' : ''}' ?disabled=${this.disabled} key="${this.key}"  @click=${parent._changeTabHanlder}>
             <span class='tab_label'>${this.label}</span>
             ${this.icon ? html`<p-icon name=${this.icon}></p-icon>` : ''}
             </div>`;
     }
+    get  tab():PTab{
+        return this.closest('p-tab');
+    }
     updated(changeMap: Map<string | number | symbol, unknown>) {
-    
-       let tab:PTab= this.closest('p-tab');
-       tab.requestUpdate();
+       this.tab.requestUpdate();
     }
 }
 
