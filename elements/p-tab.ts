@@ -26,14 +26,12 @@ export default class PTab extends LitElement {
             display: flex;
             scroll-behavior: smooth;
         }
-
         .tab_content{
            display:block;
 		   flex:1;
            padding:10px;
            border-top: 1px solid var(--borderColor);
         }
-
         .tab_tabs {
             white-space:nowrap;
             border-bottom:var(--tab-border-size) solid #FFF;
@@ -48,18 +46,14 @@ export default class PTab extends LitElement {
             border-bottom-color:var(--tab-border-on-color);
         }
        .tab_container[tabPosition=left],
-       .tab_container[tabPosition=right]
-       {
+       .tab_container[tabPosition=right]{
             flex-direction: row;
        }
        .tab_container[tabPosition=left] .tab_nav_con,
-       .tab_container[tabPosition=right] .tab_nav_con
-       {
-          
+       .tab_container[tabPosition=right] .tab_nav_con{
            display: flex;
            flex-direction: column;
            overflow: hidden;
-           
        }
        .tab_container[tabPosition=right] .tab_nav_con{
            order:1;
@@ -69,30 +63,21 @@ export default class PTab extends LitElement {
             display: block;
             padding:0.6em 0.3em ;
             border-right:var(--tab-border-size) solid #FFF;
-
        }
        .tab_container[tabPosition=left] .tab_on{
             border-bottom: none;
             border-right:var(--tab-border-size) solid var(--tab-border-on-color);
-        
        }
-
        .tab_container[tabPosition=right]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
             border-left:var(--tab-border-size) solid #FFF;
             text-align: right;
-            
        }
-       
        .tab_container[tabPosition=right] .tab_on{
             border-bottom: none;
             border-left:var(--tab-border-size) solid var(--tab-border-on-color);
        }
-
-
-       
-       
        .tab_container[tabPosition=left] .tab_content{
            flex:1;
            border-top:none;
@@ -104,17 +89,12 @@ export default class PTab extends LitElement {
            border-top:none;
            margin-right:-1px;
            order:0;
-           
        }
-
-      
-
        .tab_container[tabPosition=bottom] .tab_nav_con {
             order:1;
             border-bottom: none;
        }
        .tab_container[tabPosition=bottom]  .tab_tabs{
-          
             border-top:var(--tab-border-size) solid #FFF;
        }
        .tab_container[tabPosition=bottom]  .tab_on{
@@ -125,12 +105,11 @@ export default class PTab extends LitElement {
            order:0;
            border-top:none;
            border-bottom:1px solid var(--borderColor);
-
        }
        ::slotted(p-tab-content:not([active])){
-        display:none;
-       }    
-        `
+            display:none;
+       }
+        `;
     }
 
 
@@ -142,12 +121,12 @@ export default class PTab extends LitElement {
         </div>`;
     }
     firstUpdated() {
-        let xTab = this;
-        let slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
+        const xTab = this;
+        const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', () => {
             const slotsChild = slots.assignedElements();
             xTab.requestUpdate();
-        })
+        });
     }
 
     renderTab(): TemplateResult | Array<TemplateResult> {
@@ -156,6 +135,7 @@ export default class PTab extends LitElement {
         const result = new Array<TemplateResult>();
         childchild.forEach((element, index) => {
             if (element instanceof PTabContent) {
+                // tslint:disable-next-line: no-unnecessary-type-assertion
                 const tContent: PTabContent = element as PTabContent;
                 if (tContent.key == null) {
                     tContent.key = '' + index;
@@ -163,12 +143,12 @@ export default class PTab extends LitElement {
                 if (xTab.activeKey == null) {
                     xTab.activeKey = tContent.key;
                 }
-                if (tContent.key == xTab.activeKey) {
-                    tContent.setAttribute("active", "");
+                if (tContent.key === xTab.activeKey) {
+                    tContent.setAttribute('active', '');
                 } else {
-                    tContent.removeAttribute("active");
+                    tContent.removeAttribute('active');
                 }
-                result.push(tContent.renderTabContent(this));
+                result.push(tContent.renderTabTitle(this));
             }
         });
         return result;
@@ -185,22 +165,19 @@ class PTabContent extends LitElement {
     @property({ type: String, reflect: true }) key: string = null;
     @property({ type: String, reflect: true }) icon: string = '';
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
-
-    firstUpdated(changeMap: Map<string | number | symbol, unknown>) {
-
-
-    }
     render() {
         return html`<slot></slot>`;
     }
-    renderTabContent(parent: PTab): TemplateResult {
+    renderTabTitle(parent: PTab): TemplateResult {
         return html`<div class='tab_tabs ${parent.activeKey == this.key ? 'tab_on' : ''}' ?disabled=${this.disabled}>
             <span class='tab_label'>${this.label}</span>
             ${this.icon ? html`<p-icon name=${this.icon}></p-icon>` : ''}
             </div>`;
     }
     updated(changeMap: Map<string | number | symbol, unknown>) {
-
+    
+       let tab:PTab= this.closest('p-tab');
+       tab.requestUpdate();
     }
 }
 
