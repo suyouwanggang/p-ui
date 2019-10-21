@@ -1,5 +1,6 @@
 
 //import { LitElement, html,  css, property,TemplateResult } from 'lit-html';
+import './elements/p-tips';
 import './elements/p-icon';
 import './elements/p-input';
 import './elements/p-switch';

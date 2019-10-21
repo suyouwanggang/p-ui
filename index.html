@@ -40,6 +40,7 @@
 
     }
     
+    
   </style>
 </head>
 <body>
@@ -62,6 +63,13 @@
     <p-icon name="heart"  id="icon" size="30" lefticon="creditcard" ></p-icon>
     <p-icon name="heart"  id="icon" size="40" lefticon="creditcard" ></p-icon>
     <p-icon name="heart"  id="icon" size="50" lefticon="creditcard" ></p-icon>
+  </div>
+   <p>Tips </p>
+   <p-tips style="margin:10px 100px;" tips="我是内容" id="tips" show="true">
+    <p-icon name="heart"  id="icon" size="20" lefticon="creditcard" ></p-icon>
+    <p-icon name="heart"  id="icon" size="30" lefticon="creditcard" ></p-icon>
+    <p-icon name="heart"  id="icon" size="40" lefticon="creditcard" ></p-icon>
+  </p-tips>
 </div>
     <script>
       var a=document.getElementById('switch');
@@ -76,6 +84,8 @@
       c.addEventListener('change', e=>console.log(e.detail));
 
       var d=document.getElementById('icon');
+
+      var t=document.getElementById('tips'); 
 
 
     </script>

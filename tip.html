@@ -32,6 +32,8 @@
             display: inline-block;
 			
         }
+		
+		
 		 /* success */
         .p-tip[type="success"]{
             --backGroudTipColor:var(--successColor,#52c41a);
@@ -55,7 +57,17 @@
 			pointer-events: none;
         }
 		
-		
+		.jiao{
+			display: block;
+            position: absolute;
+            opacity: 0;
+			border-radius:0;
+            width: 0;
+            height: 0;
+			padding:0;
+            overflow: hidden;
+            border: 6px solid transparent;
+		}
 		
         .p-tip[dir=top][show]  .p-tip-container,
 		.p-tip[dir=top]:hover  .p-tip-container,
@@ -68,7 +80,7 @@
 			transition:opacity,0.3s,ease;
             transform:translate(-50%, calc(var(--tipMainDistance)*-1px));
         }
-
+	.p-tip[dir=top][show]  .p-tip-container-,
         .p-tip[dir=topleft][show]  .p-tip-container,
 		.p-tip[dir=topleft]:hover  .p-tip-container,
 		.p-tip[dir=topleft]:focus-within  .p-tip-container,
@@ -145,7 +157,7 @@
 			transition:opacity,0.3s,ease;
             transform: translate(calc(-100% - (var(--tipMainDistance)*1px)) ,-50%);
         }
-
+		
 
         .p-tip[dir=leftbottom][show]  .p-tip-container,
 		.p-tip[dir=leftbottom]:hover  .p-tip-container,
@@ -208,16 +220,13 @@
         }
 
     </style>
-    <div class="p-tip" dir=lefttop type="warning"  style='width:200px; height:200px; margin:300px 600px; background-color:aquamarine;'>
+    <div class="p-tip" dir=left type="warning" show style='width:200px; height:200px; margin:300px 600px; background-color:aquamarine;'>
         我要显示tips
-
-        <div class="p-tip-container"  >
-              
-               <p>wanggangwanggangwanggang</p>
-               
-              
-			  
+		 <div class="p-tip-container"  >
+			  <p>wanggangwanggangwanggang</p>
+              <p>wanggangwanggangwanggang</p>
         </div>
+		<div class="p-tip-container jiao"></div>
     </div>
     <script >
         class TipElement{

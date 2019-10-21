@@ -11,7 +11,7 @@ export default {
 	output:[ {
 		file: 'build/index.js',
         format: 'cjs',
-		sourcemap: false
+		sourcemap: true
 	},{
 		file: 'build/index.umd.js',
         format: 'umd',
