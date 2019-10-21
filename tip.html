@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+ <script  
+    src="build/index.js"
+ >
+</script> 
+  
+  
+  <meta name="description" content="start-lit-element">
+  <meta name="theme-color" content="#ffffff">
+  <title>start-lit-element</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8">
+  <style>
+    p-input{
+      margin:4px;
+
+    }
+    
+  </style>
+</head>
+<body>
+    <style>
+        .p-tip{
+            --percent:0.5;
+			--backGroudTipColor:rgba(0,0,0,0.75);
+			--tipDistance:10;
+            position: relative; 
+            display: inline-block;
+        }
+        .p-tip-container{
+            position: absolute;
+            opacity: 0;
+            color: #FFF;
+			padding: 6px 10px;
+            line-height: 18px;
+            background-color: var(--backGroudTipColor);
+			pointer-events: none;
+        }
+        .p-tip[dir=top][show]  .p-tip-container{
+            left: calc(var(--percent) * 100% );
+            bottom: 100%;
+            opacity: 1;
+            transform:translate(-50%, calc(var(--tipDistance)*-1px));
+        }
+
+        .p-tip[dir=topleft][show]  .p-tip-container{
+            left:0;
+            bottom: 100%;
+            opacity: 1;
+            transform: translate(0,calc(var(--tipDistance)*-1px));
+     
+        }
+
+
+        .p-tip[dir=topright][show]  .p-tip-container{
+            bottom: 100%;
+            right: 0;
+            opacity: 1;
+            transform: translate(0,calc(var(--tipDistance)*-1px))
+        }
+
+        .p-tip[dir=bottom][show]  .p-tip-container{
+            left: calc(var(--percent) * 100% );
+            bottom: 0;
+            opacity: 1;
+            transform: translate(-50%,100%);
+        }
+
+        .p-tip[dir=bottomleft][show]  .p-tip-container{
+            left: 0;
+            bottom: 0;
+            opacity: 1;
+            transform: translatey(100%);
+        }
+
+        .p-tip[dir=bottomright][show]  .p-tip-container{
+            right: 0;
+            bottom: 0;
+            opacity: 1;
+            transform: translate(100%,100%);
+        }
+
+        .p-tip[dir=bottomright][show]  .p-tip-container{
+            right: 0;
+            bottom: 0;
+            opacity: 1;
+            transform: translate(0%,100%);
+        }
+
+        .p-tip[dir=left][show]  .p-tip-container{
+            top: calc(var(--percent) * 100% );
+            left: 0;
+            opacity: 1;
+            transform: translate(-100%,-50%);
+        }
+
+
+        .p-tip[dir=leftbottom][show]  .p-tip-container{
+            bottom: 0;
+            left: 0;
+            opacity: 1;
+            transform: translatex(-100%);
+        }
+
+        .p-tip[dir=lefttop][show]  .p-tip-container{
+            top: 0;
+            left: 0;
+            opacity: 1;
+            transform: translate(-100%,0);
+        }
+
+        .p-tip[dir=right][show]  .p-tip-container{
+            top: calc(var(--percent) * 100% );
+            right: 0;
+            opacity: 1;
+            transform: translate(100%,-50%);
+        }
+
+        .p-tip[dir=righttop][show]  .p-tip-container{
+            right: 0;
+            top: 0;
+            opacity: 1;
+            transform: translate(100%,0);
+        }
+
+        .p-tip[dir=rightbottom][show]  .p-tip-container{
+            right: 0;
+            bottom: 0;
+            opacity: 1;
+            transform: translate(100%,0);
+        }
+
+    </style>
+    <div class="p-tip" dir=lefttop show style='width:200px; height:200px; margin:300px 600px; background-color:aquamarine;'>
+        我要显示tips
+
+        <div class="p-tip-container" style='width:300px;height: 300px;' >
+              
+               <p>wanggangwanggangwanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+               <p>wanggang</p>
+              
+			  
+        </div>
+    </div>
+    <script >
+        class TipElement{
+
+            constructor(selector){
+                    this.dom=document.querySelector(selector);
+                    this.dir=this.dir;
+            }
+            set dir(dirValue){
+
+                this.dom.setAttribute('dir',dirValue);
+            }
+            get dir(){
+
+                let d= this.dom.getAttribute('dir');
+                if(d==null||d==""){
+                    d='top';
+                }
+                return d;
+            }
+        }
+        tip=new TipElement('.p-tip');
+    </script>
+</body>
