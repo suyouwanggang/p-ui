@@ -175,17 +175,17 @@ class PTab extends LitElement {
         if (!target.matches('.tab_tabs')) {
             target = target.closest('.tab_tabs');
         }
-        let key = target.getAttribute('key');
-        if (key == this.activeKey) {
+        const key = target.getAttribute('key');
+        if (key === this.activeKey) {
             return;
         } else {
-            let tabContent = this.findTab(key);
-            if (tabContent.disabled) {
+            const tabContent = this.findTab(key);
+            if (tabContent === null || tabContent.disabled) {
                 return;
             }
             if (this.beforeChange) {
-                let result = this.beforeChange.call(this, tabContent);
-                if (result != false) {
+                const result = this.beforeChange.call(this, tabContent);
+                if (result !== false) {
                     this.activeKey = tabContent.key;
                 }
             } else {
@@ -221,13 +221,13 @@ class PTab extends LitElement {
     attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
         super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
         //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
-        if (name == 'activekey' && oldvalue != newValue && this.shadowRoot != null) {
+        if (name === 'activekey' && oldvalue !== newValue && this.shadowRoot != null) {
             this.dispatchChangeEvent(this.findTab(newValue));
         }
     }
 
     set activeTabByIndex(index: number) {
-        let tab = this.findTabByIndex(index);
+        const tab = this.findTabByIndex(index);
         if (tab) {
             this.activeKey = tab.key;
         }
