@@ -1,5 +1,8 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
-import { threadId } from 'worker_threads';
+/**
+ * @event  change beforeChange
+ * 
+ */
 type tabPosition = 'top' | 'bottom' | 'left' | 'right';
 type tabAgile = '' | 'space-around' | 'space-between' | 'space-evenly' | 'flex-start' | 'flex-end';
 @customElement('p-tab')
@@ -7,7 +10,6 @@ class PTab extends LitElement {
     @property({ type: String, reflect: true }) tabPosition: tabPosition = 'top';
     @property({ type: String, reflect: true }) activeKey: string = null;
     @property({ type: String, reflect: true }) tabAgile: tabAgile = null;
-    beforeChange: Function = null;
 
     static get styles() {
         return css`
@@ -123,16 +125,18 @@ class PTab extends LitElement {
     }
 
     protected renderTabTitle(tabContent: PTabContent): TemplateResult {
-        return html`<div class='tab_tabs ${this.activeKey == tabContent.key ? 'tab_on' : ''}  tab_tabs_outer'
+        return html`<div class='tab_tabs ${this.activeKey === tabContent.key ? 'tab_on' : ''}  tab_tabs_outer'
          ?disabled=${tabContent.disabled} key="${tabContent.key}"  @click=${this._changeTabHanlder} >
             <span class='tab_label'>${tabContent.label}</span>
             ${tabContent.icon ? html`<p-icon class='p-tab-icon' name=${tabContent.icon}></p-icon>` : ''}
             </div>`;
     }
     protected renderTab(): TemplateResult | Array<TemplateResult> {
+        if(!this.hasUpdated){
+            return html``;
+        }
+        ///console.log('tab===tab');
         const xTab = this;
-        // console.log('activeKey===='+xTab.activekey );
-        // console.log(xTab.children.length);
         const childchild = Array.from(this.children);
         const result = new Array<TemplateResult>();
         childchild.forEach((element, index) => {
@@ -165,6 +169,7 @@ class PTab extends LitElement {
     firstUpdated() {
         const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', (event) => {
+           // console.log('tab===slotchange');
             this.requestUpdate();
         });
     }
@@ -183,22 +188,24 @@ class PTab extends LitElement {
             if (tabContent === null || tabContent.disabled) {
                 return;
             }
-            if (this.beforeChange) {
-                const result = this.beforeChange.call(this, tabContent);
-                if (result !== false) {
-                    this.activeKey = tabContent.key;
+            const beforeEvent=new CustomEvent('beforeChange',{
+                cancelable:true, //标识可以取消
+                detail:{
+                    tabContent:tabContent,
+                   label: tabContent.label,
+                   key: tabContent.key
                 }
-            } else {
-                this.activeKey = tabContent.key;
+            });
+            if(this.dispatchEvent(beforeEvent)){
+                this.activeKey = tabContent.key; 
             }
         }
-
     }
     dispatchChangeEvent(tabContent: PTabContent) {
         if (tabContent == null || tabContent.disabled) {
             return;
         }
-        this.dispatchEvent(new CustomEvent('p-tab-change', {
+        this.dispatchEvent(new CustomEvent('change', {
             detail: {
                 tabContent: tabContent,
                 label: tabContent.label,
@@ -221,7 +228,8 @@ class PTab extends LitElement {
     attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
         super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
         //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
-        if (name === 'activekey' && oldvalue !== newValue && this.shadowRoot != null) {
+        if (name === 'activekey' &&this.hasUpdated &&oldvalue !== newValue && this.renderRoot != null) {
+            //console.log(`name=${name} olvalue=${oldvalue} newvalue=${newValue}`);
             this.dispatchChangeEvent(this.findTab(newValue));
         }
     }
@@ -238,7 +246,7 @@ class PTab extends LitElement {
 @customElement('p-tab-content')
 class PTabContent extends LitElement {
     @property({ type: String, reflect: true })
-    @property({ type: String, reflect: true }) label: string = '';
+    @property({ type: String, reflect: true }) label: string = null;
     @property({ type: String, reflect: true }) key: string = null;
     @property({ type: String, reflect: true }) icon: string = null;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
@@ -250,7 +258,7 @@ class PTabContent extends LitElement {
         return this.closest('p-tab');
     }
     updated(changeMap: Map<string | number | symbol, unknown>) {
-        this.tab.requestUpdate();
+       this.tab.requestUpdate();
     }
 }
 export { PTab, PTabContent };

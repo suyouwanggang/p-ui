@@ -10,14 +10,14 @@
   </script>
   -->
   
-  <!-- Load polyfills -->
+  <!-- Load polyfills 
   <script 
     src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
     defer>
   </script> 
-    
+    -->
 
-
+    <script type="module" src="./build/index.js"> </script>
   <!-- Load components via WebComponents.waitFor -->
   <script type="module">
     window.WebComponents = window.WebComponents || { 
@@ -66,14 +66,14 @@
     <p-icon name="heart"  id="icon" size="50" lefticon="creditcard" ></p-icon>
   </div>
    <p>Tips </p>
-   <p-tips style="margin:10px 100px;" tips="我是内容" id="tips" show="true">
+   <p-tips style="margin:10px 100px;" tips="我是内容" id="tips" show="">
     <p-icon name="heart"  id="icon" size="20" lefticon="creditcard" ></p-icon>
     <p-icon name="heart"  id="icon" size="30" lefticon="creditcard" ></p-icon>
     <p-icon name="heart"  id="icon" size="40" lefticon="creditcard" ></p-icon>
   </p-tips>
 
   <p>Tab </p>
-  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' activekey='zhengmin' tabagile='space-around' tabposition="top">
+  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;'  tabagile='space-around' tabposition="top">
     <p-tab-content label="wanggang" icon="search" key="first">
         <p>Tips 01 </p>
         <p>Tips  02</p>
@@ -108,8 +108,8 @@
 </p-tab>
 
 
-<!--
-    <script type="module">
+
+    <script >
       var a=document.getElementById('switch');
       a.addEventListener('change', e=>console.log(e.detail));
       var b=document.getElementById('input');
@@ -127,13 +127,16 @@
     
 
       var tab=document.getElementById('tabDIV'); 
-      tab.addEventListener('p-tab-change',function(event){
-        console.log(event.detail);
+      tab.addEventListener('change',function(event){
+        console.log(event.type);
       })
 
-
+      tab.addEventListener('beforeChange',function(event){
+        //event.preventDefault();
+        console.log(event.type);
+      })
 
     </script>
-    -->
+    
 </body>
 </html>
