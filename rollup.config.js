@@ -12,7 +12,8 @@ export default {
 		file: 'build/index.js',
         format: 'cjs',
 		sourcemap: true
-	},{
+	}
+	,{
 		file: 'build/index.umd.js',
         format: 'umd',
 		sourcemap: false

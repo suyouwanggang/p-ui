@@ -12,3 +12,4 @@ export  const getNumberReg = function (scale: number): RegExp {
         return result;
     }
 };
+
