@@ -1,12 +1,12 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
 import { threadId } from 'worker_threads';
-type tabpostion = 'top' | 'bottom' | 'left' | 'right';
-type tabAgile = '' | 'space-arround' | 'space-between' | 'space-evenly'|'flex-start'|'flex-end';
+type tabPosition = 'top' | 'bottom' | 'left' | 'right';
+type tabAgile = '' | 'space-around' | 'space-between' | 'space-evenly' | 'flex-start' | 'flex-end';
 @customElement('p-tab')
 class PTab extends LitElement {
-    @property({ type: String, reflect: true }) tabposition: tabpostion = 'top';
-    @property({ type: String, reflect: true }) activekey: string = null;
-    @property({ type: String, reflect: true }) tabagile: tabAgile =null;
+    @property({ type: String, reflect: true }) tabPosition: tabPosition = 'top';
+    @property({ type: String, reflect: true }) activeKey: string = null;
+    @property({ type: String, reflect: true }) tabAgile: tabAgile = null;
     beforeChange: Function = null;
 
     static get styles() {
@@ -14,7 +14,7 @@ class PTab extends LitElement {
             :host{
                 display:block;
                 text-align:unset;
-                --themColor:#42b983;
+                --themeColor:#42b983;
                 --tab-font-color:unset;
                 --tab-border-on-color:#42b983;
                 --tab-border-size:2px;
@@ -55,63 +55,63 @@ class PTab extends LitElement {
        .tab_on{
             border-bottom-color:var(--tab-border-on-color);
         }
-       .tab_container[tabpostion=left],
-       .tab_container[tabpostion=right]{
+       .tab_container[tabPosition=left],
+       .tab_container[tabPosition=right]{
             flex-direction: row;
        }
-       .tab_container[tabpostion=left] .tab_nav_con,
-       .tab_container[tabpostion=right] .tab_nav_con{
+       .tab_container[tabPosition=left] .tab_nav_con,
+       .tab_container[tabPosition=right] .tab_nav_con{
            display: flex;
            flex-direction: column;
            overflow: hidden;
        }
-       .tab_container[tabpostion=right] .tab_nav_con{
+       .tab_container[tabPosition=right] .tab_nav_con{
            order:1;
            border-left:1px solid var(--borderColor);
        }
-       .tab_container[tabpostion=left]  .tab_tabs{
+       .tab_container[tabPosition=left]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
             border-right:var(--tab-border-size) solid #FFF;
        }
-       .tab_container[tabpostion=left] .tab_on{
+       .tab_container[tabPosition=left] .tab_on{
             border-bottom: none;
             border-right:var(--tab-border-size) solid var(--tab-border-on-color);
        }
-       .tab_container[tabpostion=right]  .tab_tabs{
+       .tab_container[tabPosition=right]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
             border-left:var(--tab-border-size) solid #FFF;
             text-align: right;
        }
-       .tab_container[tabpostion=right] .tab_on{
+       .tab_container[tabPosition=right] .tab_on{
             border-bottom: none;
             border-left:var(--tab-border-size) solid var(--tab-border-on-color);
        }
-       .tab_container[tabpostion=left] .tab_content{
+       .tab_container[tabPosition=left] .tab_content{
            flex:1;
            border-top:none;
            margin-left:-1px;
            border-left:1px solid var(--borderColor);
        }
-       .tab_container[tabpostion=right] .tab_content{
+       .tab_container[tabPosition=right] .tab_content{
            flex:1;
            border-top:none;
            margin-right:-1px;
            order:0;
        }
-       .tab_container[tabpostion=bottom] .tab_nav_con {
+       .tab_container[tabPosition=bottom] .tab_nav_con {
             order:1;
             border-bottom: none;
        }
-       .tab_container[tabpostion=bottom]  .tab_tabs{
+       .tab_container[tabPosition=bottom]  .tab_tabs{
             border-top:var(--tab-border-size) solid #FFF;
        }
-       .tab_container[tabpostion=bottom]  .tab_on{
+       .tab_container[tabPosition=bottom]  .tab_on{
             border:none;
             border-top:var(--tab-border-size) solid var(--tab-border-on-color);
        }
-       .tab_container[tabpostion=bottom] .tab_content{
+       .tab_container[tabPosition=bottom] .tab_content{
            order:0;
            border-top:none;
            border-bottom:1px solid var(--borderColor);
@@ -123,13 +123,13 @@ class PTab extends LitElement {
     }
 
     protected renderTabTitle(tabContent: PTabContent): TemplateResult {
-        return  html`<div class='tab_tabs ${this.activekey == tabContent.key ? 'tab_on' : ''}  tab_tabs_outer'
+        return html`<div class='tab_tabs ${this.activeKey == tabContent.key ? 'tab_on' : ''}  tab_tabs_outer'
          ?disabled=${tabContent.disabled} key="${tabContent.key}"  @click=${this._changeTabHanlder} >
             <span class='tab_label'>${tabContent.label}</span>
             ${tabContent.icon ? html`<p-icon class='p-tab-icon' name=${tabContent.icon}></p-icon>` : ''}
             </div>`;
     }
-   protected renderTab():TemplateResult|Array<TemplateResult> {
+    protected renderTab(): TemplateResult | Array<TemplateResult> {
         const xTab = this;
         // console.log('activeKey===='+xTab.activekey );
         // console.log(xTab.children.length);
@@ -140,12 +140,12 @@ class PTab extends LitElement {
                 // tslint:disable-next-line: no-unnecessary-type-assertion
                 const tContent: PTabContent = element as PTabContent;
                 if (tContent.key == null) {
-                    tContent.key =  index+'';
+                    tContent.key = index + '';
                 }
-                if (xTab.activekey == null) {
-                    xTab.activekey = tContent.key;
+                if (xTab.activeKey == null) {
+                    xTab.activeKey = tContent.key;
                 }
-                if (tContent.key == xTab.activekey) {
+                if (tContent.key == xTab.activeKey) {
                     tContent.setAttribute('active', '');
                 } else {
                     tContent.removeAttribute('active');
@@ -157,85 +157,80 @@ class PTab extends LitElement {
     }
     render() {
         return html`
-        <div class="tab_container" tabpostion="${this.tabposition}" >
-            <div class="tab_nav_con" style="justify-content:${this.tabagile}" >${this.renderTab()}</div>
+        <div class="tab_container" tabPosition="${this.tabPosition}" >
+            <div class="tab_nav_con" style="justify-content:${this.tabAgile}" >${this.renderTab()}</div>
             <slot id="slots" class="tab_content"></slot>
         </div>`;
     }
     firstUpdated() {
         const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', (event) => {
-            //    console.log(event);
-                this.requestUpdate();
+            this.requestUpdate();
         });
-       // this.updateComplete.then( () => this.requestUpdate());
     }
-    
 
-    _changeTabHanlder(event:Event){
-        let target=<HTMLElement>event.target;
-        if(!target.matches('.tab_tabs')){
-            target=target.closest('.tab_tabs');
+
+    _changeTabHanlder(event: Event) {
+        let target = <HTMLElement>event.target;
+        if (!target.matches('.tab_tabs')) {
+            target = target.closest('.tab_tabs');
         }
-        let key=target.getAttribute('key');
-        if(key==this.activekey){
-            return ;
-        }else{
-            let tabContent=this.findTab(key);
-            if(tabContent.disabled){
-                return ;
+        let key = target.getAttribute('key');
+        if (key == this.activeKey) {
+            return;
+        } else {
+            let tabContent = this.findTab(key);
+            if (tabContent.disabled) {
+                return;
             }
-            if(this.beforeChange){
-                let result=this.beforeChange.call(this,tabContent);
-                if(result!=false){
-                  this.activekey=tabContent.key;
+            if (this.beforeChange) {
+                let result = this.beforeChange.call(this, tabContent);
+                if (result != false) {
+                    this.activeKey = tabContent.key;
                 }
-            }else{
-                this.activekey=tabContent.key;
+            } else {
+                this.activeKey = tabContent.key;
             }
         }
-        
+
     }
-    dispatchChangeEvent(tabContent:PTabContent){
-        if(tabContent==null||tabContent.disabled){
-            return ;
+    dispatchChangeEvent(tabContent: PTabContent) {
+        if (tabContent == null || tabContent.disabled) {
+            return;
         }
-        this.dispatchEvent(new CustomEvent('p-tab-change',{
-            detail:{
-                tabContent:tabContent,
-                label:tabContent.label,
-                key:tabContent.key
+        this.dispatchEvent(new CustomEvent('p-tab-change', {
+            detail: {
+                tabContent: tabContent,
+                label: tabContent.label,
+                key: tabContent.key
             }
         }))
-        this.activekey=tabContent.key;
+        this.activeKey = tabContent.key;
     }
-    
-    findTab(key:string):PTabContent{
+
+    findTab(key: string): PTabContent {
         return this.querySelector(`p-tab-content[key="${key}"]`);
     }
-    get activeContent(){
-        return this.querySelector("p-tab-content[ative]");
+    findTabByIndex(index: number): PTabContent {
+        const children = this.querySelectorAll('p-tab-content');
+        return index < children.length ? <PTabContent>children[index] : null;
     }
-    set activeTab(key:string){
-       const tabContent= <PTabContent>this.renderRoot.querySelector(`p-tab-content[key="${key}"]`);
-       this.dispatchChangeEvent(tabContent);
-
+    get activeTabContent(): PTabContent {
+        return this.findTab(this.activeKey);
     }
-    attributeChangedCallback(name:string,oldvalue:string|null, newValue:string|null){
-        super.attributeChangedCallback(name,oldvalue,newValue); //一定要调用super 方法哦
+    attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
+        super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
         //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
+        if (name == 'activekey' && oldvalue != newValue && this.shadowRoot != null) {
+            this.dispatchChangeEvent(this.findTab(newValue));
+        }
+    }
 
-         if(name=='activekey'&& oldvalue!=newValue&&this.shadowRoot!=null){
-           this.dispatchChangeEvent(this.findTab(newValue));
-         }
-    }
-    findTabByIndex(index:number):PTabContent{
-        let children= this.querySelectorAll("p-tab-content");
-        return index<children.length?<PTabContent>children[index]:null;
-    }
-    set activeTabByIndex(index:number){
-        let tab=this.findTabByIndex(index);
-        this.dispatchChangeEvent(tab);
+    set activeTabByIndex(index: number) {
+        let tab = this.findTabByIndex(index);
+        if (tab) {
+            this.activeKey = tab.key;
+        }
     }
 }
 
@@ -250,13 +245,13 @@ class PTabContent extends LitElement {
     render() {
         return html`<slot></slot>`;
     }
-   
-    get  tab():PTab{
+
+    get tab(): PTab {
         return this.closest('p-tab');
     }
     updated(changeMap: Map<string | number | symbol, unknown>) {
-       this.tab.requestUpdate();
+        this.tab.requestUpdate();
     }
 }
-export {PTab ,PTabContent}; 
+export { PTab, PTabContent };
 
