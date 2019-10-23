@@ -6,6 +6,7 @@ import './elements/p-icon';
 import './elements/p-input';
 import './elements/p-switch';
 import './elements/p-tab';
+import './elements/tree/PTree';
 
 
 /*

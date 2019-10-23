@@ -9,6 +9,7 @@
     "element-closest-polyfill": "^1.0.0",
     "lit-element": "latest",
     "lit-html": "latest",
+    "uuid": "^3.3.3",
     "xy-ui": "^1.8.8"
   },
   "devDependencies": {
