@@ -1,13 +1,21 @@
+import { TemplateResult,html } from 'lit-html';
+import {PTree } from './PTree';
+
 interface TreeNodeData {
     name: string;
     key?: string|number|undefined;
     closed?: boolean;
     parentKey?:string|number|undefined;
-    seqNo: number;
+    seqNo?: number;
     icon?: string;
     child?: TreeNodeData[]|undefined;
 }
-
+interface TreeNodeRender {
+    (data: TreeNodeData): TemplateResult;
+}
+const defaultNodeRender=function(data:TreeNodeData){
+    return html`<span class='node_span'>${data.name}</span>`;
+}
 
 interface TreeFilter {
     (data: TreeNodeData, ...args: []): boolean;
@@ -46,6 +54,7 @@ const binarayAdd = function (searchArray: TreeNodeData[], searchElement: TreeNod
 };
 
 class TreeData {
+    _tree:PTree;
     _root: TreeNodeData;
     keyNodeMap = new Map<String|number|undefined, TreeNodeData>();
     constructor() {
@@ -58,7 +67,15 @@ class TreeData {
         };
         this.keyNodeMap.set(this.root.key, this._root);
     }
-    set root(data: TreeNodeData) {
+
+    bindTree(tree:PTree){
+        this._tree=tree;
+    }
+    /**
+     * 重构所有的树节点 
+     * @param data 
+     */
+    initTree(data: TreeNodeData) {
         if (data == null||data==undefined) {
             throw new Error('tree root should not be null or undefined ');
         }
@@ -69,14 +86,19 @@ class TreeData {
         const child: TreeNodeData[]|undefined = data.child;
         if (child != null) {// only set root  会查找child ，看是否有下级节点，如果有，
             const iterator = function (k: TreeNodeData, parent: TreeNodeData) {
-                k.parentKey = parent!.key;
+                if(k.key==null){
+                    k.key=Math.random()+'_Key';
+                }
+                k.parentKey = parent.key;
                 tree.keyNodeMap.set(k.key, k);
                 const child: TreeNodeData[] = k.child;
-                child!.forEach((item) => {
-                    iterator(item, parent);
-                });
+                if(child!=null){
+                    child.forEach((item) => {
+                        iterator(item, parent);
+                    });
+                }
             };
-            child!.forEach((item) => {
+            child.forEach((item) => {
                 iterator(item, this._root);
             });
         }
@@ -132,32 +154,55 @@ class TreeData {
         if ( parent == null) {
             throw new Error('node ${node.name} : parentNode doest not exist ! ');
         }
-        const child = parent.child;
-        if ( child != null) {
-            binarayAdd(child! , node);
-            this.keyNodeMap.set(key, node);
+        let child = parent.child;
+        if(child==null){
+            child=[];
+            parent.child=child;
+        }
+        let maxSeqNo=0;
+        child.forEach(item => {
+            if(item.seqNo>maxSeqNo){
+                maxSeqNo=item.seqNo;
+            }
+        })
+        node.seqNo=maxSeqNo;
+        child.push(node);
+        this.keyNodeMap.set(key, node);
+        this.updateTree();
+    }
+    updateTree(){
+        if(this._tree!=null){
+            this._tree.requestUpdate();
         }
     }
-
     getTreeNode(key: string|undefined|number): TreeNodeData|null {
         return this.keyNodeMap.get(key);
     }
     getChild(key: string |number|undefined, includeSub: boolean = false): TreeNodeData[]|null {
         const node = this.getTreeNode(key);
         if (node != null) {
-            const result = new Array<TreeNodeData>();
-            const iterator = function (k: TreeNodeData) {
-                result.push(k);
-                if ( includeSub ) {
-                    k.child!.forEach( (item) => {
-                        iterator(item);
-                    } );
-                }
-            };
-            node.child!.forEach( (item) => {
-                iterator(item);
-            } ) ;
-            return result;
+            if(node.child==null){
+                return null;
+            }
+            if(includeSub ){
+                const result = new Array<TreeNodeData>();
+                result.push(node);
+                const iterator = function (k: TreeNodeData) {
+                    result.push(k);
+                    if (includeSub ) {
+                        if(k.child){
+                            k.child.forEach( (item) => {
+                                iterator(item);
+                            } );
+                        }
+                    }
+                };
+                node.child.forEach( (item) => {
+                    iterator(item);
+                } ) ;
+            }else{
+                return node.child;
+            }
         }
         return null;
     }
@@ -176,66 +221,29 @@ class TreeData {
      */
     removeChild(key: string|number|undefined): TreeNodeData {
         const tree = this;
-        // if(key===this.root.key){
-        //     throw new Error('sholud remove root node ');
-        // }
         const node = this.getTreeNode(key);
         if (node != null) {
            const parent = this.getParentNode(key);
            const child = this.getChild(key, true);
-           child.splice(0, 0, node);
            if ( parent && parent.child && parent.child.length > 0 ) {
                const index = parent.child.indexOf(node);
                if ( index >= 0) {
                    parent.child.splice(index, 1);
                }
            }
-           child.forEach( (item) => {
-               tree.keyNodeMap.delete(item.key);
-           });
+           if(child){
+                child.forEach( (item) => {
+                    tree.keyNodeMap.delete(item.key);
+                });
+           }
+           this.updateTree();
            return node;
         }
         return null;
     }
 }
-let testNode = {
-    name:'root',
-    key:'root',
-    closed: false,
-  
-    seqNo: 0,
-  
-    child: [
-        {
-            name: 'root_01',
-            key: 'root_01',
-            closed: false,
-            parentKey: 'root',
-            seqNo: 0,
-          
-            child: [
-               {
-                    name: 'root_01_01',
-                    closed: false,
-                    seqNo: 0
-                    
-                }
-            ]
-        },
-        {
-            name: 'root_02',
-            key: 'root_02',
-            closed: false,
-            parentKey: 'root',
-            seqNo: 0
-        }
-
-    ]
-
-}
 
 
-
-export {TreeData, TreeNodeData, testNode,TreeFilter, defaultFilter,binaraySearch,binarayAdd};
+export {TreeData, TreeNodeData,TreeFilter,TreeNodeRender, defaultNodeRender,defaultFilter,binaraySearch,binarayAdd};
 
 

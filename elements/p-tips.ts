@@ -1,23 +1,23 @@
-import { LitElement, customElement, css, html, property } from 'lit-element';
-type showType = 'true' | 'false'|'';
+import { css, customElement, html, LitElement, property } from 'lit-element';
+import { threadId } from 'worker_threads';
+type showType = 'true' | 'false' | '';
 type typeType = 'success' | 'warning' | 'error';
-type dirType = 'top' | 'topleft' | 'topright' | 'left' | 'lefttop' | 'leftbottom' | 'bottom' | 'bottomleft' | 'bottomright' | 'right' | 'righttop' | 'rightbottom'|'auto';
+type dirType = 'top' | 'topleft' | 'topright' | 'left' | 'lefttop' | 'leftbottom' | 'bottom' | 'bottomleft' | 'bottomright' | 'right' | 'righttop' | 'rightbottom' | 'auto';
 @customElement('p-tips')
 export default class PTips extends LitElement {
     @property({ type: String, reflect: true }) show: showType = null;
     @property({ type: String, reflect: true }) tips: string = null;
     @property({ type: String, reflect: true }) color: string = null;
     @property({ type: String, reflect: true }) type: typeType = null;
-    @property({ type: String, reflect: true }) dir: dirType = 'auto';
+    @property({ type: String, reflect: true,}) dir: dirType = 'auto';
+
     static get styles() {
         return css`
         :host {
             display:inline-block;
             position: relative;
             overflow: visible;
-            --color:rgba(0,0,0,0.75);
         }
-
         :host::before,
         :host::after {
             content: '';
@@ -27,7 +27,7 @@ export default class PTips extends LitElement {
             transform: translate(-50%,  -20px);
             opacity: 0;
             transition:all .15s .15s,left 0s, top 0s;
-            color: var(--color);
+            color: var(--color,rgba(0,0,0,0.75));
             visibility: hidden;
             pointer-events: none;
         }
@@ -37,12 +37,13 @@ export default class PTips extends LitElement {
             padding: 6px 10px;
             line-height: 18px;
             text-align: left;
-            background-color: var(--color);
+            white-space:pre-line;
+            background-color: var(--color,rgba(0,0,0,0.75));
             color: #fff;
             font-size: 12px;
             font-style: normal;
             width: max-content;
-            max-width: 200px;
+            max-width: var(--tips-max-width,200px);
         }
         :host::after {
             width: 0;
@@ -50,7 +51,6 @@ export default class PTips extends LitElement {
             overflow: hidden;
             border: 6px solid transparent;
         }
-        
         :host([tips]:not([tips='']):hover:not([show=false]))::before,
         :host([tips]:not([tips=''])[show=true])::before,
         :host([tips]:not([tips='']):focus-within:not([show=false]))::before,
@@ -60,8 +60,6 @@ export default class PTips extends LitElement {
             visibility: visible;
             opacity: 1;
         }
-        
-       
         :host([dir="top"])::before,
         :host(:not([dir]))::before,
         :host(:not([dir]))::after,
@@ -89,7 +87,6 @@ export default class PTips extends LitElement {
         :host([dir="top"]:focus-within:not([show=false]))::after {
             transform: translate(-50%, -10px);
         }
-        
         :host([dir="right"])::before,
         :host([dir="right"])::after{
             left: 100%;
@@ -108,7 +105,6 @@ export default class PTips extends LitElement {
         :host([dir="right"]:focus-within:not([show=false]))::after {
             transform: translate(10px, -50%);
         }
-        
         /* bottom */
         :host([dir="bottom"])::before,
         :host([dir="bottom"])::after{
@@ -128,8 +124,7 @@ export default class PTips extends LitElement {
         :host([dir="bottom"]:focus-within:not([show=false]))::after {
             transform: translate(-50%, 10px);
         }
-        
-       
+
         :host([dir="left"])::before,
         :host([dir="left"])::after{
             right: 100%;
@@ -229,7 +224,6 @@ export default class PTips extends LitElement {
         :host([dir="rightbottom"]:focus-within:not([show=false]))::after {
             transform: translate(10px, 0);
         }
-       
         :host([dir="bottomleft"])::before,
         :host([dir="bottomleft"])::after{
             left: 0;
@@ -321,27 +315,49 @@ export default class PTips extends LitElement {
         :host([type="warning"]){
             --color:var(--waringColor,#faad14);
         }
-       
-        `
+        `;
     }
-    firstUpdated(changeMap: Map<string | number | symbol, unknown>){
-        const { left,top,width,height } = this.getBoundingClientRect();
-        const w = document.body.scrollWidth;
-        const h = document.body.scrollHeight;
-        const TIP_SIZE = 50;
-        if( top < TIP_SIZE ){
-            this.dir = 'bottom';
+    private _isAutoDir = false;
+    private _autoHander: EventListenerOrEventListenerObject ;
+    firstUpdated(changeMap: Map<string | number | symbol, unknown>) {
+        const tipObject = this;
+        if (this.dir === 'auto') {
+            tipObject._isAutoDir = true;
+            const hander = ( ) => {
+                if ( tipObject._isAutoDir) {
+                    tipObject._caculateAutoDir();
+                }
+            }
+            this.addEventListener('mouseenter', hander);
+            this._autoHander = hander;
         }
-        if( h-top-height < TIP_SIZE ){
-            this.dir = 'top';
+    }
+    disconnectedCallback(){
+        super.disconnectedCallback();
+        this.removeEventListener('mouseoenter', this._autoHander);
+    }
+    private _caculateAutoDir() {
+        const w = document.documentElement.clientWidth;
+        const h = document.documentElement.clientHeight;
+        if (this.dir === 'auto' || this._isAutoDir) {
+            this._isAutoDir = true;
+            const rect = this.getBoundingClientRect();
+            const x = rect.left;
+            const top = rect.top;
+            const y = w - rect.right;
+            const leftDistance = w * 0.62;
+            const topDistance = h * .62;
+            if (top >= topDistance) {
+                this.dir = 'top';
+            } else {
+                this.dir = 'bottom';
+            }
+            if (x > leftDistance) {
+                this.dir += 'right';
+            } else if(y > leftDistance) {
+                this.dir += 'left';
+            }
         }
-        if( left < TIP_SIZE ){
-            this.dir = 'right';
-        }
-        if( w-left-width < TIP_SIZE ){
-            this.dir = 'left';
-        }
-
     }
     render() {
         return html`<slot></slot>`;
@@ -349,7 +365,7 @@ export default class PTips extends LitElement {
 
     updated(changeMap: Map<string | number | symbol, unknown>) {
         if (changeMap.has('color')) {
-            if (this.color ) {
+            if (this.color) {
                 this.style.setProperty('--color', this.color);
             } else {
                 this.style.removeProperty('--color');

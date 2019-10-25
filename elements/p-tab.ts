@@ -16,17 +16,11 @@ class PTab extends LitElement {
             :host{
                 display:block;
                 text-align:unset;
-                --themeColor:#42b983;
-                --tab-font-color:unset;
-                --tab-border-on-color:#42b983;
-                --tab-border-size:2px;
-                --borderColor:rgba(0,0,0,.2);
             }
             .tab_container{
                 display: flex;
                 flex-direction: column;
             }
-            
          .tab_nav_con{
             flex:0 0 auto;
             overflow: hidden;
@@ -34,16 +28,15 @@ class PTab extends LitElement {
             color:var(--tab-font-color);
             scroll-behavior: smooth;
         }
-        
         .tab_content{
            display:block;
 		   flex:1;
            padding:10px;
-           border-top: 1px solid var(--borderColor);
+           border-top: 1px solid var(--tab-border-color, rgba(0,0,0,.2));
         }
         .tab_tabs {
             white-space:nowrap;
-            border-bottom:var(--tab-border-size) solid #FFF;
+            border-bottom:var(--tab-border-size,2px) solid #FFF;
             padding:0.4em 1em;
             cursor: pointer;
         }
@@ -55,7 +48,7 @@ class PTab extends LitElement {
             cursor: not-allowed;
         }
        .tab_on{
-            border-bottom-color:var(--tab-border-on-color);
+            border-bottom-color:var(--tab-border-on-color,var(--themeColor,#42b983));
         }
        .tab_container[tabPosition=left],
        .tab_container[tabPosition=right]{
@@ -69,32 +62,32 @@ class PTab extends LitElement {
        }
        .tab_container[tabPosition=right] .tab_nav_con{
            order:1;
-           border-left:1px solid var(--borderColor);
+           border-left:1px solid var(--tab-border-color,rgba(0,0,0,.2) );
        }
        .tab_container[tabPosition=left]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
-            border-right:var(--tab-border-size) solid #FFF;
+            border-right:var(--tab-border-size,2px) solid #FFF;
        }
        .tab_container[tabPosition=left] .tab_on{
             border-bottom: none;
-            border-right:var(--tab-border-size) solid var(--tab-border-on-color);
+            border-right:var(--tab-border-size,2px) solid var(--tab-border-on-color,var(--themeColor,#42b983));
        }
        .tab_container[tabPosition=right]  .tab_tabs{
             display: block;
             padding:0.6em 0.3em ;
-            border-left:var(--tab-border-size) solid #FFF;
+            border-left:var(--tab-border-size,2px) solid #FFF;
             text-align: right;
        }
        .tab_container[tabPosition=right] .tab_on{
             border-bottom: none;
-            border-left:var(--tab-border-size) solid var(--tab-border-on-color);
+            border-left:var(--tab-border-size,2px) solid var(--tab-border-on-color,var(--themeColor,#42b983));
        }
        .tab_container[tabPosition=left] .tab_content{
            flex:1;
            border-top:none;
            margin-left:-1px;
-           border-left:1px solid var(--borderColor);
+           border-left:1px solid var(--tab-border-color,rgba(0,0,0,.2));
        }
        .tab_container[tabPosition=right] .tab_content{
            flex:1;
@@ -107,16 +100,16 @@ class PTab extends LitElement {
             border-bottom: none;
        }
        .tab_container[tabPosition=bottom]  .tab_tabs{
-            border-top:var(--tab-border-size) solid #FFF;
+            border-top:var(--tab-border-size,2px) solid #FFF;
        }
        .tab_container[tabPosition=bottom]  .tab_on{
             border:none;
-            border-top:var(--tab-border-size) solid var(--tab-border-on-color);
+            border-top:var(--tab-border-size,2px) solid var(--tab-border-on-color,var(--themeColor,#42b983));
        }
        .tab_container[tabPosition=bottom] .tab_content{
            order:0;
            border-top:none;
-           border-bottom:1px solid var(--borderColor);
+           border-bottom:1px solid var(--tab-border-color,rgba(0,0,0,.2));
        }
        ::slotted(p-tab-content:not([active])){
             display:none;

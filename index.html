@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <!-- Register service worker if supported. -->
+  <!-- Register service worker if supported. -->
   <!--
   <script>
     if ('serviceWorker' in navigator) {
@@ -9,7 +10,7 @@
     }
   </script>
   -->
-  
+
   <!-- Load polyfills 
   <script 
     src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
@@ -17,218 +18,244 @@
   </script> 
     -->
 
-    <script type="module" src="./build/index.js"> </script>
+  <script type="module" src="./build/index.js"> </script>
   <!-- Load components via WebComponents.waitFor -->
   <script type="module">
-    window.WebComponents = window.WebComponents || { 
-      waitFor(cb){ addEventListener('WebComponentsReady', cb) }
-    } 
-    WebComponents.waitFor(async () => { 
+    window.WebComponents = window.WebComponents || {
+      waitFor(cb) { addEventListener('WebComponentsReady', cb) }
+    }
+    WebComponents.waitFor(async () => {
       import('./build/index.js');
     });
   </script>
-  
+
   <!-- Change stuff here for your app -->
   <meta name="description" content="start-lit-element">
   <meta name="theme-color" content="#ffffff">
   <title>start-lit-element</title>
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
+
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
   <style>
-    p-input{
-      margin:4px;
+    p-input {
+      margin: 4px;
 
     }
   </style>
 </head>
+
 <body>
 
 
 
   <p-switch id="switch" checked value="1"></p-switch>
-    
-  <p>输入框</p>
-    <p-input id="input" lefticon="creditcard" placeholder='金额' block  clear="true" ></p-input>
 
-    
-    <p-input id="number" type="number"  ></p-input>
-    
-    <p-input id="password" type="password"  ></p-input>
-    
+  <p>输入框</p>
+  <p-input id="input" lefticon="creditcard" placeholder='金额' block clear="true"></p-input>
+
+
+  <p-input id="number" type="number"></p-input>
+
+  <p-input id="password" type="password"></p-input>
+
   <p>icon</p>
   <div style='color:var(--themeColor,#42b983)'>
-    <p-icon name="heart"  id="icon" size="20" ></p-icon>
-    <p-icon name="heart"  id="icon" size="30" lefticon="creditcard" ></p-icon>
-    <p-icon name="heart"  id="icon" size="40" lefticon="creditcard" ></p-icon>
-    <p-icon name="heart"  id="icon" size="50" lefticon="creditcard" ></p-icon>
+    <p-icon name="heart" id="icon" size="20"></p-icon>
+    <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
+    <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
+    <p-icon name="heart" id="icon" size="50" lefticon="creditcard"></p-icon>
   </div>
-   <p>Tips </p>
-   <p-tips style="margin:10px 100px;" tips="我是内容" id="tips" show="">
-    <p-icon name="heart"  id="icon" size="20" lefticon="creditcard" ></p-icon>
-    <p-icon name="heart"  id="icon" size="30" lefticon="creditcard" ></p-icon>
-    <p-icon name="heart"  id="icon" size="40" lefticon="creditcard" ></p-icon>
+  <p>Tips </p>
+ 
+  <p-tips style="margin-top:10px;margin-left:60%;" 
+  tips
+  ="我是内容
+    我是内容 
+    我是内容 
+    我是内容
+    我是内容
+    我是内容 
+  " id="tips" show="">
+    <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
+    <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
+    <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
   </p-tips>
-
+   
+  <p-tips style="position: fixed;top:10px;left:10px;" tips="我是内容" id="tips" >
+      <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
+      <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
+      <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
+    </p-tips>
+   
+    <p-tips style="position: fixed;bottom:10px;right:10px;" tips="我是内容" id="tips" >
+        <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
+        <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
+        <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
+      </p-tips>
+   
   <p>Tab </p>
-  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;'  tabagile='space-around' tabposition="top">
+  <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' tabagile='space-around' tabposition="top">
     <p-tab-content label="wanggang" icon="search" key="first">
-        <p>Tips 01 </p>
-        <p>Tips  02</p>
-        <p>Tips 03</p>
-        <p>Tips 04</p> <p>Tips 03</p>
-        <p>Tips 04</p> <p>Tips 03</p>
-        <p>Tips 04</p> <p>Tips 03</p>
-        <p>Tips 04</p> <p>Tips 03</p>
-      </p-tab-content>
-
-
-    <p-tab-content label="zhengmin" icon="creditcard" key="zhengmin"  >
-        <p>Tips 03 zhengmin</p>
-        <p>Tips 04 zhengmin</p>
-        <p>Tips 0 zhengmin3</p>
-        <p>Tips 04</p>
-
-      
-        <p>Tips 04</p>
+      <p>Tips 01 </p>
+      <p>Tips 02</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+      <p>Tips 03</p>
     </p-tab-content>
 
-    <p-tab-content label="王刚"  disabled key="last" >
-        <p>王刚王刚王刚王刚王刚 03</p>
-        <p>Tips 04</p>
-        <p>Tips 03</p>
-        <p>Tips 04</p>
 
-        
-        <p>Tips 04</p> <p>Tips 03</p>
-        <p>Tips 04</p>
+    <p-tab-content label="zhengmin" icon="creditcard" key="zhengmin">
+      <p>Tips 03 zhengmin</p>
+      <p>Tips 04 zhengmin</p>
+      <p>Tips 0 zhengmin3</p>
+      <p>Tips 04</p>
+      <p>Tips 04</p>
     </p-tab-content>
-</p-tab>
 
-<p-tree-node id="tree-node" name="test" icon="lock" style='width:500px;height: 600px;; overflow: auto;'>
-    <p-tree-node  name="test_01" >
+    <p-tab-content label="王刚" disabled key="last">
+      <p>王刚王刚王刚王刚王刚 03</p>
+      <p>Tips 04</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+
+
+      <p>Tips 04</p>
+      <p>Tips 03</p>
+      <p>Tips 04</p>
+    </p-tab-content>
+  </p-tab>
+
+  <p-tree-node id="tree-node" name="test" toogle='false' icon="search" style='width:500px;height: 600px;; overflow: auto;'>
+    <p-tree-node name="test_01"  icon="search" >
+        <p-tree-node name="test_01" icon="lock"  >
+          </p-tree-node>
     </p-tree-node>
-    <p-tree-node  name="test _02" >
-        <p-tree-node  name="test_02_01" >
-            <span slot="node_name">我爱郑敏</span>
-        </p-tree-node>
-        <p-tree-node  name="test_02_02" icon="lock">
-            <p-tree-node  name="test_01" icon="lock"> </p-tree-node>
-            <p-tree-node  name="test_01" icon="lock"> </p-tree-node>
-            <p-tree-node  name="test_01" icon="lock">  </p-tree-node>
-            <p-tree-node  name="test_01" icon="lock"></p-tree-node>
-        </p-tree-node>
-        <p-tree-node  name="test_01" icon="lock">
-        </p-tree-node>
-     <p-tree-node  name="test_01" icon="lock"></p-tree-node>
-</p-tree-node>
+    <p-tree-node name="test _02" icon="search">
+      <p-tree-node name="test_02_01" icon="lock" >
+        <span slot="node_name" icon="lock">我爱郑敏</span>
+      </p-tree-node>
+      <p-tree-node name="test_02_02" icon="search" >
+      </p-tree-node>
+      <p-tree-node name="test_01" icon="search" >
+      </p-tree-node>
+      <p-tree-node name="test_01" icon="search"></p-tree-node>
+    </p-tree-node>
+  </p-tree-node>
+
+  <p-tree id="tree-ptree">
+
+      我是树
+  </p-tree>
+    <script>
+      var a = document.getElementById('switch');
+      a.addEventListener('change', e => console.log(e.detail));
+      var b = document.getElementById('input');
+      b.addEventListener('change', e => console.log(e.detail));
+      var n = document.getElementById('number');
+      n.addEventListener('change', e => console.log(e.detail));
 
 
-    <script >
-      var a=document.getElementById('switch');
-      a.addEventListener('change', e=>console.log(e.detail));
-      var b=document.getElementById('input');
-      b.addEventListener('change', e=>console.log(e.detail));
-      var n=document.getElementById('number');
-      n.addEventListener('change', e=>console.log(e.detail));
+      var c = document.getElementById('password');
+      c.addEventListener('change', e => console.log(e.detail));
+
+      var d = document.getElementById('icon');
+
+      var t = document.getElementById('tips');
 
 
-      var c=document.getElementById('password');
-      c.addEventListener('change', e=>console.log(e.detail));
-
-      var d=document.getElementById('icon');
-
-      var t=document.getElementById('tips'); 
-    
-
-      var tab=document.getElementById('tabDIV'); 
-      tab.addEventListener('change',function(event){
+      var tab = document.getElementById('tabDIV');
+      tab.addEventListener('change', function (event) {
         console.log(event.type);
       })
 
-     
 
-      tab.addEventListener('beforeChange',function(event){
-        //event.preventDefault();
-        console.log(event.type);
+
+      tab.addEventListener('beforeChange', function (event) {
+         console.log(event.type);
       })
-      var d=document.getElementById("tree-node");
-      d.data= {
-            name:'root',
-            key:'root',
+      var d = document.getElementById("tree-ptree");
+      d.data = {
+        name: 'root',
+        key: 'root',
+        closed: false,
+        seqNo: 0,
+        child: [
+          {
+            name: 'root_01',
+            key: 'root_01',
             closed: false,
+            parentKey: 'root',
             seqNo: 0,
-            child: [
-                {
-                    name: 'root_01',
-                    key: 'root_01',
-                    closed: false,
-                    parentKey: 'root',
-                    seqNo: 0,
-                  
-                    child: [
-                      {
-                            name: 'root_01_01',
-                            closed: false,
-                            seqNo: 0
-                            
-                        },
-                        {
-                            name: 'root_01_02',
-                            closed: false,
-                            seqNo: 0,
-                            child: [
-                                 {
-                                      name: 'root_01_02_01',
-                                      closed: false,
-                                      seqNo: 0
-                                      
-                                  },
-                                  {
-                                      name: 'root_01_02_01',
-                                      closed: false,
-                                      seqNo: 0
-                                      
-                                  },
-                                  {
-                                      name: 'root_01_02_01',
-                                      closed: false,
-                                      seqNo: 0
-                                      
-                                  },{
-                                      name: 'root_01_02_01',
-                                      closed: false,
-                                      seqNo: 0
-                                      
-                                  },
-                                  {
-                                      name: 'root_01_02_01',
-                                      closed: false,
-                                      seqNo: 0
-                                      
-                                  }
-                              ]
-                        },
-                        {
-                            name: 'root_01_03',
-                            closed: false,
-                            seqNo: 0
-                            
-                        }
-                    ]
-                },
-                {
-                    name: 'root_02',
-                    key: 'root_02',
-                    closed: false,
-                    parentKey: 'root',
-                    seqNo: 0
-                }
 
+            child: [
+              {
+                name: 'root_01_01',
+                closed: false,
+                seqNo: 0
+              },
+              {
+                name: 'root_01_02',
+                closed: false,
+                seqNo: 0,
+                child: [
+                  {
+                    name: 'root_01_02_01',
+                    closed: false,
+                    seqNo: 0
+
+                  },
+                  {
+                    name: 'root_01_02_01',
+                    closed: false,
+                    seqNo: 0
+
+                  },
+                  {
+                    name: 'root_01_02_01',
+                    closed: false,
+                    seqNo: 0
+
+                  }, {
+                    name: 'root_01_02_01',
+                    closed: false,
+                    seqNo: 0
+
+                  },
+                  {
+                    name: 'root_01_02_01',
+                    closed: false,
+                    seqNo: 0
+
+                  }
+                ]
+              },
+              {
+                name: 'root_01_03',
+                closed: false,
+                seqNo: 0
+
+              }
             ]
-        };
+          },
+          {
+            name: 'root_02',
+            key: 'root_02',
+            closed: false,
+            parentKey: 'root',
+            seqNo: 0
+          }
+
+        ]
+      };
     </script>
 </body>
+
 </html>
