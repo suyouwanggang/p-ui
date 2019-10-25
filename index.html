@@ -133,7 +133,7 @@
     </p-tab-content>
   </p-tab>
 
-  <p-tree-node id="tree-node" name="test" toogle='false' icon="search" style='width:500px;height: 600px;; overflow: auto;'>
+  <p-tree-node id="tree-node" name="test" toogle='false' icon="search" >
     <p-tree-node name="test_01"  icon="search" >
         <p-tree-node name="test_01" icon="lock"  >
           </p-tree-node>
@@ -166,7 +166,6 @@
       var c = document.getElementById('password');
       c.addEventListener('change', e => console.log(e.detail));
 
-      var d = document.getElementById('icon');
 
       var t = document.getElementById('tips');
 
@@ -181,80 +180,24 @@
       tab.addEventListener('beforeChange', function (event) {
          console.log(event.type);
       })
-      var d = document.getElementById("tree-ptree");
-      d.data = {
-        name: 'root',
-        key: 'root',
-        closed: false,
-        seqNo: 0,
-        child: [
-          {
-            name: 'root_01',
-            key: 'root_01',
-            closed: false,
-            parentKey: 'root',
-            seqNo: 0,
+      var tree = document.getElementById("tree-ptree");
+      fetch("./test.json").then(function(response) {
+          return response.json();
+      })
+      .then(function(myJson) {
+          console.log(myJson);
+          let arry={"name":'地图',child:[]};
+          arry.child=myJson;
+          console.log(arry);
+          tree.data=arry;
+        //tree.treeData.initTreeByObject(arry);
+        //tree.requestUpdate();
 
-            child: [
-              {
-                name: 'root_01_01',
-                closed: false,
-                seqNo: 0
-              },
-              {
-                name: 'root_01_02',
-                closed: false,
-                seqNo: 0,
-                child: [
-                  {
-                    name: 'root_01_02_01',
-                    closed: false,
-                    seqNo: 0
+      });
+        
 
-                  },
-                  {
-                    name: 'root_01_02_01',
-                    closed: false,
-                    seqNo: 0
+     
 
-                  },
-                  {
-                    name: 'root_01_02_01',
-                    closed: false,
-                    seqNo: 0
-
-                  }, {
-                    name: 'root_01_02_01',
-                    closed: false,
-                    seqNo: 0
-
-                  },
-                  {
-                    name: 'root_01_02_01',
-                    closed: false,
-                    seqNo: 0
-
-                  }
-                ]
-              },
-              {
-                name: 'root_01_03',
-                closed: false,
-                seqNo: 0
-
-              }
-            ]
-          },
-          {
-            name: 'root_02',
-            key: 'root_02',
-            closed: false,
-            parentKey: 'root',
-            seqNo: 0
-          }
-
-        ]
-      };
     </script>
 </body>
 
