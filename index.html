@@ -132,8 +132,8 @@
       <p>Tips 04</p>
     </p-tab-content>
   </p-tab>
-
-  <p-tree-node id="tree-node" name="test" toogle='false' icon="search" >
+<p-tree includeStartNode="false">
+  <p-tree-node id="tree-node" name="test" toogle='false' close icon="search" >
     <p-tree-node name="test_01"  icon="search" >
         <p-tree-node name="test_01" icon="lock"  >
           </p-tree-node>
@@ -149,11 +149,8 @@
       <p-tree-node name="test_01" icon="search"></p-tree-node>
     </p-tree-node>
   </p-tree-node>
-
-  <p-tree id="tree-ptree">
-
-      我是树
-  </p-tree>
+</p-tree>
+ 
     <script>
       var a = document.getElementById('switch');
       a.addEventListener('change', e => console.log(e.detail));
@@ -180,19 +177,34 @@
       tab.addEventListener('beforeChange', function (event) {
          console.log(event.type);
       })
+      
       var tree = document.getElementById("tree-ptree");
       fetch("./test.json").then(function(response) {
           return response.json();
       })
       .then(function(myJson) {
+          var tree=document.createElement('p-tree');
           console.log(myJson);
           let arry={"name":'地图',child:[]};
           arry.child=myJson;
+          for(let x=0;x<2;x++){
+              for(let i=0,j=myJson.length;i<j;i++){
+              let d=Object.assign(myJson[i]);
+              arry.child.push(d);
+            }
+          }
+          
           console.log(arry);
           tree.data=arry;
+          let node=document.createElement('p-tree-node');
+          tree.appendChild(node);
+          node.name='wanggang';
+          node.icon='lock';
+
         //tree.treeData.initTreeByObject(arry);
         //tree.requestUpdate();
-
+        document.body.appendChild(tree);
+        window.tree=tree;
       });
         
 
