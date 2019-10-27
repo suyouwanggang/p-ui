@@ -13,6 +13,7 @@ interface TreeNodeData {
     icon?: string;/*节点图标 */
     child?: TreeNodeData[];/*下级节点 */ 
     closeable?:boolean;/*false,表示节点不能折叠起来 */
+    orginalData?:TreeNodeData; 
 }
 /*节点自定义渲染 template 签名 */
 interface TreeNodeRender {
@@ -20,14 +21,14 @@ interface TreeNodeRender {
 }
 /* 默认渲染节点 template*/
 const defaultNodeRender=function(data:TreeNodeData){
-    return html`<span class='node_span'>${data==null||data.name==undefined?'':data.name}</span>`;
+    return html`<span class='node_span'>${data==null?'':data.name}</span>`;
 }
-/* 节点渲染 */
+/* 节点过滤器*/
 interface TreeFilter {
-    (data: TreeNodeData, ...args: []): boolean;
+    (data: TreeNodeData, ...args:any): boolean;
 }
 const defaultFilter: TreeFilter = function (data: TreeNodeData, name: string = '') {
-    if(name==''||name.trim()==''){
+    if(name==null||name==undefined||name==''||name.trim()==''){
         return true;
     }
     if (data) {
@@ -36,31 +37,9 @@ const defaultFilter: TreeFilter = function (data: TreeNodeData, name: string = '
     }
     return true;
 }
-// const binaraySearch = function (searchArray: TreeNodeData[], searchElement: TreeNodeData) {
-//     let stop = searchArray.length;
-//     let last, p = 0, delta = 0;
-//     do {
-//         last = p;
-//         if (searchArray[p].seqNo > searchElement.seqNo) {
-//             stop = p + 1;
-//             p -= delta;
-//         } else if (searchArray[p].seqNo === searchElement.seqNo) {
-//             // FOUND A MATCH!
-//             return p;
-//         }
-//         delta = Math.floor((stop - p) / 2);
-//         p += delta; //if delta = 0, p is not modified and loop exits
-//     } while (last !== p);
-//     return -1;
-// };
-// const binarayAdd = function (searchArray: TreeNodeData[], searchElement: TreeNodeData) {
-//     const mid = binaraySearch(searchArray,searchElement);
-//     if ( mid === -1 || mid === searchArray.length-1 ) {
-//         searchArray.push(searchElement);
-//     } else {
-//         searchArray.splice(mid,0,searchElement);
-//     }
-// };
+const cacheNodeFiter=new Map<Object,TreeNodeData>();
+
+
 /**
  * 将数组对象转化为 root 子节点，包括所有下级节点 
  * @param nodeList 
@@ -149,15 +128,27 @@ class PTreeNode extends LitElement {
         super.attributeChangedCallback(name,old,value);
         if(name=='name'&&this.data){
             this.data.name=value;
+            if(this.data.orginalData){
+                this.data.orginalData.name=value;
+            }
         }
         if(name=='icon'&&this.data){
             this.data.icon=value;
+            if(this.data.orginalData){
+                this.data.orginalData.icon=value;
+            }
         }
         if(name=='close'&&this.data){
             this.data.close=this.hasAttribute('close');
+            if(this.data.orginalData){
+                this.data.orginalData.close=this.data.close;
+            }
         }
         if(name=='closeable'&&this.data){
             this.data.closeable=this.hasAttribute('closeable');
+            if(this.data.orginalData){
+                this.data.orginalData.closeable=this.data.closeable;
+            }
         }
     }
     static get styles() {
@@ -169,10 +160,10 @@ class PTreeNode extends LitElement {
                 display:inline-block;
                 position:relative;
                 top:var(--node-trigger-top,-2px);
-                margin-right:3px;
+                padding-right:3px;
                 width:var(--node-unit,0.8em);
                 height:var(--node-unit,0.8em);
-                margin-left:3px;
+                padding-left:3px;
                 font-size:8px;
                 cursor:pointer;
             }
@@ -223,6 +214,10 @@ class PTreeNode extends LitElement {
         if (this.subNodeSize > 0) {
             if(this.data!=null){
                 this.data.close=!this.data.close;
+                if(this.data.orginalData){//搜索的时候，是否记住，是一个问题，
+                    //如果记住，可能会导致查询的节点没有展示开，如果不记住，则查询后的节点状态没有保留
+                    this.data.orginalData.close=this.data.close;
+                }
                 this.close = this.data.close;
             }else{
                 this.close=!this.close;
@@ -242,7 +237,6 @@ class PTreeNode extends LitElement {
                 icon.removeAttribute('empty');
             }
         }
-
     }
     render() {
         const subNodeSize = this.subNodeSize;
@@ -252,7 +246,7 @@ class PTreeNode extends LitElement {
             <div class='node_container' ?closed=${this.data!=null?this.data.close: this.close} >
                 <div class='node_div'>
                     <span id="nodeDistance_span" style='margin-left:${this.nodeDistance} '></span>
-                    ${this.closeable ? 
+                    ${(this.data!=null?this.data.closeable!=false:this.closeable!=false) ? 
                         html`<p-icon id='p-iconID' class='trigger-status'  ?empty=${subNodeSize === 0}  @click="${this.toogleNode}"  
                             name=${!(this.data!=null?this.data.close: this.close) ? 'caret-down' : 'caret-right'} ></p-icon>` :
                         ''
@@ -276,22 +270,24 @@ class PTree extends LitElement {
             }
         `
     };
+
     @property({ type: String,reflect:true }) startKey: string | number = null;
     @property({ type: Boolean,reflect:true }) includeStartNode: boolean = null;
     @property({ type: Boolean,reflect:true }) rootCloseable: boolean = true;
+    @property({ type: String,reflect:true,attribute:'filter-string' }) filterString: string =null;
     @property({ type: Object }) data: TreeNodeData =null;
+    @property({ type: Object }) filterFn: TreeFilter=null;
     @property({ type: Object})  nodeRender: TreeNodeRender = null;
     constructor() {
         super();
         this._observer = new MutationObserver((mutationList) => {
-            mutationList.forEach((item) => {
-                if (item.type === 'childList') {
-                    this.updateNodeDistance();
-                    if(!this.hasUpdated){
-                        this.requestUpdate();
-                    }
-                }
-            });
+            let result=mutationList.some(item => {
+                return item.type==='childList';
+            })
+            if(result){
+                this.updateNodeDistance();
+                this.requestUpdate();
+            }
         });
         this._observer.observe(this, {
             childList: true
@@ -299,7 +295,106 @@ class PTree extends LitElement {
         });
         this.requestUpdate();
     }
-     
+    get filterData():TreeNodeData{
+        let fun:TreeFilter=null;
+        if(this.filterFn==null){
+            fun=defaultFilter;
+        }
+        const tree=this;
+        const oldData=this.data;
+        if(oldData==null){
+            return null;
+        }
+        if(this.filterString==null||this.filterString==undefined||this.filterString.trim()==''){
+            return oldData;
+        }
+        let cacheString=JSON.stringify(oldData);
+        let key=cacheString+"####"+this.filterString;
+        if(cacheNodeFiter.has(key)){
+            console.log('hit cache=='+this.filterString);
+            return cacheNodeFiter.get(key);
+        }
+        let result=JSON.parse(cacheString); /**克隆一份数据 */
+        let set=new Set<any>();
+        let iterator=(item:any,
+                orginalData:any,
+                parentData:any,
+                orginalParent:any
+            ) =>{
+            Object.defineProperty(item,'orginalData',{
+                value:orginalData,
+                writable:false,
+                enumerable : false,
+                configurable : true
+            });
+            Object.defineProperty(item,'parentData',{
+                value:parentData,
+                writable:true,
+                enumerable : false,
+                configurable : true
+            });
+            Object.defineProperty(item,'orginalParent',{
+                value:orginalParent,
+                writable:false,
+                enumerable : false,
+                configurable : true
+            });
+            let matched= fun.call(tree,item,tree.filterString);
+            if(matched){
+                if(!set.has(item)){
+                    set.add(item);
+                    let p=item.parentData;
+                    while(p!=null){
+                        if(!set.has(p)){
+                            set.add(p);
+                            p=p.parentData;
+                        }else{
+                            break;
+                        }
+                    }
+                }
+            }
+            //     item:any,
+            //     orginalData:any,
+            //     parentData:any,
+            //     orginalParent:any
+            let oldChild=orginalData.child;
+            let child=item.child;
+            if(child){
+                for(let i=0,j=child.length;i<j;i++){
+                    iterator(child[i],oldChild[i],item,orginalData);
+                }
+            }
+        };
+        let oldChild=oldData.child;
+        let child=result.child;
+        if(child){
+            for(let i=0,j=child.length;i<j;i++){
+                iterator(child[i],oldChild[i],result,oldData);
+            }
+        }
+        let iteratorResult=(all:any) =>{
+            let child=all.child;
+            if(child){
+                for(let i=child.length-1;i>=0;i--){
+                    let sub:any=child[i];
+                    if(!set.has(sub)){
+                        child.splice(i,1);
+                    }else{
+                        iteratorResult(sub);
+                    }
+                }
+            }
+        }
+        iteratorResult(result);
+        cacheNodeFiter.set(key,result);
+        if(cacheNodeFiter.size>15){
+            cacheNodeFiter.clear();
+        }
+        // console.log('size==='+cacheNodeFiter.has(key) +" ;value="+cacheNodeFiter.get(key));
+
+        return result;
+    }
     get allTreeNode():PTreeNode[] {
         let array:PTreeNode[]=Array.from(this.querySelectorAll('p-tree-node'));
         let container=this.renderRoot.querySelector('#container');
@@ -312,11 +407,7 @@ class PTree extends LitElement {
     
     private _observer:MutationObserver;
     firstUpdated() {
-        // let container=this.renderRoot.querySelector('#container');
-        // this._observer.observe(container,{
-        //     childList: true
-        //     ,subtree:true
-        // });
+      
         if(this.data!=null){
             if(this.rootCloseable==false){
                 this.data.closeable=false;
@@ -326,7 +417,14 @@ class PTree extends LitElement {
             if(this.startKey==null){
                 this.startKey=this.data.key;
             }
+            // const itreatorFun=(data:TreeNodeData) =>{
+            //     if(data.closeable==undefined){
+            //         data.closeable=true;
+            //     }
+            // }
+            // itreatorFun(this.data);
         }
+        // this.requestUpdate();
         
         const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', (event) => {
@@ -335,20 +433,27 @@ class PTree extends LitElement {
     }
     
     get startNode(): TreeNodeData {
+        let filterData=this.filterData;
         if(this.startKey==null||this.startKey==undefined){
-            return this.data;
-        }else if(this.data!=null){
-           return  findDataByKey(this.data,this.startKey);
+            return filterData;
+        }else if(filterData!=null){
+           return  findDataByKey(filterData,this.startKey);
         }
         return null;
     }
     renderNode(d: TreeNodeData, tree: PTree): TemplateResult {
+        // console.log('renderNode==='+JSON.stringify(d));
+
         return html`<p-tree-node 
-            .data=${d}   data-key=${ifDefined(d.key)}  .nodeRender=${tree.nodeRender}>
+            .data=${d} .orginalData=${d.orginalData}   data-key=${ifDefined(d.key)}  .nodeRender=${tree.nodeRender}>
                 ${tree.renderSubNode(d, tree)}
         </p-tree-node> `;
     }
+
+    
     renderSubNode(d: TreeNodeData, tree: PTree): TemplateResult | Array<TemplateResult> {
+        // console.log('renderSubNode==='+JSON.stringify(d));
+
         const child = d.child;
         if (child == null || child.length == 0) {
             return html``;
@@ -362,6 +467,7 @@ class PTree extends LitElement {
     }
     render() {
         const startNode = this.startNode;
+        // console.log('startNode==='+JSON.stringify(startNode));
         let child =startNode!=null? startNode.child:null;
         const tree = this;
         return html`<div id="container">
@@ -377,45 +483,18 @@ class PTree extends LitElement {
         
     }
     
-    log(methodName: string, array: any[]) {
-        // console.log(`start methodName=${methodName}`);
-        // for (const key of array) {
-        //     console.log(key);
-        // }
-        // console.log(`end methodName=${methodName}`);
-    }
-    attributeChangedCallback(name: string, old: string | null, value: string | null) {
-        this.log('attributeChangedCallback', [...arguments]);
-        super.attributeChangedCallback(name, old, value);
-
-    }
-    connectedCallback() {
-        super.connectedCallback();
-        this.log('connectedCallback', [...arguments]);
-
-    }
-    performUpdate(): void | Promise<unknown> {
-
-        this.log('performUpdate', [...arguments]);
-        super.performUpdate();
-    }
-
-    shouldUpdate(_changedProperties: Map<string | number | symbol, unknown>): boolean {
-
-        this.log('shouldUpdate', [...arguments]);
-        return super.shouldUpdate(_changedProperties);
-    }
     updateNodeDistance(){
         this.allTreeNode.forEach(item => item.updateNodeDistance());
     }
-   
     
     async _getUpdateComplete(){
         await super._getUpdateComplete();
-         this.updateNodeDistance();
-       
+        this.allTreeNode.forEach( (item) =>item.requestUpdate());
     }
-    
+    attributeChangedCallback(name:string, old:string,newval:string){
+        super.attributeChangedCallback(name,old,newval);
+        // console.log(`name=${name} old=${old} newVal=${newval}`);
+    }
     disconnectedCallback(){
         super.disconnectedCallback();
         this._observer.disconnect();

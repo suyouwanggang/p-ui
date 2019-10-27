@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Register service worker if supported. -->
+  <!--
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
+  -->
+
+  <!-- Load polyfills 
+  <script 
+    src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
+    defer>
+  </script> 
+    -->
+
+  <script type="module" src="./build/index.js"> </script>
+  <!-- Load components via WebComponents.waitFor -->
+  <script type="module">
+    window.WebComponents = window.WebComponents || {
+      waitFor(cb) { addEventListener('WebComponentsReady', cb) }
+    }
+    WebComponents.waitFor(async () => {
+      import('./build/index.js');
+    });
+  </script>
+
+  <!-- Change stuff here for your app -->
+  <meta name="description" content="start-lit-element">
+  <meta name="theme-color" content="#ffffff">
+  <title>start-lit-element</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8">
+  <style>
+    
+  </style>
+</head>
+
+<body>
+
+<div style='margin:10px auto;'>
+  <div style='width:40%;float:left;'>
+    <p-tree includestartnode>
+      <p-tree-node id="tree-node" name="test" toogle='false'  icon="search" >
+        <p-tree-node name="test_01"  icon="search" >
+            <p-tree-node name="test_01" icon="lock"  >
+              </p-tree-node>
+        </p-tree-node>
+        <p-tree-node name="test _02" icon="search">
+          <p-tree-node name="test_02_01" icon="lock" >
+            <span slot="node_name" icon="lock">我爱郑敏</span>
+          </p-tree-node>
+          <p-tree-node name="test_02_02" icon="search" >
+          </p-tree-node>
+          <p-tree-node name="test_01" icon="search" >
+          </p-tree-node>
+          <p-tree-node name="test_01" icon="search"></p-tree-node>
+        </p-tree-node>
+      </p-tree-node>
+    </p-tree>
+  </div>
+<div style='width:55%;float:right;'>
+  <p-input type='text' oninput="window.tree.filterString=this.value"></p-input>
+  <p-tree id="p-tree" includestartnode >
+  </p-tree>
+</div>
+    <script>
+      
+      fetch("./test.json").then(function(response) {
+          return response.json();
+      })
+      .then(function(myJson) {
+          var tree=document.getElementById('p-tree');
+          console.log(myJson);
+          let arry={"name":'地图',child:[]};
+          arry.child=myJson;
+          // for(let x=0;x<3;x++){
+          //     for(let i=0,j=myJson.length;i<j;i++){
+          //     let d=Object.assign(myJson[i]);
+          //     arry.child.push(d);
+          //   }
+          // }
+          
+
+          var sum=0;
+          iterateData=function (data){
+            sum++;
+            if(data.child){
+              data.child.forEach( item => 
+              {iterateData(item)}	);
+            }
+          }
+          iterateData(arry);
+
+          console.log('sum='+sum);
+          tree.data=arry;
+          let node=document.createElement('p-tree-node');
+          tree.appendChild(node);
+          node.name='wanggang';
+          node.icon='lock';
+
+        //tree.treeData.initTreeByObject(arry);
+        //tree.requestUpdate();
+        window.tree=tree;
+      });
+        
+
+     
+
+    </script>
+</body>
+
+</html>
