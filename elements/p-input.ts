@@ -2,12 +2,26 @@ import { css, customElement, html, LitElement, property,  } from 'lit-element';
 import  {ifDefined} from 'lit-html/directives/if-defined';
 import {getNumberReg} from './helper/util';
 import PTips, {} from './p-tips';
- type inputtype= 'text'|'password'|'email'|'url'|'number';
+ type inputtype= 'text'|'password'|'email'|'url'|'number'|'tel'|'search';
 
+ const defaultOK = {
+    badInput: false,
+    customError: false,
+    patternMismatch: false,
+    rangeOverflow: false,
+    rangeUnderflow: false,
+    stepMismatch: false,
+    tooLong: false,
+    tooShort: false,
+    typeMismatch: false,
+    valid: true,
+    valueMissing: false
+};
 
  @customElement('p-input')
 export class PInput extends LitElement {
     @property({ type: String, reflect: true }) tips: string ;
+    @property({ type: String, reflect: false }) errortips: string ;
     @property({ type: String, reflect: true }) name: string ;
     @property({ type: String, reflect: true }) type: inputtype = 'text';
     @property({ type: String, reflect: true }) placeholder: string ;
@@ -23,12 +37,12 @@ export class PInput extends LitElement {
 
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
-    @property({ type: Boolean, reflect: true }) required: boolean = false;
-    @property({ type: String, reflect: true }) pattern: string = undefined;
-    @property({ type: Number, reflect: true }) minLength: number = undefined;
-    @property({ type: Number, reflect: true }) maxLength: number = undefined;
-    @property({ type: Number, reflect: true }) min: number = undefined;
-    @property({ type: Number, reflect: true }) max: number = undefined;
+    @property({ type: Boolean, reflect: false }) required: boolean = false;
+    @property({ type: String, reflect: false }) pattern: string = undefined;
+    @property({ type: Number, reflect: false }) minLength: number = undefined;
+    @property({ type: Number, reflect: false }) maxLength: number = undefined;
+    @property({ type: Number, reflect: false }) min: number = undefined;
+    @property({ type: Number, reflect: false }) max: number = undefined;
     @property({ type: Number, reflect: false }) scale: number = 0;
 
 
@@ -63,6 +77,9 @@ export class PInput extends LitElement {
             box-sizing:border-box;
             display:flex;
             height:100%;
+        }
+        p-tips[show=true]{
+            --color:var(--errorColor,#f4615c);
         }
         :host([disabled]) div{
             cursor:not-allowed;
@@ -127,77 +144,41 @@ export class PInput extends LitElement {
         }
     `;
     }
-    @property({type:Object}) validateMethod:Function=null;
-    private _intalInput: HTMLInputElement|any = null;
-    get validity(): ValidityState {
-        if (this.novalidate) {
-            return {
-                badInput: false,
-                customError: false,
-                patternMismatch: false,
-                rangeOverflow: false,
-                rangeUnderflow: false,
-                stepMismatch: false,
-                tooLong: false,
-                tooShort: false,
-                typeMismatch: false,
-                valid: true,
-                valueMissing: false
-            };
-        }
-        if (this._intalInput == null) {
-            this._intalInput = this.input.cloneNode(true);
-        }
+    @property({type: Object}) validateObject: any =null;
 
-        this. _intalInput.type = this.type;
-        if(this.pattern!=undefined&&this.pattern!=''){
-            this._intalInput.pattern= this.pattern;
+    get customValidity() : any{
+       return this.validateObject||{
+           method:(obj:any) =>true    
+       };
+    }
+    get validity(): boolean {
+        return  this.input.checkValidity()&&  this.customValidity.method(this) ;
+     }
+     public checkValidity() {
+        if(this.novalidate||this.disabled||this.form&&this.form.novalidate){
+            return true;
         }
-        if(this.min!=undefined){
-            this._intalInput.min = this.min;
-        }
-        if(this.minLength!=undefined){
-            this._intalInput.minLength = this.minLength;
-        }
-        if(this.maxLength!=undefined){
-            this._intalInput.maxLength = this.maxLength;
-        }
-        this._intalInput.required=this.required;
-        if(this.scale!=undefined&&this.scale!=0){
-            this._intalInput.step=1/Math.pow(10,this.scale);
-        }
-        this._intalInput.value=this.value;
-        let stat:ValidityState = this._intalInput.validity;
-        let validString:string=null;
-        if(stat.valid&&this.validateMethod!=null){
-            const result:any=this.validateMethod(this);
-            if(result!=true){
-                stat={
-                    badInput: false,
-                    customError: true,
-                    patternMismatch: false,
-                    rangeOverflow: false,
-                    rangeUnderflow: false,
-                    stepMismatch: false,
-                    tooLong: false,
-                    tooShort: false,
-                    typeMismatch: false,
-                    valid: false,
-                    valueMissing: false
+        if(this.validity){
+            this.pTipCon.show='false';
+            this.invalid=false;
+            return true;
+        } else {
+            this.focus();
+            this.pTipCon.show='true';
+            this.invalid=true;
+
+            if(this.input.validity.valueMissing){
+                this.pTipCon.tips = this.input.validationMessage;
+            } else {
+                if(!this.customValidity.method(this)){
+                    this.pTipCon.tips = this.customValidity.tips;
+                } else {
+                    this.pTipCon.tips = this.errortips||this.input.validationMessage;
                 }
-                validString=result.tips||`custom Error For Metho:${this.validateMethod}`;
             }
-        }else{
-             validString=this._intalInput.validationMessage;
+            return false;
         }
-        this.dataset.validationMessage=validString;
-        return stat;
-    }
-    get validationMessage(){
-        this.validity;
-        return this.dataset.validationMessage;
-    }
-
+     }
 
     get input(): HTMLInputElement {
         return this.renderRoot.querySelector('#input');
@@ -207,87 +188,77 @@ export class PInput extends LitElement {
         this.input!.focus();
     }
     reset() {
-        this.value = "";
-        this.input!.value ='';
+        this.value = '';
+        this.input!.value = '';
         this.invalid = false;
     }
-    get form() {
-        return this.closest('p-form');
+    get form():HTMLFormElement {
+        return this.closest('form,p-form');
     }
-   
      private typePassword() {
-       if (this.type == "password") {
-           this.type = "text";
-           this.fromPassword = true;
-       } else {
-            this.type = "password";
-       }
+       if (this.type === 'password') {
+          this.type = 'text';
+          window.setTimeout(() =>{
+              this.type ='password';
+          },1000);
+       } 
     }
-    clearValue(){
-        this.input.value="";
+    clearValue() {
+        this.value='';
+        this.checkValidity();
     }
+
      dispatchChange() {
         const changeEvent = new CustomEvent('change', {
             detail: {value: this.input.value}
         });
         this.dispatchEvent(changeEvent);
      }
-     setCustomValidity(validity:string){
-        this.dataset.oldTip=this.tips;
-        this.tips=validity;
-        if(validity!=null&&validity!=''){
-            this.invalid=true;
-            this.pTipCon.show='true';
-            
-        }else{
-            this.pTipCon.show='false';
-        }
-     }
-     public checkValidity(){
-        if(!this.validity.valid){
-            const event=new CustomEvent('invalide');
-            this.dispatchEvent(event);
-        }
-     }
-
-     processInput(event: Event) {
-         this.input.dataset.oldInput=this.input.value;
-        if (this.type =='number'|| this.fromPassword) {
-            const regExp = getNumberReg(this.scale);
-            const inputValue = this.input.value.replace(regExp,'$1');
-            if (inputValue !== this.input.value) {
-                this.input.value = inputValue;
+    updated(_changedProperties: Map<string | number | symbol, unknown>){
+        console.log('_changedProperties_changedProperties');
+        console.log(_changedProperties);
+        if(this.isConnected){
+            if(_changedProperties.has('value')&& this.value!==_changedProperties.get('value')){
+                console.log('dispatchChange');
+                this.dispatchChange( );
             }
         }
-        this.setCustomValidity('');
-        const inputEvent = new CustomEvent('input', {
-            cancelable:true,
+        super.updated(_changedProperties);
+    }
+     dispatchFocus() {
+        const changeEvent = new CustomEvent('focus', {
             detail: {value: this.input.value}
         });
-       if(!this.dispatchEvent(inputEvent)){
-            this.input.value=this.input.dataset.oldInput;
-       }
-        this.value=this.input.value;
+        this.dispatchEvent(changeEvent);
         this.checkValidity();
+     }
+     processInput(event: Event) {
+        this.input.dataset.oldInput = this.input.value;
+        event.stopPropagation();
+        this.checkValidity();
+        const inputEvent = new CustomEvent('input', {
+            cancelable: true,
+            detail: {value: this.input.value}
+        });
+       if (!this.dispatchEvent(inputEvent)) {
+            this.input.value = this.input.dataset.oldInput;
+       }
+       this.value = this.input.value;
     }
-    get pTipCon():PTips{
+    get pTipCon(): PTips {
         return this.renderRoot.querySelector('#tips');
     }
     private passwordEyeIcon: string = null;
-    private fromPassword: boolean = false;
     render() {
-        if (this.type == 'password' && this.passwordEyeIcon == null ) {
-            this.passwordEyeIcon ='eyeclose-fill'; //eye-fill
-        }
-        return html`
-            <p-tips .tips=${this.tips} id="tips" >
+        return html` <p-tips  .tips=${this.tips} id="tips"  >
                 ${this.leftIcon ? html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>` : ''}
-                <input id="input" .name="${this.name}"  placeholder="${this.placeholder}" .value="${this.value}"  @input="${this.processInput}" @change="${this.dispatchChange}"
-                  ?readOnly=${this.readonly}  .type="${this.type}" ?required=${this.required} pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}   />
-                ${this.passwordEyeIcon ? html`<p-icon  name='${this.passwordEyeIcon}' @click=${this.typePassword}  class='eyeIcon' ></p-icon>` : ''}
+                <input id="input" name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.placeholder)}" .value="${this.value}"  @input="${this.processInput}" @change="${this.dispatchChange}"
+                  ?readOnly=${this.readonly}  .type="${this.type}"  ?required=${this.required}  pattern=${ifDefined(this.pattern)}  ?disabled=${this.disabled}
+                  step=${this.type==='number'?  1/Math.pow(10,this.scale) : ''}  @focus=${this.dispatchFocus} min=${ifDefined(this.min)} max=${ifDefined(this.max)} 
+                   minlength=${ifDefined(this.minLength)}  maxlength=${ifDefined(this.maxLength)}  />
+                ${this.type==='password' ? html`<p-icon  name='${ifDefined(this.passwordEyeIcon)}' @click=${this.typePassword}  class='eyeIcon' ></p-icon>` : ''}
                 ${this.clear ? html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>` : ''}
                 ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}
-            </p-tips>
-        `;
+            </p-tips>`;
     }
 }

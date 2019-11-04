@@ -28,6 +28,7 @@
       import('./build/index.js');
     });
   </script>
+  
 
   <!-- Change stuff here for your app -->
   <meta name="description" content="start-lit-element">
@@ -43,17 +44,19 @@
       margin: 4px;
 
     }
+	
+
   </style>
 </head>
 
 <body>
 
-
+<form>
 
   <p-switch id="switch" checked value="1"></p-switch>
 
   <p>输入框</p>
-  <p-input id="input" lefticon="creditcard" placeholder='金额' block clear="true"></p-input>
+  <p-input id="input" lefticon="creditcard" placeholder='金额' type='password'  block clear="true"></p-input>
 
 
   <p-input id="number" type="number"></p-input>
@@ -132,6 +135,8 @@
       <p>Tips 04</p>
     </p-tab-content>
   </p-tab>
+
+</form>
     <script>
       var a = document.getElementById('switch');
       a.addEventListener('change', e => console.log(e.detail));
