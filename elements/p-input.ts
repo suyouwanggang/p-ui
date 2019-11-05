@@ -4,19 +4,19 @@ import {getNumberReg} from './helper/util';
 import PTips, {} from './p-tips';
  type inputtype= 'text'|'password'|'email'|'url'|'number'|'tel'|'search';
 
- const defaultOK = {
-    badInput: false,
-    customError: false,
-    patternMismatch: false,
-    rangeOverflow: false,
-    rangeUnderflow: false,
-    stepMismatch: false,
-    tooLong: false,
-    tooShort: false,
-    typeMismatch: false,
-    valid: true,
-    valueMissing: false
-};
+//  const defaultOK = {
+//     badInput: false,
+//     customError: false,
+//     patternMismatch: false,
+//     rangeOverflow: false,
+//     rangeUnderflow: false,
+//     stepMismatch: false,
+//     tooLong: false,
+//     tooShort: false,
+//     typeMismatch: false,
+//     valid: true,
+//     valueMissing: false
+// };
 
  @customElement('p-input')
 export class PInput extends LitElement {
@@ -33,8 +33,6 @@ export class PInput extends LitElement {
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
     @property({ type: Boolean, reflect: true }) search: boolean = false;
     @property({ type: Boolean, reflect: true }) clear: boolean = false;
-
-
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
     @property({ type: Boolean, reflect: false }) required: boolean = false;
@@ -45,7 +43,7 @@ export class PInput extends LitElement {
     @property({ type: Number, reflect: false }) max: number = undefined;
     @property({ type: Number, reflect: false }) scale: number = 0;
 
-
+    
 
     static get styles() {
        return  css `
@@ -69,7 +67,7 @@ export class PInput extends LitElement {
             --themeColor:var(--errorColor,#f4615c);
             border-color:var(--errorColor,#f4615c);
         }
-
+        
         :host(:focus-within:not([disabled])), :host(:not([disabled]):hover){
             border-color:var(--themeColor,#42b983);
         }
@@ -81,16 +79,7 @@ export class PInput extends LitElement {
         p-tips[show=true]{
             --color:var(--errorColor,#f4615c);
         }
-        :host([disabled]) div{
-            cursor:not-allowed;
-            pointer-events:all;
-       }
-
-       :host([disabled]) div input{
-            cursor:not-allowed;
-            pointer-events:none;
-       }
-       p-tips>input{
+        p-tips>input{
             padding: .25em 4px;
             text-align: inherit;
             color: currentColor;
@@ -107,6 +96,10 @@ export class PInput extends LitElement {
             overflow-x: hidden;
             transition: color .3s;
         }
+        :host  input[type="number"]{
+            min-width:var (--p-input-min-width,125px);
+        }
+        
         input[type="number"]::-webkit-inner-spin-button{
             display:none;
         }
@@ -144,15 +137,15 @@ export class PInput extends LitElement {
         }
     `;
     }
-    @property({type: Object}) validateObject: any =null;
-
-    get customValidity() : any{
-       return this.validateObject||{
-           method:(obj:any) =>true    
+    // tslint:disable-next-line: no-any
+    @property({ type: Object, attribute:false }) validateObject: any = 0;
+    get customValidity(): any {
+       return this.validateObject || {
+           method:(obj: Object) =>true    
        };
     }
     get validity(): boolean {
-        return  this.input.checkValidity()&&  this.customValidity.method(this) ;
+        return  this.input.checkValidity() &&  this.customValidity.method(this) ;
      }
      public checkValidity() {
         if(this.novalidate||this.disabled||this.form&&this.form.novalidate){
@@ -160,14 +153,12 @@ export class PInput extends LitElement {
         }
         if(this.validity){
             this.pTipCon.show='false';
-            this.invalid=false;
+             this.invalid = false;
             return true;
         } else {
-            this.focus();
-            this.pTipCon.show='true';
-            this.invalid=true;
-
-            if(this.input.validity.valueMissing){
+            this.pTipCon.show = 'true';
+            this.invalid = true;
+            if(!this.input.validity.valid){
                 this.pTipCon.tips = this.input.validationMessage;
             } else {
                 if(!this.customValidity.method(this)){
@@ -179,7 +170,6 @@ export class PInput extends LitElement {
             return false;
         }
      }
-
     get input(): HTMLInputElement {
         return this.renderRoot.querySelector('#input');
     }
@@ -191,6 +181,7 @@ export class PInput extends LitElement {
         this.value = '';
         this.input!.value = '';
         this.invalid = false;
+        this.pTipCon.show ='false';
     }
     get form():HTMLFormElement {
         return this.closest('form,p-form');
@@ -204,8 +195,7 @@ export class PInput extends LitElement {
        } 
     }
     clearValue() {
-        this.value='';
-        this.checkValidity();
+        this.reset();
     }
 
      dispatchChange() {
@@ -214,17 +204,23 @@ export class PInput extends LitElement {
         });
         this.dispatchEvent(changeEvent);
      }
-    updated(_changedProperties: Map<string | number | symbol, unknown>){
-        console.log('_changedProperties_changedProperties');
-        console.log(_changedProperties);
-        if(this.isConnected){
-            if(_changedProperties.has('value')&& this.value!==_changedProperties.get('value')){
-                console.log('dispatchChange');
-                this.dispatchChange( );
-            }
-        }
-        super.updated(_changedProperties);
-    }
+    // updated(_changedProperties: Map<string | number | symbol, unknown>){
+    //     if(this.isConnected){
+    //         if(_changedProperties.has('invalideEvent')&& this.input!=null&& this.invalideEvent!==_changedProperties.get('invalideEvent')){
+    //            if((this as any)._invalidHander!=null){
+    //                this.input.removeEventListener((_changedProperties.get('invalideEvent') as string) , (this as any)._invalidHander);
+    //            }
+    //            if(this.invalideEvent!=undefined){
+    //                 const invalidHander= () =>{
+    //                     this.checkValidity();
+    //                 }
+    //              this.input.addEventListener(this.invalideEvent , invalidHander);
+    //             (this as any) ._invalidHander=invalidHander;
+    //            }
+    //         }
+    //     }
+    //     super.updated(_changedProperties);
+    // }
      dispatchFocus() {
         const changeEvent = new CustomEvent('focus', {
             detail: {value: this.input.value}
@@ -233,7 +229,6 @@ export class PInput extends LitElement {
         this.checkValidity();
      }
      processInput(event: Event) {
-        this.input.dataset.oldInput = this.input.value;
         event.stopPropagation();
         this.checkValidity();
         const inputEvent = new CustomEvent('input', {

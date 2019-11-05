@@ -56,13 +56,9 @@
   <p-switch id="switch" checked value="1"></p-switch>
 
   <p>输入框</p>
-  <p-input id="input" lefticon="creditcard" placeholder='金额' type='password'  block clear="true"></p-input>
-
-
-  <p-input id="number" type="number"></p-input>
-
-  <p-input id="password" type="password"></p-input>
-
+  <p-input id="input" lefticon="creditcard" placeholder='金额' type='number'   clear="true"></p-input>
+  <p-input id="number" type="password"></p-input>
+  <p-input id="password" type="number" required min=10 max=2000 scale=1></p-input>
   <p>icon</p>
   <div style='color:var(--themeColor,#42b983)'>
     <p-icon name="heart" id="icon" size="20"></p-icon>
@@ -101,7 +97,27 @@
   <p>Tab </p>
   <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' tabagile='space-around' tabposition="top">
     <p-tab-content label="wanggang" icon="search" key="first">
-      <p>Tips 01 </p>
+        <p-loading size='2em' color='red'> <span>Tips 01Tips 01Tips 01</span></p-loading>
+        <p-button icon='search' href='http://wwww.baidu.com' loading> <span>Tips 01Tips 01Tips 01</span></p-button>
+        <p-button icon='search'  > <span>Tips 01Tips 01Tips 01</span></p-button>
+        <p-button  icon='search' type='circle' checked> <span>确定</span></p-button>
+        <p-button  icon='search' type='primary' checked> <span>确定</span></p-button>
+        <p-button  icon='search' disabled type='danger' > <span>确定</span></p-button>
+
+        <p-checkbox  disabled > </p-checkbox>
+        <p-checkbox  value='12'> label  </p-checkbox>
+        <p-checkbox checked value='12'> label  </p-checkbox>
+        <p-checkbox checked disabled value='12'> label  </p-checkbox>
+       <p></p>
+        <p-checkbox-group id='groupCheckbox' name='wanggang' defaultvalue=[1,2,3]  min=2 max=3>
+            <p-checkbox  value=1 >1 </p-checkbox>
+            <p-checkbox  value=2 >2 </p-checkbox>
+            <p-checkbox  value=3 >3</p-checkbox>
+            <p-checkbox  value=4 >4</p-checkbox>
+           
+        </p-checkbox-group>
+
+        <p>Tips 01 </p>
       <p>Tips 02</p>
       <p>Tips 03</p>
       <p>Tips 04</p>
