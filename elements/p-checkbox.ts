@@ -1,7 +1,6 @@
 import { css, customElement, LitElement, property,html } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import PTips from './p-tips';
-import { stringify } from 'querystring';
 
 @customElement('p-checkbox')
 export class PCheckbox extends LitElement {
@@ -15,9 +14,6 @@ export class PCheckbox extends LitElement {
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Boolean, reflect: false }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
-
-
-
     static get styles() {
         return css`
         :host{ 
@@ -47,7 +43,7 @@ export class PCheckbox extends LitElement {
             z-index:2
         }
         :host([disabled]) .cheked{ 
-            background:rgba(0,0,0,.1);
+            background:rgba(0,0,0,.06);
         }
         label{
             box-sizing:border-box;
@@ -125,7 +121,7 @@ export class PCheckbox extends LitElement {
     }
     firstUpdated(){
         this.checkbox!.addEventListener('change', (ev:Event) =>{
-            this.checked=this.checkbox.checked;
+            this.checked=!this.checked;
             this.dispatchEvent(new CustomEvent('change',{
                 detail:{
                     value:this.value
@@ -169,7 +165,7 @@ export class PCheckbox extends LitElement {
              <p-tips id="tip" type="error" dir="topleft">
              <input type="checkbox" ?checked=${this.checked} name=${ifDefined(this.name)} id="checkbox" ?disabled=${this.disabled}>
              <label for="checkbox">
-                <span class="cheked"><svg class="icon" style="fill: #fff;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1408"><path d="M700.7232 331.008l73.984 70.7584-329.5744 344.7808-192.6656-190.1056 71.936-72.9088L443.0336 600.576z"></path></svg></span>
+                <span class="cheked"><svg class="icon" style="fill: #fff;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" ><path d="M700.7232 331.008l73.984 70.7584-329.5744 344.7808-192.6656-190.1056 71.936-72.9088L443.0336 600.576z"></path></svg></span>
                 <slot></slot>
             </label>
         </p-tips>
@@ -276,17 +272,16 @@ export class PCheckboxGroup extends LitElement {
     firstUpdated(){
         const slots=this.shadowRoot.querySelector('#slot');
         if(slots){
+            this.value = this.defaultvalue;
             slots.addEventListener('slotchange',()=>{
-                this.value = this.defaultvalue;
                 this.elements.forEach(  (el:any)=>{
                     el.addEventListener('change',async ()=>{
-                        console.log('sdfsfsfsdf');
                         this.dispatchEvent(new CustomEvent('change',{
                             detail:{
                                 value:this.value
                             }
                         }));
-                        await el.updateComplete;
+                        await this.updateComplete;
                         this.checkValidity();
                     })
                 })
@@ -297,12 +292,11 @@ export class PCheckboxGroup extends LitElement {
     get value():Array<String>{
         return [...(this as any).querySelectorAll('p-checkbox[checked]')].map(el=>el.value);
     }
-    set value(value) {
-        value=value.map( e =>String(e));
-        //['html','js']
+    set value(valueArray) {
+        valueArray=valueArray.map(e =>String(e));
         this.elements.forEach((el:any)=>{
             const val=(el as PCheckbox).value;
-            if(value.includes(val)){
+            if(valueArray.includes(val)){
                 el.checked = true;
             }else{
                 el.checked = false;
@@ -312,7 +306,7 @@ export class PCheckboxGroup extends LitElement {
             this.checkValidity();
             this.dispatchEvent(new CustomEvent('change',{
                 detail:{
-                    value:value
+                    value:valueArray
                 }
             }));
         }

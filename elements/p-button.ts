@@ -87,13 +87,13 @@ export default class PButton extends LitElement {
         :host([type="flat"]:not([disabled]):hover) .btn::before{ 
             opacity:.1 
         }
-        :host(:not([disabled]):hover){ 
-            z-index:1 
-        }
-        :host([type="flat"]:focus-within) .btn:before,
-        :host([type="flat"][focus]) .btn:before{ 
-            opacity:.2; 
-        }
+        // :host(:not([disabled]):hover){ 
+        //     z-index:1 
+        // }
+        // :host([type="flat"]:focus-within) .btn:before,
+        // :host([type="flat"][focus]) .btn:before{ 
+        //     opacity:.2; 
+        // }
 
         .btn{ 
             background:none; 
@@ -165,6 +165,7 @@ export default class PButton extends LitElement {
     @property({ type: String,reflect:true }) htmltype:string;
     @property({ type: String,reflect:true }) shape:shapeType;
     @property({ type: String,reflect:true }) name:string;
+    @property({ type: String,reflect:true }) value:string;
     @property({ type: Boolean,reflect:true }) checked:boolean;
     @property({ type: Boolean,reflect:true }) loading:boolean=false;
     @property({ type: String,reflect:true }) href:string;
@@ -179,7 +180,10 @@ export default class PButton extends LitElement {
         //     // this.style.setProperty('--x',(ev.clientX - left)+'px');
         //     // this.style.setProperty('--y',(ev.clientY - top)+'px');
         // });
-        this.addEventListener('click',(ev:any) =>{
+        this.addEventListener('click',(ev:MouseEvent) =>{
+            if(this.disabled){
+                ev.preventDefault();
+            }
             const { left, top } = this.getBoundingClientRect();
             this.style.setProperty('--x',(ev.clientX - left)+'px');
             this.style.setProperty('--y',(ev.clientY - top)+'px');
@@ -214,5 +218,69 @@ export default class PButton extends LitElement {
         return this.renderRoot.querySelector('#btn');
     }
 }
+
+
+@customElement('p-button-group')
+export class PButtonGroup  extends LitElement {
+
+  static get styles() {
+    return css`
+    :host {
+        display:inline-flex;
+    }
+    ::slotted(p-button:not(:first-of-type):not(:last-of-type)){
+        border-radius:0;
+    }
+    ::slotted(p-button){
+        margin:0!important;
+    }
+    ::slotted(p-button:not(:first-of-type)){
+        margin-left:-1px!important;
+    }
+    ::slotted(p-button[type]:not([type="dashed"]):not(:first-of-type)){
+        margin-left:1px!important;
+    }
+    ::slotted(p-button:first-of-type){
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0px;
+    }
+    ::slotted(p-button:last-of-type){
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    `;
+  }
+
+  get elements():NodeListOf<PButton>{
+      return this.querySelectorAll('p-button');
+  }
+  firstUpdated(){
+      const slot=this.renderRoot.querySelector('#slot');
+      const child=this.elements;
+      const group=this;
+      slot.addEventListener('slotchange',() =>{
+          let handler= (ev:Event) =>{
+            const button:PButton=ev.target as PButton;
+            group.value=button.value;
+            const e=new CustomEvent('change',{
+                detail:{
+                    value: button.value
+                }
+            })
+            group.dispatchEvent(e);
+          }
+        child.forEach( (el:PButton ) => {
+            el.addEventListener('click',handler);
+        }); 
+      });
+  }
+  @property({ type: String }) value: string;
+  render() {
+    return html`
+      <slot id='slot'></slot>
+    `;
+  }
+}
+
 
 

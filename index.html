@@ -82,13 +82,13 @@
     <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
   </p-tips>
    
-  <p-tips style="position: fixed;top:10px;left:10px;" tips="我是内容" id="tips" >
+  <p-tips  tips="我是内容" id="tips" >
       <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
       <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
       <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
     </p-tips>
    
-    <p-tips style="position: fixed;bottom:10px;right:10px;" tips="我是内容" id="tips" >
+    <p-tips  tips="我是内容" id="tips" >
         <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
         <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
         <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
@@ -99,12 +99,10 @@
     <p-tab-content label="wanggang" icon="search" key="first">
         <p-loading size='2em' color='red'> lodding</p-loading>
         <p-button  icon='search' style='margin:5px;' block type='primary' checked> <span>确定</span></p-button>
-        <p-button icon='search' href='http://wwww.baidu.com' loading> <span>Tips 01Tips 01Tips 01</span></p-button>
+        <p-button icon='search' href='http://wwww.baidu.com' disabled> <span>Tips 01Tips 01Tips 01</span></p-button>
         <p-button icon='search'  > sdfasfasfd</span></p-button>
         <p-button  icon='search'  shape='circle' checked></p-button>
-       
         <p-button  icon='search' disabled type='danger' > <span>确定</span></p-button>
-
         <p-checkbox  disabled > </p-checkbox>
         <p-checkbox  value='12'> label  </p-checkbox>
         <p-checkbox checked value='12'> label  </p-checkbox>
@@ -119,20 +117,29 @@
         </p-checkbox-group>
 
         <p>Tips 01 </p>
-      <p>Tips 02</p>
+      
       <p>Tips 03</p>
-      <p>Tips 04</p>
-      <p>Tips 03</p>
-      <p>Tips 04</p>
-      <p>Tips 03</p>
-      <p>Tips 04</p>
-      <p>Tips 03</p>
-      <p>Tips 04</p>
-      <p>Tips 03</p>
+
+      <p-radio name='test' value=1>1</p-radio>
+      <p-radio name='test' value=3>3</p-radio>
+      <p-radio name='test' value=4>4</p-radio>
+      <p>group radio</p>
+      <p-radio-group value='2' disabled>
+
+          <p-radio  value=1>1</p-radio>
+          <p-radio  value=2>2</p-radio>
+          <p-radio  value=3>3</p-radio>
+      </p-radio>
     </p-tab-content>
 
 
     <p-tab-content label="zhengmin" icon="creditcard" key="zhengmin">
+      <p-button-group onchange="console.log(this); console.log(this.value);">
+        <p-button value='1'  type='primary'  disabled>KSDF1</p-button>
+        <p-button value='2'  type='primary'>KSDF2</p-button>
+        <p-button value='3'  type='primary'>KSDF3</p-button>
+        <p-button value='4' type='primary' >KSDF5</p-button>
+      </p-button-group>
       <p>Tips 03 zhengmin</p>
       <p>Tips 04 zhengmin</p>
       <p>Tips 0 zhengmin3</p>

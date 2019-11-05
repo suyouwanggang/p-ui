@@ -5,6 +5,7 @@ import './elements/p-tips';
 import './elements/p-icon';
 import './elements/p-loading';
 import './elements/p-checkbox';
+import './elements/p-radio';
 import './elements/p-button';
 import './elements/p-input';
 import './elements/p-switch';
