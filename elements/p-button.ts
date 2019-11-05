@@ -3,7 +3,8 @@ import { LitElement ,customElement,html, css,property, TemplateResult} from "lit
 import  {} from './p-icon';
 import {ifDefined} from 'lit-html/directives/if-defined';
 type targetType="_blank" | "_parent" | "_self" | "_top";
-type typeType="circle" | "primary" | "danger" | "flat"|'dashed';
+type shapeType="circle"|'';
+type typeType= "primary" | "danger" | "flat"|'dashed';
 
 @customElement('p-button')
 export default class PButton extends LitElement {
@@ -26,7 +27,7 @@ export default class PButton extends LitElement {
             border-radius: var(--borderRadius,.25em); 
             transition:background .3s,box-shadow .3s,border-color .3s,color .3s;
         }
-        :host([type="circle"]){ 
+        :host([shape="circle"]){ 
             border-radius:50%; 
         }
         :host(:not([disabled]):active){
@@ -139,7 +140,7 @@ export default class PButton extends LitElement {
             margin-right: 0.35em;
             transition: none;
         }
-        :host(:empty) xy-icon{
+        :host(:empty) p-icon{
             margin: auto;
         }
         :host(:empty){
@@ -158,29 +159,30 @@ export default class PButton extends LitElement {
 
     }
     @property({ type: Boolean }) disabled:boolean;
+    @property({ type: Boolean,reflect:true }) block:boolean;
     @property({ type: Boolean }) toggle:boolean;
     @property({ type: String ,reflect:true }) type:typeType;
-    
     @property({ type: String,reflect:true }) htmltype:string;
-    @property({ type: String,reflect:true }) shape:string;
+    @property({ type: String,reflect:true }) shape:shapeType;
     @property({ type: String,reflect:true }) name:string;
     @property({ type: Boolean,reflect:true }) checked:boolean;
     @property({ type: Boolean,reflect:true }) loading:boolean=false;
     @property({ type: String,reflect:true }) href:string;
     @property({ type: String,reflect:false }) target:targetType='_blank';
     @property({ type: String,reflect:true }) rel:string;
-    @property({ type: String,reflect:true }) download:string;
+    @property({ type: String,reflect:true }) download:string;//下载图片名称
     @property({ type: String,reflect:true }) icon:string;
 
     firstUpdated(){
-        this.btn.addEventListener('mousedown', (ev:MouseEvent) =>{
-            if(!this.disabled){
-                const { left, top } = this.getBoundingClientRect();
-                this.style.setProperty('--x',(ev.clientX - left)+'px');
-                this.style.setProperty('--y',(ev.clientY - top)+'px');
-            }
-        });
-        this.addEventListener('click',(ev:Event) =>{
+        // this.btn.addEventListener('mousedown', (ev:MouseEvent) =>{
+        //     // const { left, top } = this.getBoundingClientRect();
+        //     // this.style.setProperty('--x',(ev.clientX - left)+'px');
+        //     // this.style.setProperty('--y',(ev.clientY - top)+'px');
+        // });
+        this.addEventListener('click',(ev:any) =>{
+            const { left, top } = this.getBoundingClientRect();
+            this.style.setProperty('--x',(ev.clientX - left)+'px');
+            this.style.setProperty('--y',(ev.clientY - top)+'px');
             if(this.toggle){
                 this.checked=!this.checked;
             }
@@ -196,25 +198,21 @@ export default class PButton extends LitElement {
         });
     }
     render(){
-        
           let renderIcon:TemplateResult;
           if(!this.loading && this.icon && this.icon!=null) {
               renderIcon=html`<p-icon id='icon' .name='${this.icon}'> </p-icon>`;
           }
         return html`${this.href ? 
-                html`<a id='btn' class='btn' download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>`:
-                html`<button id='btn'   class='btn'></button>`}
+                html`<a id='btn' class='btn' ?disabled=${this.disabled} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>`:
+                html`<button id='btn'   class='btn' ?disabled=${this.disabled}></button>`}
              ${renderIcon} <slot></slot>`;
     }
-    
      get iconEl(){
-        return this.renderRoot.querySelector("#icon");
+        return this.renderRoot.querySelector('#icon');
     }
-   
     get btn(){
-        return this.renderRoot.querySelector("#btn");
+        return this.renderRoot.querySelector('#btn');
     }
-   
 }
 
 
