@@ -275,6 +275,7 @@ export class PButtonGroup  extends LitElement {
       });
   }
   @property({ type: String }) value: string;
+  @property({ type: String ,reflect:true}) name: string;
   render() {
     return html`
       <slot id='slot'></slot>
