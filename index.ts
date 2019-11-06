@@ -7,6 +7,9 @@ import './elements/p-loading';
 import './elements/p-checkbox';
 import './elements/p-radio';
 import './elements/p-button';
+
+
+import './elements/p-pagebtn';
 import './elements/p-input';
 import './elements/p-switch';
 import './elements/p-tab';

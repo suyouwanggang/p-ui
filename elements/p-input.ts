@@ -204,23 +204,6 @@ export class PInput extends LitElement {
         });
         this.dispatchEvent(changeEvent);
      }
-    // updated(_changedProperties: Map<string | number | symbol, unknown>){
-    //     if(this.isConnected){
-    //         if(_changedProperties.has('invalideEvent')&& this.input!=null&& this.invalideEvent!==_changedProperties.get('invalideEvent')){
-    //            if((this as any)._invalidHander!=null){
-    //                this.input.removeEventListener((_changedProperties.get('invalideEvent') as string) , (this as any)._invalidHander);
-    //            }
-    //            if(this.invalideEvent!=undefined){
-    //                 const invalidHander= () =>{
-    //                     this.checkValidity();
-    //                 }
-    //              this.input.addEventListener(this.invalideEvent , invalidHander);
-    //             (this as any) ._invalidHander=invalidHander;
-    //            }
-    //         }
-    //     }
-    //     super.updated(_changedProperties);
-    // }
      dispatchFocus() {
         const changeEvent = new CustomEvent('focus', {
             detail: {value: this.input.value}
