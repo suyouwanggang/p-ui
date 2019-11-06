@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>lit-start</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="p-ui web components lit-element">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
+</head>
+<body>
+  <div id="app">loading...</div>
+  <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <!-- <script src="//unpkg.com/gitalk/dist/gitalk.min.js"></script> -->
+  <script>
+    window.$docsify = {
+      name: 'p-ui',
+      coverpage:'coverpage.md',
+      loadSidebar:'sidebar.md',
+      subMaxLevel:2,
+      auto2top:true,
+      repo: 'http://github.com/suyouwanggang/p-ui',
+      // plugins: [
+      //   EditOnGithubPlugin.create('https://github.com/XboxYan/xy-ui/tree/master/docs/'),
+      //   function(hook, vm) {
+      //     hook.doneEach(function(){
+      //       document.getElementById('gitalk-container').innerHTML = "";
+      //       NewGitalk().render('gitalk-container');
+      //       if(vm.route.file=='xy-input.md'||vm.route.file=='xy-form.md'){
+      //         document.getElementById('pwdAgain').customValidity = {
+      //             method:(el)=>{
+      //                 return el.value == document.getElementById('pwd').value;
+      //             },
+      //             tips:'前后密码不一致'
+      //         }
+      //       }
+      //     });
+      //   }	
+      // ]
+      
+    }
+    // const gitalk = NewGitalk();
+    // function NewGitalk(){
+    //   return new Gitalk({
+    //     clientID: 'aff209ab4dddd16afee0',
+    //     clientSecret: '6be2c48694e28738bd0777eff1d0a0febb436704',
+    //     repo: 'xy-ui',
+    //     owner: 'XboxYan',
+    //     admin: ['XboxYan'],
+    //     // facebook-like distraction free mode
+    //     title: location.hash==''?'/README':location.hash.match(/#(.*?)([?]|$)/)[1],
+    //     id: location.hash==''?'/README':location.hash.match(/#(.*?)([?]|$)/)[1],
+    //     distractionFreeMode: false
+    //   });
+    // }
+  </script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  </body>
+  <script type="module">
+    import './build/index.js'
+  </script>
+</html>

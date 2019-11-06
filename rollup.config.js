@@ -12,16 +12,22 @@ export default {
 		file: 'build/index.js',
         format: 'cjs',
 		sourcemap: true
+	}, {
+		file: 'docs/build/index.js',
+        format: 'cjs',
+		sourcemap: true
 	}
-	,{
-		file: 'build/index.umd.js',
-        format: 'umd',
-		sourcemap: false
-	},{
-		file: 'build/index.es.js',
-        format: 'es',
-		sourcemap: false
-	}],
+
+	// ,{
+	// 	file: 'build/index.umd.js',
+    //     format: 'umd',
+	// 	sourcemap: false
+	// },{
+	// 	file: 'build/index.es.js',
+    //     format: 'es',
+	// 	sourcemap: false
+	// }
+	],	
 	plugins: [
 		//minifyHTML(),
 		typescript(),

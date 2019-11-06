@@ -203,12 +203,13 @@ export default class PButton extends LitElement {
     }
     render(){
           let renderIcon:TemplateResult;
-          if(!this.loading && this.icon && this.icon!=null) {
+          if(this.icon && this.icon!=null) {
               renderIcon=html`<p-icon id='icon' .name='${this.icon}'> </p-icon>`;
           }
         return html`${this.href ? 
                 html`<a id='btn' class='btn' ?disabled=${this.disabled} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>`:
                 html`<button id='btn'   class='btn' ?disabled=${this.disabled}></button>`}
+                ${this.loading? html`<p-loading id='loadingIcon'> </p-loading>`:''}
              ${renderIcon} <slot></slot>`;
     }
      get iconEl(){

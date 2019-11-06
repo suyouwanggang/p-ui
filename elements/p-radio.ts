@@ -176,27 +176,28 @@ export class PRadioGroup extends LitElement {
                 }else{
                     el.checked=false;
                 }
-                this.dispatchEvent(new CustomEvent('change',{
-                    detail:{
-                        value:this.value
-                    }
-                }))
             })
+            console.log('change');
+            this.dispatchEvent(new CustomEvent('change',{
+                detail:{
+                    value:this.value
+                }
+            }))
         }
     }
     firstUpdated(){
         const slots=this.shadowRoot.querySelector('#slot');
         if(slots){
             slots.addEventListener('slotchange',()=>{
-                this.elements.forEach((el:any)=>{
-                    el.addEventListener('change',()=>{
+                this.elements.forEach( (el :PRadio) =>{
+                    el.radio.addEventListener('change',(ev:Event) =>{
+                        this.value=el.value;
                         this.checkValidity();
-                        this.dispatchEvent(new CustomEvent('change',{
-                            detail:{
-                                value:this.value
-                            }
-                        }))
-                    })
+                        //  console.log('group ===== value='+this.value);
+                        //  this.dispatchEvent(new CustomEvent('change',{
+                        //     detail:this.value
+                        // }))
+                    });
                 })
             });
         }
@@ -204,7 +205,7 @@ export class PRadioGroup extends LitElement {
     
    
     get validity(){
-        return this.value!='';
+        return this.value!=''&&this.value!==undefined;
     }
    
 
