@@ -214,14 +214,12 @@ export class PInput extends LitElement {
      processInput(event: Event) {
         event.stopPropagation();
         this.checkValidity();
+        this.value = this.input.value;
         const inputEvent = new CustomEvent('input', {
             cancelable: true,
             detail: {value: this.input.value}
         });
-       if (!this.dispatchEvent(inputEvent)) {
-            this.input.value = this.input.dataset.oldInput;
-       }
-       this.value = this.input.value;
+        this.dispatchEvent(inputEvent);
     }
     get pTipCon(): PTips {
         return this.renderRoot.querySelector('#tips');

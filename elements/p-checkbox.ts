@@ -164,7 +164,7 @@ export class PCheckbox extends LitElement {
     render() {
         return html`
              <p-tips id="tip" type="error" dir="topleft">
-             <input type="checkbox" ?checked=${this.checked} name=${ifDefined(this.name)} id="checkbox" ?disabled=${this.disabled}>
+             <input type="checkbox" ?checked=${this.checked} name=${ifDefined(this.name)} id="checkbox" ?disabled=${this.disabled} .required=${this.required}>
              <label for="checkbox">
                 <span class="cheked"><svg class="icon" style="fill: #fff;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" ><path d="M700.7232 331.008l73.984 70.7584-329.5744 344.7808-192.6656-190.1056 71.936-72.9088L443.0336 600.576z"></path></svg></span>
                 <slot></slot>
@@ -268,21 +268,21 @@ export class PCheckboxGroup extends LitElement {
             }
         }
     }
-    setChildValue(arr:  Array<String>|String){
-        if(isArray(arr)){
-            this.value=arr.map( e => String(e));
-            this._setChildValue( );
-        }else{
+    setChildValue(arr: Array<String> | String) {
+        if (isArray(arr)) {
+            this.value = arr.map(e => String(e));
+            this._setChildValue();
+        } else {
             this.setChildValue(arr.split(','));
         }
     }
-    _setChildValue(){
-        if(this.value==undefined){
-            this.value=[];
-        }else{
-            this.value=this.value.map( e => String(e));;
+    _setChildValue() {
+        if (this.value == undefined) {
+            this.value = [];
+        } else {
+            this.value = this.value.map(e => String(e));;
         }
-        this.elements.forEach( (el:any) =>{
+        this.elements.forEach((el: any) => {
             const val = (el as PCheckbox).value;
             if (this.value.includes(val)) {
                 el.checked = true;
@@ -295,14 +295,14 @@ export class PCheckboxGroup extends LitElement {
         this._setChildValue();
         const slots = this.shadowRoot.querySelector('#slot');
         if (slots) {
-            let handler = (ev:Event) =>{
-                let el:PCheckbox=ev.target as PCheckbox;
-                if(el.checked){
+            let handler = (ev: Event) => {
+                let el: PCheckbox = ev.target as PCheckbox;
+                if (el.checked) {
                     this.value.push(el.value);
-                }else{
-                    const index=this.value.indexOf(el.value);
-                    if(index!=-1){
-                        this.value.splice(index,1);
+                } else {
+                    const index = this.value.indexOf(el.value);
+                    if (index != -1) {
+                        this.value.splice(index, 1);
                     }
                 }
                 this.dispatchEvent(new CustomEvent('change', {
@@ -314,14 +314,14 @@ export class PCheckboxGroup extends LitElement {
             }
             slots.addEventListener('slotchange', () => {
                 this.elements.forEach((el: HTMLElement) => {
-                    el.removeEventListener('change',handler);
+                    el.removeEventListener('change', handler);
                     el.addEventListener('change', handler);
-                    
+
                 })
             });
         }
     }
-  
+
     get validity() {
         const len = this.value.length;
         if (!this.required && len === 0) {
@@ -333,7 +333,7 @@ export class PCheckboxGroup extends LitElement {
         return this.value.length;
     }
     reset() {
-        this.value=[];
+        this.value = [];
         this.invalid = false;
         this.tip.show = 'false';
     }
