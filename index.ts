@@ -1,5 +1,6 @@
 
-import {  html,  css,  } from 'lit-element';
+import {  html,  css, LitElement } from 'lit-element';
+
 import 'element-closest-polyfill';
 import './elements/p-tips';
 import './elements/p-icon';
@@ -14,6 +15,9 @@ import './elements/p-input';
 import './elements/p-switch';
 import './elements/p-tab';
 import './elements/tree/PTree';
+
+
+
 
 
 const LitHeler={

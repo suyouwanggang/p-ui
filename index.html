@@ -97,6 +97,12 @@
   <p>Tab </p>
   <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' tabagile='space-around' tabposition="top">
     <p-tab-content label="wanggang" icon="search" key="first">
+        <p-router-slot route='test/AB/B'>
+            <p slot='test'>route= test </p>
+            <p slot='test/AB/B'>route= test/AB/B  </p>
+            <p slot='name'>route=name</p>
+          </p-router-slot>
+
         <p-loading size='2em' color='red'> lodding</p-loading>
         <p-button  icon='search' style='margin:5px;' block type='primary' checked> <span>确定</span></p-button>
         <p-button icon='search'  href='http://wwww.baidu.com' disabled> <span>Tips 01Tips 01Tips 01</span></p-button>
@@ -186,6 +192,8 @@
       <p>Tips 03</p>
       <p>Tips 04</p>
     </p-tab-content>
+
+    
   </p-tab>
 
 </form>
