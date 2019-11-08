@@ -1,4 +1,5 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 /**
  * @event  change beforeChange
  * 
@@ -118,20 +119,25 @@ class PTab extends LitElement {
     }
 
     protected renderTabTitle(tabContent: PTabContent): TemplateResult {
-        return html`<div class='tab_tabs ${this.activeKey === tabContent.key ? 'tab_on' : ''}  tab_tabs_outer'
-         ?disabled=${tabContent.disabled} key="${tabContent.key}"  @click=${this._changeTabHanlder} >
-            <span class='tab_label'>${tabContent.label}</span>
-            ${tabContent.icon ? html`<p-icon class='p-tab-icon' name=${tabContent.icon}></p-icon>` : ''}
-            </div>`;
+        const slots: HTMLSlotElement = tabContent.renderRoot.querySelector('#header');
+        const nodeList: Node[] = slots.assignedNodes({ flatten: true });
+        const array = [];
+        for (let i = 0, j = nodeList.length; i < j; i++) {
+            const el:any = nodeList[i];
+            if(el.nodeType ===1){
+                array.push(el.outerHTML);
+            }
+        }
+        return html`
+            <div key=${tabContent.key}  ?disabled=${tabContent.disabled}
+                  class="tab_tabs ${tabContent.key === this.activeKey ? 'tab_on' : ''}  tab_tabs_outer">
+                  ${unsafeHTML(array.join(''))}
+         </div>`;
     }
     protected renderTab(): TemplateResult | Array<TemplateResult> {
-        if(!this.hasUpdated){
-            return html``;
-        }
-        ///console.log('tab===tab');
         const xTab = this;
         const childchild = Array.from(this.children);
-        const result = new Array<TemplateResult>();
+        const result: TemplateResult[] = [];
         childchild.forEach((element, index) => {
             if (element instanceof PTabContent) {
                 // tslint:disable-next-line: no-unnecessary-type-assertion
@@ -142,7 +148,7 @@ class PTab extends LitElement {
                 if (xTab.activeKey == null) {
                     xTab.activeKey = tContent.key;
                 }
-                if (tContent.key == xTab.activeKey) {
+                if (tContent.key === xTab.activeKey) {
                     tContent.setAttribute('active', '');
                 } else {
                     tContent.removeAttribute('active');
@@ -154,45 +160,48 @@ class PTab extends LitElement {
     }
     render() {
         return html`
-        <div class="tab_container" tabPosition="${this.tabPosition}" >
-            <div class="tab_nav_con" style="justify-content:${this.tabAgile}" >${this.renderTab()}</div>
-            <slot id="slots" class="tab_content"></slot>
-        </div>`;
+            <div class="tab_container" tabPosition="${this.tabPosition}" >
+                <div class="tab_nav_con" style="justify-content:${this.tabAgile}" id='tab_nav_con_id' >
+                   ${this.renderTab()} 
+                </div>
+                <slot id="slots" class="tab_content" ></slot>
+            </div>`;
     }
     firstUpdated() {
         const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         slots.addEventListener('slotchange', (event) => {
-           // console.log('tab===slotchange');
             this.requestUpdate();
         });
-    }
-
-
-    _changeTabHanlder(event: Event) {
-        let target = <HTMLElement>event.target;
-        if (!target.matches('.tab_tabs')) {
-            target = target.closest('.tab_tabs');
-        }
-        const key = target.getAttribute('key');
-        if (key === this.activeKey) {
-            return;
-        } else {
-            const tabContent = this.findTab(key);
-            if (tabContent === null || tabContent.disabled) {
+        const tab_nav = this.renderRoot.querySelector('#tab_nav_con_id');
+        tab_nav.addEventListener('click', (event: Event) => {
+            let target = event.target as HTMLElement;
+            if (target.nodeType !== 1) {
+                target = target.parentElement;
+            }
+            if (target !== tab_nav) {
+                target = target.closest('div.tab_tabs[key]');
+            }
+            const key = target.getAttribute('key');
+            if (key === this.activeKey) {
                 return;
-            }
-            const beforeEvent=new CustomEvent('beforeChange',{
-                cancelable:true, //标识可以取消
-                detail:{
-                    tabContent:tabContent,
-                   label: tabContent.label,
-                   key: tabContent.key
+            } else {
+                const tabContent = this.findTab(key);
+                if (tabContent === null || tabContent.disabled) {
+                    return;
                 }
-            });
-            if(this.dispatchEvent(beforeEvent)){
-                this.activeKey = tabContent.key; 
+                const beforeEvent = new CustomEvent('beforeChange', {
+                    cancelable: true, //标识可以取消
+                    detail: {
+                        tabContent: tabContent,
+                        label: tabContent.label,
+                        key: tabContent.key
+                    }
+                });
+                if (this.dispatchEvent(beforeEvent)) {
+                    this.activeKey = tabContent.key;
+                }
             }
-        }
+        });
     }
     dispatchChangeEvent(tabContent: PTabContent) {
         if (tabContent == null || tabContent.disabled) {
@@ -204,7 +213,7 @@ class PTab extends LitElement {
                 label: tabContent.label,
                 key: tabContent.key
             }
-        }))
+        }));
         this.activeKey = tabContent.key;
     }
 
@@ -221,7 +230,7 @@ class PTab extends LitElement {
     attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
         super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
         //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
-        if (name === 'activekey' &&this.hasUpdated &&oldvalue !== newValue && this.renderRoot != null) {
+        if (name === 'activekey' && this.hasUpdated && oldvalue !== newValue && this.renderRoot != null) {
             //console.log(`name=${name} olvalue=${oldvalue} newvalue=${newValue}`);
             this.dispatchChangeEvent(this.findTab(newValue));
         }
@@ -238,20 +247,44 @@ class PTab extends LitElement {
 
 @customElement('p-tab-content')
 class PTabContent extends LitElement {
+    static get styles() {
+        return css`
+        :host{
+            display:none ;
+        }
+        :host([active]){
+            display:block;
+        }
+       slot[name=header]{
+            display:none !important;
+        }`;
+    }
     @property({ type: String, reflect: true })
     @property({ type: String, reflect: true }) label: string = null;
     @property({ type: String, reflect: true }) key: string = null;
     @property({ type: String, reflect: true }) icon: string = null;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     render() {
-        return html`<slot></slot>`;
+        const pTab: PTab = this.tab;
+        return html`
+            <slot id="header" name='header'>
+                <span class='tab_label'>${this.label}</span>
+                ${this.icon ? html`<p-icon class='p-tab-icon' name=${this.icon}></p-icon>` : ''}
+            </slot>
+        <slot></slot>`;
     }
-
     get tab(): PTab {
         return this.closest('p-tab');
     }
     updated(changeMap: Map<string | number | symbol, unknown>) {
-       this.tab.requestUpdate();
+        super.updated(changeMap);
+        this.tab.requestUpdate();
+    }
+    firstUpdated() {
+        const slot: HTMLSlotElement = this.renderRoot.querySelector('#header');
+        slot.addEventListener('slotchange', () => {
+            this.tab.requestUpdate();
+        })
     }
 }
 export { PTab, PTabContent };
