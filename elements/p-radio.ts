@@ -193,10 +193,7 @@ export class PRadioGroup extends LitElement {
                     el.radio.addEventListener('change',(ev:Event) =>{
                         this.value=el.value;
                         this.checkValidity();
-                        //  console.log('group ===== value='+this.value);
-                        //  this.dispatchEvent(new CustomEvent('change',{
-                        //     detail:this.value
-                        // }))
+                        
                     });
                 })
             });
