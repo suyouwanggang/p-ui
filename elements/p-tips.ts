@@ -1,5 +1,4 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
-import { threadId } from 'worker_threads';
 type showType = 'true' | 'false' | '';
 type typeType = 'success' | 'warning' | 'error';
 type dirType = 'top' | 'topleft' | 'topright' | 'left' | 'lefttop' | 'leftbottom' | 'bottom' | 'bottomleft' | 'bottomright' | 'right' | 'righttop' | 'rightbottom' | 'auto';

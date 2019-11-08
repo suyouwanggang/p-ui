@@ -54,7 +54,10 @@
 <form>
 
   <p-switch id="switch" checked value="1"></p-switch>
-
+  <p-rate value=2 disabled hover id="pRate">  <span>sdfsfsd</span></p-rate>
+  <script>
+      document.getElementById('pRate').tipString=['terrible','bad','normal','good','wonderful'];
+  </script>
   <p>输入框</p>
   <p-input id="input" lefticon="creditcard" placeholder='金额' type='number'   clear="true"></p-input>
   <p-input id="number" type="password"></p-input>
@@ -65,6 +68,8 @@
     <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
     <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
     <p-icon name="heart" id="icon" size="50" lefticon="creditcard"></p-icon>
+
+    
   </div>
   <p>Tips </p>
  
@@ -97,6 +102,7 @@
   <p>Tab </p>
   <p-tab id="tabDIV" style='width:80%;margin: 10px auto;' tabagile='space-around' tabposition="top">
     <p-tab-content label="wanggang" icon="search" key="first">
+       <span slot='header'>header23224 <span> header02</span></span>
         <p-router-slot route='test/AB/B'>
             <p slot='test'>route= test </p>
             <p slot='test/AB/B'>route= test/AB/B  </p>
@@ -161,11 +167,8 @@
       <p-page-btn current=2 pagesize=10 total=50 >  </p-page-btn>
       <p-page-btn current=1 pagesize=10 total=200 > </p-page-btn>
       <p-page-btn current=20 pagesize=10 total=400 > </p-page-btn>
-
-
      
     </p-tab-content>
-
 
     <p-tab-content label="zhengmin" icon="creditcard" key="zhengmin">
       <p-button-group onchange="console.log(this); console.log(this.value);">
