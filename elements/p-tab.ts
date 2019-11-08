@@ -123,8 +123,8 @@ class PTab extends LitElement {
         const nodeList: Node[] = slots.assignedNodes({ flatten: true });
         const array = [];
         for (let i = 0, j = nodeList.length; i < j; i++) {
-            const el:any = nodeList[i];
-            if(el.nodeType ===1){
+            const el: any = nodeList[i];
+            if (el.nodeType === 1) {
                 array.push(el.outerHTML);
             }
         }
@@ -224,14 +224,12 @@ class PTab extends LitElement {
         const children = this.querySelectorAll('p-tab-content');
         return index < children.length ? <PTabContent>children[index] : null;
     }
-    get activeTabContent(): PTabContent {
+    get activeTab(): PTabContent {
         return this.findTab(this.activeKey);
     }
     attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
         super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
-        //const slots: HTMLSlotElement = <HTMLSlotElement>this.shadowRoot.getElementById('slots');
         if (name === 'activekey' && this.hasUpdated && oldvalue !== newValue && this.renderRoot != null) {
-            //console.log(`name=${name} olvalue=${oldvalue} newvalue=${newValue}`);
             this.dispatchChangeEvent(this.findTab(newValue));
         }
     }
@@ -284,7 +282,10 @@ class PTabContent extends LitElement {
         const slot: HTMLSlotElement = this.renderRoot.querySelector('#header');
         slot.addEventListener('slotchange', () => {
             this.tab.requestUpdate();
-        })
+        });
+    }
+    setActive() {
+        this.tab.activeKey = this.key;
     }
 }
 export { PTab, PTabContent };
