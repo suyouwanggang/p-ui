@@ -14,6 +14,7 @@ export  const getNumberReg = function (scale: number): RegExp {
 };
 
 
+
 var arr = [1,2,3]
 var handle: ProxyHandler<any[]|Object>= {
     //target目标对象 key属性名 receiver实际接受的对象

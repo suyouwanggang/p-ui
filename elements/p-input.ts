@@ -4,19 +4,18 @@ import {getNumberReg} from './helper/util';
 import PTips, {} from './p-tips';
  type inputtype= 'text'|'password'|'email'|'url'|'number'|'tel'|'search';
 
-//  const defaultOK = {
-//     badInput: false,
-//     customError: false,
-//     patternMismatch: false,
-//     rangeOverflow: false,
-//     rangeUnderflow: false,
-//     stepMismatch: false,
-//     tooLong: false,
-//     tooShort: false,
-//     typeMismatch: false,
-//     valid: true,
-//     valueMissing: false
-// };
+function throttleFunction(fn:any, delay:number) {
+    var previous = 0;
+    // 使用闭包返回一个函数并且用到闭包函数外面的变量previous
+    return function() {
+        let args = arguments;
+        let now:number =+ new Date();
+        if(now - previous > delay) {
+            fn.apply(null, args);
+            previous = now;
+        }
+    }
+}
 
  @customElement('p-input')
 export class PInput extends LitElement {
@@ -42,6 +41,8 @@ export class PInput extends LitElement {
     @property({ type: Number, reflect: false }) min: number = undefined;
     @property({ type: Number, reflect: false }) max: number = undefined;
     @property({ type: Number, reflect: false }) scale: number = 0;
+    @property({ type: Number, reflect: true }) debounce: number = 0;
+    @property({ type: Number, reflect: true }) throttle: number = 0;
 
     
 
@@ -138,7 +139,7 @@ export class PInput extends LitElement {
     `;
     }
     // tslint:disable-next-line: no-any
-    @property({ type: Object, attribute:false }) validateObject: any = 0;
+    @property({ type: Object, attribute:false }) validateObject: any = undefined;
     get customValidity(): any {
        return this.validateObject || {
            method:(obj: Object) =>true    
@@ -211,15 +212,45 @@ export class PInput extends LitElement {
         this.dispatchEvent(changeEvent);
         this.checkValidity();
      }
-     processInput(event: Event) {
-        event.stopPropagation();
-        this.checkValidity();
-        this.value = this.input.value;
+     _dispatchInput(){
         const inputEvent = new CustomEvent('input', {
             cancelable: true,
             detail: {value: this.input.value}
         });
         this.dispatchEvent(inputEvent);
+     }
+     processInput(event: Event) {
+        const inputEl=this;
+        event.stopPropagation();
+        this.checkValidity();
+        this.value = this.input.value;
+        if (this.debounce > 0) {
+            let timeout: number = (this as any).debounceTimeoutID;
+            timeout && window.clearTimeout(timeout);
+            (this as any).debounceTimeoutID = timeout = window.setTimeout(() => {
+                this._dispatchInput();
+            }, this.debounce);
+        } else if (this.throttle > 0) {
+            let throttleFun = (this as any).throttleFun;
+            if (throttleFun === undefined) {
+                throttleFun = throttleFunction(() => {
+                    inputEl._dispatchInput();
+                }, this.throttle);
+                (this as any).throttleFun = throttleFun
+            }
+            throttleFun();
+        } else {
+            this._dispatchInput();
+        }
+    }
+    update( changedProperties: Map<string | number | symbol, unknown>){
+        super.update(changedProperties);
+        if(changedProperties.has('throttle')){
+            (this as any).throttleFun=undefined;
+        }else if(changedProperties.has('debounce')){
+           window.clearTimeout( (this as any).debounceTimeoutID);
+           (this as any).debounceTimeoutID =undefined;
+        }
     }
     get pTipCon(): PTips {
         return this.renderRoot.querySelector('#tips');

@@ -12,6 +12,7 @@ export default class PRate extends LitElement {
     @property({ type: Boolean, reflect: true }) hoverable: boolean = false;
     @property({ type: Number, reflect: true }) size: number = undefined;
     @property({ type: Number, reflect: true }) number: number = 5;
+    @property({ type: String, reflect: true }) name: string = undefined;
     @property({ type: Number, reflect: true }) value: number = 0;
     @property({ type: Array, reflect: true }) tipStrings: string[] = undefined;// ['terrible','bad','normal','good','wonderful'];
     static get styles() {

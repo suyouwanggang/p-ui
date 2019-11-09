@@ -67,7 +67,7 @@
     </p-tree>
   </div>
 <div style='width:55%;float:right;'>
-  <p-input type='text' oninput="window.tree.filterString=this.value"></p-input>
+  <p-input type='text' debounce=500 oninput="console.log(new Date()); window.tree.filterString=this.value"></p-input>
   <p-tree id="p-tree" includestartnode >
   </p-tree>
 </div>

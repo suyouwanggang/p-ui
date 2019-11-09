@@ -47,9 +47,8 @@ export default class PPageBtn extends LitElement {
             fill: currentColor;
         }
         `;
-
     }
-    @property({ type: Number, reflect: true }) current = 1;
+    @property({ type: Number, reflect: true }) value = 1;
     @property({ type: Number, reflect: true }) pagesize = 20;
     @property({ type: Boolean, reflect: true }) simple = false;
     @property({ type: Number, reflect: true }) total: number = undefined;
@@ -58,12 +57,12 @@ export default class PPageBtn extends LitElement {
     }
 
     _renderSimple() {
-        return html`<p-button class="simple-page" tabindex="-1" type="flat">${this.current} / ${this.pageCount}</p-button>`;
+        return html`<p-button class="simple-page" tabindex="-1" type="flat">${this.value} / ${this.pageCount}</p-button>`;
     }
     _renderPage() {
         let place: Array<number | string>;
         const pageCount = this.pageCount;
-        const current = this.current;
+        const current = this.value;
         if (pageCount > 9) {
             if (current <= 5) {
                 place = [1, 2, 3, 4, 5, 6, 7, 'next', pageCount];
@@ -78,7 +77,7 @@ export default class PPageBtn extends LitElement {
         const result: Array<TemplateResult> = [];
         place.forEach((temp, index) => {
             const isNumber = typeof temp === 'number';
-            const pbutton = html`<p-button ?disabled=${!isNumber}  ?current=${isNumber && temp === this.current} pageNo=${isNumber ? temp : ''} type='flat'>${isNumber ? temp : '...'}</p-button>`;
+            const pbutton = html`<p-button ?disabled=${!isNumber} @click=${this._pageBtnHander} ?current=${isNumber && temp === this.value} pageNo=${isNumber ? temp : ''} type='flat'>${isNumber ? temp : '...'}</p-button>`;
             result.push(pbutton);
         });
         return result;
@@ -86,70 +85,73 @@ export default class PPageBtn extends LitElement {
     dispatchChange(){
         this.dispatchEvent(new CustomEvent('change', {
             detail: {
-                current: this.current,
+                current: this.value,
                 pagesize: this.pagesize,
                 total: this.total,
             }
         }));
     }
-    firstUpdated() {
-        const page = this.renderRoot.querySelector('#page');
-        page.addEventListener('click', (ev: Event) => {
-            const button: PButton = (ev.target as PButton).closest('p-button');
-            if (button) {
-                this.current = Number(button.getAttribute('pageNo'));
+    _pageBtnHander(ev:Event){
+        const button: PButton = (ev.target as PButton);
+        if (button) {
+            let pageNo= Number(button.getAttribute('pageNo'));
+            if(!isNaN(pageNo)){
+                this.value =pageNo;
                 this.dispatchChange();
             }
-        });
+        }
+    }
+    firstUpdated() {
         this.addEventListener('keydown', (ev) => {
             switch (ev.keyCode) {
                 case 37://ArrowLeft
-                    this.current--;
+                    this.value--;
                     this.dispatchChange();
                     break;
                 case 39://ArrowRight
-                    this.current++;
+                    this.value++;
                     this.dispatchChange();
                     break;
                 default:
                     break;
             }
         });
-
-        const left = this.renderRoot.querySelector('#left');
-        left.addEventListener('click', (ev: any) => {
-            this.current--;
+    }
+    _pagePreHanlder(){
+        if(this.value>1){
+            this.value--;
             this.dispatchChange();
-        });
-        const right = this.renderRoot.querySelector('#right');
-        right.addEventListener('click', (ev: any) => {
-            this.current++;
+        }
+    }
+    _pageNextHanlder(){
+        if(this.value<this.pageCount){
+            this.value++;
             this.dispatchChange();
-        });
+        }
     }
     updated(changedProperties: Map<string | number | symbol, unknown>) {
-        if ( this.hasUpdated && this.renderRoot) {
-            const currentOld = this.current;
-            const current = Math.min(Math.max(1, this.current), this.pageCount);
-            this.current = current;
-            const selector = `#page p-button[pageNo='${this.current}'] `;
-            const currentButton: PButton = this.renderRoot.querySelector(selector);
-            if (currentButton !== null) {
-                currentButton.focus();
-            }
+        const currentOld = this.value;
+        const current = Math.min(Math.max(1, this.value), this.pageCount);
+        if(this.value!=current){
+            this.value = current;
+        }
+        const selector = `#page p-button[pageNo='${this.value}'] `;
+        const currentButton: PButton = this.renderRoot.querySelector(selector);
+        if (currentButton !== null) {
+            currentButton.focus();
         }
         super.updated(changedProperties);
     }
 
     render() {
         return html`
-         <p-button type="flat" id="left" ?disabled=${this.current === 1} >
+         <p-button type="flat" id="left" ?disabled=${this.value <= 1} @click=${this._pagePreHanlder}  >
             <svg class="icon" viewBox="0 0 1024 1024"><path d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8c-16.4 12.8-16.4 37.5 0 50.3l450.8 352.1c5.3 4.1 12.9 0.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"></path></svg>
         </p-button>
         <div class="page" id="page">
             ${this.simple ? this._renderSimple() : this._renderPage()}
         </div>
-        <p-button type="flat" id="right"  ?disabled=${this.current === this.pageCount}>
+        <p-button type="flat" id="right"  ?disabled=${this.value >= this.pageCount} @click=${this._pageNextHanlder}>
             <svg class="icon" viewBox="0 0 1024 1024"><path d="M765.7 486.8L314.9 134.7c-5.3-4.1-12.9-0.4-12.9 6.3v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1c16.4-12.8 16.4-37.6 0-50.4z"></path></svg>
         </p-button>
         `;

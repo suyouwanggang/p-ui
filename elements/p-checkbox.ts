@@ -6,7 +6,7 @@ import { isArray } from 'util';
 @customElement('p-checkbox')
 export class PCheckbox extends LitElement {
     @property({ type: String, reflect: true }) errortips: string;
-    @property({ type: String, reflect: true }) tips: string;
+    // @property({ type: String, reflect: true }) tips: string;
     @property({ type: String, reflect: true }) value: string;
     @property({ type: String, reflect: true }) name: string;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
