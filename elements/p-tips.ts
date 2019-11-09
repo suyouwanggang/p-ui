@@ -362,7 +362,8 @@ export default class PTips extends LitElement {
         return html`<slot></slot>`;
     }
 
-    updated(changeMap: Map<string | number | symbol, unknown>) {
+    update(changeMap: Map<string | number | symbol, unknown>) {
+        super.update(changeMap);
         if (changeMap.has('color')) {
             if (this.color) {
                 this.style.setProperty('--color', this.color);

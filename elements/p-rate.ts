@@ -7,55 +7,50 @@ import PTips from './p-tips';
 export default class PRate extends LitElement {
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: String, reflect: true }) icon: string = 'star-fill';
-    @property({ type: String, reflect: true }) checkColor: string = undefined;
-    @property({ type: Boolean, reflect: true }) hover: boolean = false;
-    @property({ type: String, reflect: true }) color: string = undefined;
+    @property({ type: String, reflect: true }) onColor: string = undefined;
+    @property({ type: String, reflect: true }) offColor: string = undefined;
+    @property({ type: Boolean, reflect: true }) hoverable: boolean = false;
     @property({ type: Number, reflect: true }) size: number = undefined;
     @property({ type: Number, reflect: true }) number: number = 5;
     @property({ type: Number, reflect: true }) value: number = 0;
-    @property({ type: Array, reflect: true }) tipString: Array<String> = undefined;// ['terrible','bad','normal','good','wonderful'];
+    @property({ type: Array, reflect: true }) tipStrings: string[] = undefined;// ['terrible','bad','normal','good','wonderful'];
     static get styles() {
         return css`
         :host {
-            display:inline-block;
+            display:contents;
         }
         :host div{
             display:inline-flex;
-            color:#eee;
-            font-size:20px;
-        }
-        :host([disabled]) p-tips{
-            cursor:default;
-            opacity:0.8;
-            pointer-events:none;
         }
         p-tips{
             margin:auto 4px;
         }
-         p-tips.mouseSelect {
-            color: var(--themeColor,#42b983);
-            transition:transform 0.3 ;
+         p-tips.mouseSelect p-icon {
+            color: var(--rate-on-color,var(--themeColor,#42b983));
+            transform:scale(1.2);
+            transition:transform 0.3 ease;
         }
+
         p-tips p-icon{
+            font-size:1.5em;
             cursor:pointer;
+            color:var(--rate-off-color,#eee);
+        }
+
+        :host([disabled]) div p-icon{
+            opacity:0.6;
         }
         :host([disabled]) p-tips,
-        :host([disabled])  p-icon{
-            pointer-events:none;
+        :host([disabled]) p-icon{
             cursor:default;
         }`;
     }
-    firstUpdated(changeMap: Map<string | number | symbol, unknown>) {
-    }
-    _hoverStar(ev: MouseEvent) {
-        if (!this.hover) {
+    _hoverRate(ev: MouseEvent) {
+        if (!this.hoverable||this.disabled) {
             return;
         }
         // tslint:disable-next-line: no-any
         let el: any = ev.target as any;
-        if (!(el instanceof PTips)) {
-            el = el.closest('p-tips');
-        }
         const div = this.renderRoot.querySelector('#rate');
         const array: PTips[] = [...div.querySelectorAll('p-tips') as any];
         const index = array.indexOf(el);
@@ -67,8 +62,8 @@ export default class PRate extends LitElement {
             }
         }
     }
-    _leaveStar(ev: MouseEvent) {
-        if (!this.hover) {
+    _leaveRate(ev: MouseEvent) {
+        if (!this.hoverable||this.disabled) {
             return;
         }
         const div = this.renderRoot.querySelector('#rate');
@@ -94,13 +89,39 @@ export default class PRate extends LitElement {
         this.value = el.value + 1;
     }
     render() {
-        return html`<div id='rate'  @mouseleave=${this._leaveStar}>
+        return html`<div id='rate'  @mouseleave=${this._leaveRate}>
             ${Array.from({ length: this.number }).map((item, index) => {
-            return html`<p-tips  @click='${this._click}' dir='bottom' @mouseenter=${this._hoverStar}  .value=${index} class=${this.value > index ? 'mouseSelect' : ''}  .tips=${this.tipString && this.tipString.length > index ? this.tipString[index] : ''}>
-                    <p-icon  .name=${this.icon} .size=${this.size} .color=${this.value > index ? this.checkColor : this.color}></p-icon>
+            return html`<p-tips  @click='${this._click}' dir='bottom' @mouseenter=${this._hoverRate}  .value=${index} class=${this.value > index ? 'mouseSelect' : ''}  .tips=${this.tipStrings && this.tipStrings.length > index ? this.tipStrings[index] : ''}>
+                    <p-icon  .name=${this.icon} .size=${this.size} ></p-icon>
                     </p-tips>`
         })}<slot></slot></div>
         `;
     }
+    update(changedProperties: Map<string | number | symbol, unknown>){
+        super.update(changedProperties);
+        if(changedProperties.has('offColor')){
+            if(this.offColor){
+                this.style.setProperty('--rate-off-color',this.offColor);
+            }else{
+                this.style.removeProperty('--rate-off-color');
+            }
+        }
+        if(changedProperties.has('onColor')){
+            if(this.onColor){
+                this.style.setProperty('--rate-on-color',this.onColor);
+            }else{
+                this.style.removeProperty('--rate-on-color');
+            }
+        }
+        if(changedProperties.has('value')&&this.isConnected){
+            this.dispatchEvent(new CustomEvent('change',{
+                    detail:{
+                        old:changedProperties.get('value'),
+                        value:this.value
+                    }
+            }));
+        }
+    }
+
 }
 
