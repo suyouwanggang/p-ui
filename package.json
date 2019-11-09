@@ -1,5 +1,5 @@
 {
-  "name": "lit-start",
+  "name": "p-ui",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,9 +8,8 @@
     "ant-design-vue": "^1.3.17",
     "element-closest-polyfill": "^1.0.0",
     "lit-element": "latest",
-    "lit-html": "latest",
-    "uuid": "^3.3.3",
-    "xy-ui": "^1.8.8"
+    "lit-html": "latest"
+    /*"xy-ui": "^1.8.8"*/
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -38,6 +37,27 @@
     "start": "serve ",
     "tsc": "tsc"
   },
-  "author": "",
+  "author": "suyouwanggang",
+  "keywords": [
+    "web components",
+    "custom elements",
+    "p-ui",
+    "lit-element",
+    "lit-html",
+    "polymer lit-element",
+    "p-tips",
+    "p-icon",
+    "p-input",
+    "p-botton",
+    "p-checkbox",
+    "p-checkbox-group",
+    "p-radio",
+    "p-radio-group",
+    "p-rate",
+    "p-tab",
+    "p-tab-content",
+    "p-tree",
+    "p-tree-node"
+  ],
   "license": "ISC"
 }

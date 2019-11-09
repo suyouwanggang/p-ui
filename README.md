@@ -1,20 +1,16 @@
 # p-ui
 
-`p-ui`是一套使用原生`Web Components`规范开发的跨框架UI组件库。[查看文档](http://localhost:3000)
+`p-ui`是一套使用原生`Web Components`规范开发的跨框架UI组件库,基于`lit-elment`库开发。
 [github项目地址](https://github.com/suyouwanggang/p-ui)
 
-
 ## 特性
-
 * 跨框架。无论是`react`、`vue`还是原生项目均可使用。
-* 组件化。`shadow dom`真正意义上实现了样式和功能的组件化。
-* 类原生。一个组件就像使用一个`div`标签一样。
-* 无依赖。纯原生，无需任何预处理器编译。
-* 无障碍。支持键盘访问。
-
+* 组件化,基于lit-element,lit-html 实现。`shadow dom`真正意义上实现了样式和功能的组件化。
+* 纯原生，无需任何预处理器编译。
+* 所有组件都支持主题颜色，大小定制，以后会有文档专门说明。
 ## 支持的组件
  ### `p-icon` 组件。基于ant design svg 图标组件 .
-  1.  `name` 图标名称
+  1. `name` 图标名称
   2. 支持·`color`改颜色.
   3. `path` svg 可以通过svg 路径配置svg 图标 .
   4. `size` 大小
@@ -101,9 +97,6 @@
   7. `number` 默认5分制，控制评分图标个数
   8. `tipStrings` 数组控制每一分提示，例如: ['terrible','bad','normal','good','wonderful'];
   9.  `change`事件
- 
-
-
 
 ## 兼容性
 
@@ -111,28 +104,7 @@
 
 包括移动端，不支持`IE`。
 
-> `IE`不支持原生`customElements`，[webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)可以实现对`IE`的兼容，不过很多`CSS`特性仍然无效
-
-## 安装 `当前未支持`
-
-* npm
-
-```shell
-npm i p-ui
-```
-
-* cdn 当前<b>未支持</b>
-
-```html
-<script type="module">
-    import 'https://unpkg.com/p-ui';
-</script>
-
-<!--or-->
-
-<script type="module" src="https://unpkg.com/p-ui"></script>
-```
-
+> `IE`不支持原生`customElements`，[webcomponentsjs](https://github.com/webcomponents/webcomponentsjs)可以实现对`IE`的兼容，不过很多`CSS`特性仍然无效，暂时不考虑兼容IE11 及以下.
 * 直接在`github`上获取最新文件。
 
 目录如下：
@@ -184,8 +156,6 @@ import 'p-ui/elements/p-button.js';
 let button=document.createElement('p-button');
 button.loading=true;
 ```
-
-[demo](https://codepen.io/xboxyan/pen/mNKWaN)
 
 > 关于`react`中使用`Web Components`的注意细节可参考[https://react.docschina.org/docs/web-components.html](https://react.docschina.org/docs/web-components.html)
 
@@ -239,5 +209,3 @@ tab3.parentNode;//p-tab
 <p-button loading>button</p-button> <!-- 加载中 -->
 <p-checkbox checked value='1'>button</p-checkbox> <!--选中 -->
 ```
-
-总之，大部分情况下把它当成普通的`html`标签（不用关注shadow dom的结构）就好了，以前怎么做现在仍然怎么做，只是新增了方法而已。
