@@ -126,6 +126,7 @@ class PTab extends LitElement {
             let el: any = nodeList[i];
             if (el.nodeType === 1) {
                  el = el.cloneNode(true);
+                 el.removeAttribute('slot');
                  array.push(el.outerHTML);
             }
         }

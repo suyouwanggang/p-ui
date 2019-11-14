@@ -203,7 +203,7 @@ export default class PTips extends LitElement {
         :host([dir="righttop"]:focus-within:not([show=false]))::after {
             transform: translate(10px, 0);
         }
-        
+
         :host([dir="rightbottom"])::before,
         :host([dir="rightbottom"])::after{
             left: 100%;
