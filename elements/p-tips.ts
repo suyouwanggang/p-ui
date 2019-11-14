@@ -3,7 +3,7 @@ type showType = 'true' | 'false' | '';
 type typeType = 'success' | 'warning' | 'error';
 type dirType = 'top' | 'topleft' | 'topright' | 'left' | 'lefttop' | 'leftbottom' | 'bottom' | 'bottomleft' | 'bottomright' | 'right' | 'righttop' | 'rightbottom' | 'auto';
 @customElement('p-tips')
-export default class PTips extends LitElement {
+ export default class PTips extends LitElement {
     @property({ type: String, reflect: true }) show: showType = null;
     @property({ type: String, reflect: true }) tips: string = null;
     @property({ type: String, reflect: true }) color: string = null;
@@ -373,23 +373,3 @@ export default class PTips extends LitElement {
         }
     }
 }
-
-
-
-@customElement('p-router-slot')
-export class RouterSlot extends LitElement {
-    static get styles() {
-        return css`
-        :host {
-            display:contents;
-        }
-        `;
-    }
-    @property({ type: String }) route: string;
-    render(){
-        return html`<slot  .name=${this.route} id='slot'></slot>`;
-    }
-    get slotElement(){
-        return this.shadowRoot.getElementById('slot');
-    }
-  }

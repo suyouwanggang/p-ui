@@ -8,8 +8,8 @@
     "ant-design-vue": "^1.3.17",
     "element-closest-polyfill": "^1.0.0",
     "lit-element": "latest",
-    "lit-html": "latest"
-    /*"xy-ui": "^1.8.8"*/
+    "lit-html": "latest",
+    "xy-ui": "^1.8.8"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

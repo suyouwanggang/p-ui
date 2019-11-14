@@ -20,11 +20,21 @@ const requiredValidte: ValidateItem = {
     method(input: HTMLInputElement) {
         const value = input.value.trim();
         const result: ValidateResult = {
-            valid: value.length > 0,
-            type: 'valueMissing'
-        }
-        if (!result.valid) {
-            result.validationMessage = `请填写${getTipLabel(input)}`;
+            valid: true
+        };
+        if (input.type === 'number') {
+            const n = Number(value);
+            if (isNaN(n)) {
+                result.valid = false;
+                result.type = 'typeMismatch';
+                result.validationMessage = '请填写有效的数字';
+            }
+        } else {
+            result.valid = value.length > 0;
+            if (!result.valid) {
+                result.type = 'valueMissing';
+                result.validationMessage = `请填写${getTipLabel(input)}`;
+            }
         }
         return result;
     }
@@ -41,7 +51,7 @@ const minValidte: ValidateItem = {
         const result: ValidateResult = {
             valid: true
         }
-        if (isNaN(value)) {
+        if (input.value !== '-' && isNaN(value)) {
             result.valid = false;
             result.type = 'typeMismatch';
             result.validationMessage = '请填写有效的数字';
@@ -68,7 +78,7 @@ const maxValidte: ValidateItem = {
         const result: ValidateResult = {
             valid: true
         }
-        if (isNaN(value)) {
+        if (input.value !== '-' && isNaN(value)) {
             result.valid = false;
             result.type = 'typeMismatch';
             result.validationMessage = '请填写有效的数字';
@@ -87,7 +97,7 @@ const maxValidte: ValidateItem = {
 };
 
 const getCountDecimals = function (n: Number) {
-    if (Math.floor(n.valueOf()) === this.valueOf()) return 0;
+    if (Math.floor(n.valueOf()) === n) return 0;
     return n.toString().split('.')[1].length || 0;
 };
 const stepValidte: ValidateItem = {
@@ -101,7 +111,7 @@ const stepValidte: ValidateItem = {
         const result: ValidateResult = {
             valid: true
         }
-        if (isNaN(value)) {
+        if (input.value !== '-' && isNaN(value)) {
             result.valid = false;
             result.type = 'typeMismatch';
             result.validationMessage = '请填写数字';
@@ -109,6 +119,7 @@ const stepValidte: ValidateItem = {
         }
         const countScales = getCountDecimals(value);
         if (countScales > scale) {
+            result.valid = false;
             result.type = 'stepMismatch';
             result.validationMessage = `请输入有效的${scale}位数字`;
         }
@@ -171,16 +182,18 @@ const patternValidte: ValidateItem = {
     }
 
 }
-const cusotmValidate: ValidateItem = {
+const customValidate: ValidateItem = {
     method(input: HTMLInputElement) {
-        const value = input.value;
         // tslint:disable-next-line: no-any
         const customValidateMethod = (input as any).customValidateMethod;
         const result: ValidateResult = {
             valid: true
         };
-        if (customValidateMethod !== undefined) {
+        if (customValidateMethod) {
             const validateResult: ValidateResult = customValidateMethod.method(input);
+            if (validateResult === null || validateResult === undefined) {
+                return result;
+            }
             if (!validateResult.valid) {
                 result.valid = false;
                 result.type = 'customError';
@@ -191,8 +204,8 @@ const cusotmValidate: ValidateItem = {
         return result;
     }
 }
-const getDefaultValidateList = (inputEL: HTMLInputElement|unknown) => {
-    const input= inputEL as any;
+const getDefaultValidateList = (inputEL: HTMLInputElement | unknown) => {
+    const input = inputEL as any;
     const items: ValidateItem[] = [];
     if (input.required) {
         items.push(requiredValidte);
@@ -203,26 +216,29 @@ const getDefaultValidateList = (inputEL: HTMLInputElement|unknown) => {
     if (input.maxLength) {
         items.push(tooLongValidte);
     }
-    if (input.min !== undefined) {
-        items.push(minValidte);
+    if(input.type ==='number'){
+        if (input.min !== undefined) {
+            items.push(minValidte);
+        }
+        if (input.max !== undefined) {
+            items.push(maxValidte);
+        }
+        if (input.scale) {
+            items.push(stepValidte);
+        }
     }
-    if (input.max !== undefined) {
-        items.push(maxValidte);
-    }
-
     if (input.pattern !== undefined) {
         items.push(patternValidte);
     }
     if (input.customValidateMethod) {
-        items.push(cusotmValidate);
+        items.push(customValidate);
     }
-
     return items;
 }
 
-const getValidityResult: any = (input: HTMLInputElement|unknown) => {
+const getValidityResult: any = (input: HTMLInputElement | unknown) => {
     const items = getDefaultValidateList(input);
-    const result = {
+    const result: any = {
         badInput: false,
         customError: false,
         patternMismatch: false,
@@ -234,9 +250,7 @@ const getValidityResult: any = (input: HTMLInputElement|unknown) => {
         typeMismatch: false,
         valid: true,
         valueMissing: false,
-        message: {
-
-        }
+        message: []
     };
     for (let i = 0, j = items.length; i < j; i++) {
         const item = items[i];
@@ -245,36 +259,17 @@ const getValidityResult: any = (input: HTMLInputElement|unknown) => {
             result.valid = false;
             if (itemResult.type) {
                 result[itemResult.type] = true;
-                result.message[itemResult.type] = itemResult.validationMessage;
+                const mesage: any = {
+                    type: itemResult.type,
+                    message: itemResult.validationMessage
+                };
+                result.message.push(mesage);
             }
         }
     }
-    return (result as ValidityState);
+    return Object.freeze(result);
 };
-
-
-let inputEL = document.createElement('input');
-inputEL.required = true;
-inputEL.pattern='[0-9]ab';
-inputEL.value = '2';
-inputEL.minLength = 2;
-inputEL.maxLength = 4;
-inputEL.max = '1000';
-inputEL.min = '10';
-(inputEL as any).customValidateMethod={
-    method(input){
-        const result: ValidateResult = {
-            valid: input.value!='2'
-        };
-        if(!result.valid){
-            result.validationMessage='值不能为2';
-        }
-
-    }
-
-}
-
-console.log(getValidityResult(inputEL));
+export { getValidityResult };
 
 
 
