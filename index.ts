@@ -9,17 +9,12 @@ import './elements/p-checkbox';
 import './elements/p-radio';
 import './elements/p-button';
 import './elements/p-rate';
-
-
 import './elements/p-pagebtn';
 import './elements/p-input';
 import './elements/p-switch';
 import './elements/p-tab';
 import './elements/tree/PTree';
-
-
-
-
+import './elements/p-pop';
 
 const LitHeler={
   html:html,

@@ -66,7 +66,6 @@ class PInput extends MinInputClass {
     @property({ type: String, reflect: false }) leftIcon: string;
     @property({ type: String, reflect: false }) rightIcon: string;
     @property({ type: Boolean, reflect: true }) block: boolean = false;
-    @property({ type: Boolean, reflect: true }) search: boolean = false;
     @property({ type: Boolean, reflect: true }) clear: boolean = false;
     @property({ type: Number, reflect: true }) debounce: number = 0;
     @property({ type: Number, reflect: true }) throttle: number = 0;
@@ -165,7 +164,6 @@ class PInput extends MinInputClass {
             visibility:hidden;
             transition:0s;
         }
-       
         .btn-number p-button{
             display: flex;
             color: #999;
@@ -376,7 +374,7 @@ class PInput extends MinInputClass {
                 ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}
                 ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'  icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
                 ${this.clear ? html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>` : ''}
-                ${this.search ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
+                ${this.type ==='search' ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
                 ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number"><p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" ></p-button><p-button id="btn-sub" @click="${this._stepDel}" icon="down" type="flat"></p-button></div>` : ''}
             </p-tips>`;
     }

@@ -259,7 +259,7 @@ class PTabContent extends LitElement {
             display:none !important;
         }`;
     }
-    @property({ type: String, reflect: true })
+  
     @property({ type: String, reflect: true }) label: string = null;
     @property({ type: String, reflect: true }) key: string = null;
     @property({ type: String, reflect: true }) icon: string = null;
