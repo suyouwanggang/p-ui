@@ -255,7 +255,12 @@ class Ppop extends LitElement {
             const pop =this.popContent as any;
             if(pop && pop.isAutoCreate){
                 if( changedProperties.has('tipContent')){
-                    pop.children[0].textContent=this.tipContent;
+                    let firstChild=pop.firstChild;
+                    if(!firstChild){
+                        firstChild=document.createElement('div');
+                        pop.appendChild(firstChild);
+                    }
+                    firstChild.textContent=this.tipContent;
                 }
                 if( changedProperties.has('tipTitle')){
                     pop.tipTitle=this.tipTitle;
@@ -307,6 +312,9 @@ class PPopContent extends LitElement {
         div[part=popBody] {
             flex: 1;
         }
+        div[part=popTitle]:not(:empty) ~ div[part]{ //选择E元素后面的所有兄弟元素F，元素E与F必须同属一个父级
+            margin-right:-1em;
+        }
         div[part=popFooter]{
             margin-top:8px;
             padding: 3px 0 5px 0;
@@ -341,6 +349,7 @@ class PPopContent extends LitElement {
 
     @property({ type: Boolean, reflect: true }) open: boolean = false;
     @property({ type: Boolean, reflect: true }) loading: boolean = false;
+    @property({ type: Boolean, reflect: true }) hiddenClose: boolean = false;
     @property({ type: String, reflect: true }) type: string = undefined;
     @property({ type: String, reflect: true }) tipTitle: string = undefined;
     @property({ type: String, reflect: true }) okText: string = undefined;
@@ -348,7 +357,7 @@ class PPopContent extends LitElement {
     render() {
         return html`
             ${this.type === 'confirm' ? html`<p-icon id="popcon-type" name="question-circle" part="popIcon" ></p-icon>` : ''}
-            <p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>
+            ${this.hiddenClose? '': html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>` }  
             <div  part="popContent">
                <div  part="popTitle" id="title">${this.tipTitle}</div>
                 <div part="popBody">
