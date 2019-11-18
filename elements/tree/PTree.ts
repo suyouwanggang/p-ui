@@ -84,7 +84,7 @@ const listToTreeData = function (nodeList: TreeNodeData[], rootKey: string | num
         });
     }
     return root;
-}
+};
 
 
 
@@ -104,7 +104,7 @@ const findDataByKey = function (data: TreeNodeData, key: string | number): TreeN
         }
     }
     return null;
-}
+};
 
 @customElement('p-tree-node')
 class PTreeNode extends LitElement {
@@ -130,21 +130,24 @@ class PTreeNode extends LitElement {
             this.data.closeable = this.hasAttribute('closeable');
         }
     }
-    updated(changedProperties: Map<string | number | symbol, unknown>) {
-        super.updated(changedProperties);
-        if (this.isConnected && changedProperties.has('close')) {
-            this._fireNodeEvent('nodeToogle');
-            if (this.close) {
-                this._fireNodeEvent('nodeClose');
-            } else {
-                this._fireNodeEvent('nodeOpen');
-            }
-        }
-    }
+    // updated(changedProperties: Map<string | number | symbol, unknown>) {
+    //     super.updated(changedProperties);
+    //     if (this.isConnected && changedProperties.has('close')) {
+    //         this._fireNodeEvent('nodeToogle');
+    //         if (this.close) {
+    //             this._fireNodeEvent('nodeClose');
+    //         } else {
+    //             this._fireNodeEvent('nodeOpen');
+    //         }
+    //     }
+    // }
 
     private _fireNodeEvent(eventName: string) {
         this.dispatchEvent(new CustomEvent(eventName, {
-            bubbles:true
+            bubbles: true,
+            detail: {
+                close: this.close
+            }
         }));
     }
     static get styles() {
@@ -215,6 +218,12 @@ class PTreeNode extends LitElement {
             } else {
                 this.close = !this.close;
             }
+            this._fireNodeEvent('nodeToogle');
+            if (this.close) {
+                this._fireNodeEvent('nodeClose');
+            } else {
+                this._fireNodeEvent('nodeOpen');
+            }
             this.requestUpdate();
         }
     }
@@ -245,12 +254,7 @@ class PTreeNode extends LitElement {
         `;
     }
     private _clickNode(ev: MouseEvent) {
-        this.dispatchEvent(new CustomEvent('nodeNameClick', {
-            bubbles: true,
-            detail: {
-                'node': this
-            }
-        }));
+        this._fireNodeEvent('nodeNameClick');
     }
 }
 
@@ -434,11 +438,7 @@ class PTree extends LitElement {
     }
     renderNode(d: TreeNodeData, tree: PTree): TemplateResult {
         return html`<p-tree-node 
-           @nodeNameClick=${this._nodeHandler} 
-           @nodeToogle=${this._nodeHandler} 
-           @nodeClose=${this._nodeHandler}
-           @nodeOpen=${this._nodeHandler}
-            .data=${d} .orginalData=${d.orginalData}   data-key=${ifDefined(d.key)}  .nodeRender=${tree.nodeRender}>
+            .data=${d} .orginalData=${d.orginalData}   key=${ifDefined(d.key)}  .nodeRender=${tree.nodeRender}>
                 ${tree.renderSubNode(d, tree)}
         </p-tree-node> `;
     }
@@ -447,6 +447,7 @@ class PTree extends LitElement {
             bubbles: true,
             detail: {
                 'node': node,
+                'close':node.close
             }
         }));
     }
@@ -473,17 +474,19 @@ class PTree extends LitElement {
         // console.log('startNode==='+JSON.stringify(startNode));
         const child = startNode != null ? startNode.child : null;
         const tree = this;
-        return html`<div id="container">
+        return html`<div id="container" 
+        @nodeNameClick=${this._nodeHandler} 
+        @nodeToogle=${this._nodeHandler} 
+        @nodeClose=${this._nodeHandler}
+        @nodeOpen=${this._nodeHandler}>
             ${startNode != null && tree.includeStartNode ?
                 tree.renderNode(startNode, tree) :
                 child != null ?
                     child.map((item: TreeNodeData) => tree.renderNode(item, tree))
                     : ''
             }
-            <slot id="slots"   @nodeNameClick=${this._nodeHandler} 
-           @nodeToogle=${this._nodeHandler} 
-           @nodeClose=${this._nodeHandler}
-           @nodeOpen=${this._nodeHandler}></slot>
+            <slot id="slots"  } 
+           ></slot>
         </div>
             `;
 
