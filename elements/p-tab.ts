@@ -335,7 +335,7 @@ class PTab extends LitElement {
         if (isTopPosition) {
             header.scrollTop = Math.max(0, active.top + active.offsetHeight / 2 - header.offsetHeight / 2);
         } else {
-            header.scrollLeft = active.left + active.width / 2 - header.offsetWidth / 2;
+            header.scrollLeft =Math.max(active.left + active.width / 2 - header.offsetWidth / 2);
         }
     }
 
