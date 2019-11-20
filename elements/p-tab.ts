@@ -8,9 +8,7 @@ type tabPosition = 'top' | 'bottom' | 'left' | 'right';
 type tabAgile = '' | 'space-around' | 'space-between' | 'space-evenly' | 'flex-start' | 'flex-end';
 @customElement('p-tab')
 class PTab extends LitElement {
-    @property({ type: String, reflect: true }) tabPosition: tabPosition = 'top';
-    @property({ type: String, reflect: true }) activeKey: string = null;
-    @property({ type: String, reflect: true }) tabAgile: tabAgile = null;
+
 
     static get styles() {
         return css`
@@ -24,6 +22,7 @@ class PTab extends LitElement {
             }
          .tab_nav_con{
             flex:0 0 auto;
+            position:relative;
             overflow: hidden;
             display: flex;
             color:var(--tab-font-color);
@@ -112,8 +111,11 @@ class PTab extends LitElement {
            border-top:none;
            border-bottom:1px solid var(--tab-border-color,rgba(0,0,0,.2));
        }
-       ::slotted(p-tab-content:not([active])){
+       ::slotted(p-tab-content){
             display:none;
+       }
+       ::slotted(p-tab-content[active]){
+            display:block;
        }
         `;
     }
@@ -125,9 +127,11 @@ class PTab extends LitElement {
         for (let i = 0, j = nodeList.length; i < j; i++) {
             let el: any = nodeList[i];
             if (el.nodeType === 1) {
-                 el = el.cloneNode(true);
-                 el.removeAttribute('slot');
-                 array.push(el.outerHTML);
+                el.style.display = '';
+                const elClone = el.cloneNode(true);
+                elClone.removeAttribute('slot');
+                array.push(elClone.outerHTML);
+                el.style.display = 'none';
             }
         }
         return html`
@@ -160,10 +164,13 @@ class PTab extends LitElement {
         });
         return result;
     }
+    @property({ type: String, reflect: true }) tabPosition: tabPosition = 'top';
+    @property({ type: String, reflect: true }) activeKey: string = null;
+    @property({ type: String, reflect: true }) tabAgile: tabAgile = null;
     render() {
         return html`
             <div class="tab_container" tabPosition="${this.tabPosition}" >
-                <div class="tab_nav_con" style="justify-content:${this.tabAgile}" id='tab_nav_con_id' >
+                <div class="tab_nav_con" style="${this.tabAgile ? `justify-content:${this.tabAgile}` : ''}" id='tab_nav_con_id' >
                    ${this.renderTab()} 
                 </div>
                 <slot id="slots" class="tab_content" ></slot>
@@ -201,26 +208,143 @@ class PTab extends LitElement {
                 });
                 if (this.dispatchEvent(beforeEvent)) {
                     this.activeKey = tabContent.key;
+                    this.dispatchChangeEvent(tabContent);
                 }
             }
         });
+        const stopBodyTouch = (ev: TouchEvent) => {
+            ev.preventDefault();
+        };
+        const options = {
+            passive: false
+        };
+        let startX: number = undefined;
+        let startY: number = undefined;
+        slots.addEventListener('touchstart', (event: TouchEvent) => {
+            document.addEventListener('touchstart', stopBodyTouch, options);
+            startX = event.changedTouches[0].pageX,
+            startY = event.changedTouches[0].pageY;
+        }, options);
+        function GetSlideAngle(dx: number, dy: number) {
+            return Math.atan2(dy, dx) * 180 / Math.PI;
+        }
+        //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+        function GetSlideDirection(startX: number, startY: number, endX: number, endY: number) {
+            const dy = startY - endY;
+            const dx = endX - startX;
+            let result = 0;
+            //如果滑动距离太短
+            if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+                return result;
+            }
+            const angle = GetSlideAngle(dx, dy);
+            if (angle >= -45 && angle < 45) {
+                result = 4;
+            } else if (angle >= 45 && angle < 135) {
+                result = 1;
+            } else if (angle >= -135 && angle < -45) {
+                result = 2;
+            } else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+                result = 3;
+            }
+            return result;
+        }
+        let toutchDirect = 0;
+        slots.addEventListener('touchmove', (event: TouchEvent) => {
+            const endX = event.changedTouches[0].pageX;
+            const endY = event.changedTouches[0].pageY;
+            toutchDirect = GetSlideDirection(startX, startY, endX, endY);
+            if (toutchDirect === 3 || toutchDirect === 4) {
+                event.stopPropagation();
+                event.preventDefault();
+                document.addEventListener('touchstart', stopBodyTouch, options);
+            }
+        }, options);
+        slots.addEventListener('touchend', (event: TouchEvent) => {
+            document.removeEventListener('touchmove', stopBodyTouch);
+            document.removeEventListener('touchstart', stopBodyTouch);
+            if (toutchDirect === 3 || toutchDirect === 4) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const tabs: PTabContent[] = [...this.querySelectorAll('p-tab-content') as any];
+            let index = tabs.indexOf(this.activeTab);
+            if (toutchDirect === 4) {
+                //left 2 right;
+                if (index > 0) {
+                    index--;
+                    const tab = tabs[index];
+                    this.activeKey = tab.key;
+                    this.dispatchChangeEvent(tab);
+                }
+
+            } else if (toutchDirect === 3) {
+                //right 2 left;
+                index++;
+                if (index < tabs.length) {
+                    const tab = tabs[index];
+                    this.activeKey = tab.key;
+                    this.dispatchChangeEvent(tab);
+                }
+            }
+        });
+        this.requestUpdate();
+        this.setHeaderScroll();
     }
-    dispatchChangeEvent(tabContent: PTabContent) {
+     dispatchChangeEvent(tabContent: PTabContent) {
         if (tabContent == null || tabContent.disabled) {
             return;
         }
+        const detail = {
+            tabContent: tabContent,
+            label: tabContent.label,
+            index: this.getTabIndex(tabContent),
+            key: tabContent.key
+        }
         this.dispatchEvent(new CustomEvent('change', {
-            detail: {
-                tabContent: tabContent,
-                label: tabContent.label,
-                key: tabContent.key
-            }
+            detail: detail
         }));
         this.activeKey = tabContent.key;
+        this.setHeaderScroll();
+        this.dispatchEvent(new CustomEvent('changeEnd', {
+            detail: detail
+        }));
+    }
+    private setHeaderScroll() {
+        const header: HTMLElement = this.renderRoot.querySelector('#tab_nav_con_id');
+        // tslint:disable-next-line: no-any
+        const tabPos: any = {};
+        const isTopPosition = this.tabPosition === 'right' || this.tabPosition === 'left';
+        const items = header.querySelectorAll('div.tab_tabs[key]');
+        Array.from(items).forEach((item: HTMLElement, index: number) => {
+            // tslint:disable-next-line: no-any
+            const cache: any = {
+                index: index
+            };
+            if (isTopPosition) {
+                cache.height = item.offsetHeight;
+                cache.top = item.offsetTop;
+            } else {
+                cache.width = item.offsetWidth;
+                cache.left = item.offsetLeft;
+            }
+            tabPos[item.getAttribute('key')] = cache;
+        });
+        // tslint:disable-next-line: no-any
+        const active: any = tabPos[this.activeKey];
+        if (isTopPosition) {
+            header.scrollTop = Math.max(0, active.top + active.offsetHeight / 2 - header.offsetHeight / 2);
+        } else {
+            header.scrollLeft = active.left + active.width / 2 - header.offsetWidth / 2;
+        }
     }
 
     findTab(key: string): PTabContent {
         return this.querySelector(`p-tab-content[key="${key}"]`);
+    }
+    getTabIndex(tab: PTabContent) {
+        const children = [... this.querySelectorAll('p-tab-content') as any];
+        return children.indexOf(tab);
     }
     findTabByIndex(index: number): PTabContent {
         const children = this.querySelectorAll('p-tab-content');
@@ -229,12 +353,20 @@ class PTab extends LitElement {
     get activeTab(): PTabContent {
         return this.findTab(this.activeKey);
     }
-    attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
-        super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
-        if (name === 'activekey' && this.hasUpdated && oldvalue !== newValue && this.renderRoot != null) {
-            this.dispatchChangeEvent(this.findTab(newValue));
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
+        super.updated(changedProperties);
+        if (this.isConnected && (changedProperties.has('tabPosition') || changedProperties.has('tabAgile'))) {
+            this.updateComplete.then(() => {
+                this.setHeaderScroll();
+            });
         }
     }
+    //  attributeChangedCallback(name: string, oldvalue: string | null, newValue: string | null) {
+    //      super.attributeChangedCallback(name, oldvalue, newValue); //一定要调用super 方法哦
+    //     if (name === 'activekey' && this.hasUpdated && oldvalue !== newValue && this.renderRoot != null) {
+    //         this.dispatchChangeEvent(this.findTab(newValue));
+    //     }
+    //  }
 
     set activeTabByIndex(index: number) {
         const tab = this.findTabByIndex(index);
@@ -255,11 +387,10 @@ class PTabContent extends LitElement {
         :host([active]){
             display:block;
         }
-       slot[name=header]{
+        #header[name=header],   ::slotted([slot=header]){
             display:none !important;
         }`;
     }
-  
     @property({ type: String, reflect: true }) label: string = null;
     @property({ type: String, reflect: true }) key: string = null;
     @property({ type: String, reflect: true }) icon: string = null;
@@ -267,7 +398,7 @@ class PTabContent extends LitElement {
     render() {
         const pTab: PTab = this.tab;
         return html`
-            <slot id="header" name='header'>
+            <slot id="header" name='header' style="display:none;">
                 <span class='tab_label'>${this.label}</span>
                 ${this.icon ? html`<p-icon class='p-tab-icon' name=${this.icon}></p-icon>` : ''}
             </slot>

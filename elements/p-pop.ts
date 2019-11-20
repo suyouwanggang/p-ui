@@ -1,7 +1,7 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import PButton from './p-button';
-import PTips from './p-tips';
+import  './p-button';
+import  './p-tips';
 @customElement('p-pop')
 class Ppop extends LitElement {
 
@@ -357,7 +357,7 @@ class PPopContent extends LitElement {
     render() {
         return html`
             ${this.type === 'confirm' ? html`<p-icon id="popcon-type" name="question-circle" part="popIcon" ></p-icon>` : ''}
-            ${this.hiddenClose? '': html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>` }  
+            ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}
             <div  part="popContent">
                <div  part="popTitle" id="title">${this.tipTitle}</div>
                 <div part="popBody">
@@ -418,4 +418,4 @@ class PPopContent extends LitElement {
 
 export {
     Ppop, PPopContent
-}
+};

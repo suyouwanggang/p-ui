@@ -15,6 +15,7 @@ import './elements/p-switch';
 import './elements/p-tab';
 import './elements/tree/PTree';
 import './elements/p-pop';
+import './elements/p-routslot';
 
 const LitHeler={
   html:html,
