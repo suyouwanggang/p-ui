@@ -18,7 +18,7 @@ class MinInputClass extends LitElement {
     @property({ type: Number, reflect: true }) minLength: number = undefined;
     @property({ type: Number, reflect: true }) maxLength: number = undefined;
     @property({ type: Number, reflect: true }) min: number = undefined;
-    @property({ type: Number, reflect: true }) max: number = undefined;
+    @property({ type: Number, reflect: true }) max: number =Number.MAX_VALUE;
     @property({ type: Number, reflect: true }) scale: number = undefined;
     @property({ type: Object, attribute: false }) customValidateMethod: any = undefined;
     get validity(): boolean {

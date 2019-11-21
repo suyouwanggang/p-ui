@@ -1,7 +1,6 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import { PICon } from '../p-icon';
-import { env } from 'shelljs';
 
 
 interface TreeNodeData {

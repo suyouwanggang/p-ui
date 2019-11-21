@@ -11,6 +11,7 @@ import './elements/p-button';
 import './elements/p-rate';
 import './elements/p-pagebtn';
 import './elements/p-input';
+import './elements/p-slider';
 import './elements/p-switch';
 import './elements/p-tab';
 import './elements/tree/PTree';

@@ -100,7 +100,8 @@
   <p>Tab </p>
   <p-tab id="tabDIV" style=''  tabposition="bottom">
     <p-tab-content label="wanggang" icon="search" key="first">
-       <span slot='header'>header23224 </span>
+       <template slot='header'><p-button >按钮</p-button></template>
+       <p-slider min=1 max=100 value='10'></p-slider>
         <p-router-slot route='test/AB/B'>
             <p slot='test'>route= test </p>
             <p slot='test/AB/B'>route= test/AB/B  </p>
