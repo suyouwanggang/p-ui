@@ -87,7 +87,7 @@ export default class PPageBtn extends LitElement {
             detail: {
                 current: this.value,
                 pagesize: this.pagesize,
-                total: this.total,
+                total: this.total
             }
         }));
     }
@@ -96,21 +96,49 @@ export default class PPageBtn extends LitElement {
         if (button) {
             let pageNo= Number(button.getAttribute('pageNo'));
             if(!isNaN(pageNo)){
-                this.value =pageNo;
-                this.dispatchChange();
+                if(this.dispatchEvent(new CustomEvent('beforechange', {
+                    cancelable:true,
+                    detail: {
+                        current: this.value,
+                        toPage:pageNo,
+                        pagesize: this.pagesize,
+                        total: this.total
+                    }
+                }))){
+                    this.value =pageNo;
+                    this.dispatchChange();
+                }
             }
         }
     }
+    changePageNum(addOrDel:number){
+        let toValue=this.value+addOrDel;
+        if(toValue<=0|| toValue>this.pageCount){
+            return ;
+        }
+        if(this.dispatchEvent(new CustomEvent('beforechange', {
+            cancelable:true,
+            detail: {
+                current: this.value,
+                toPage:toValue,
+                pagesize: this.pagesize,
+                total: this.total
+            }
+        }))){
+            this.value =toValue;
+            this.dispatchChange();
+        }
+
+    }
     firstUpdated() {
+        let toValue=undefined;
         this.addEventListener('keydown', (ev) => {
             switch (ev.keyCode) {
                 case 37://ArrowLeft
-                    this.value--;
-                    this.dispatchChange();
+                    this.changePageNum(-1);
                     break;
                 case 39://ArrowRight
-                    this.value++;
-                    this.dispatchChange();
+                    this.changePageNum(1);
                     break;
                 default:
                     break;
@@ -118,16 +146,10 @@ export default class PPageBtn extends LitElement {
         });
     }
     _pagePreHanlder(){
-        if(this.value>1){
-            this.value--;
-            this.dispatchChange();
-        }
+        this.changePageNum(-1);
     }
     _pageNextHanlder(){
-        if(this.value<this.pageCount){
-            this.value++;
-            this.dispatchChange();
-        }
+        this.changePageNum(1);
     }
     updated(changedProperties: Map<string | number | symbol, unknown>) {
         const currentOld = this.value;
