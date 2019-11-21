@@ -125,19 +125,23 @@ class PTab extends LitElement {
         const nodeList: Node[] = slots.assignedNodes({ flatten: true });
         const array = [];
         for (let i = 0, j = nodeList.length; i < j; i++) {
-            let el: any = nodeList[i];
-            if (el.nodeType === 1) {
+            const el: any = nodeList[i];
+            if (el instanceof HTMLTemplateElement) {
+                const template = el ;
+                const elClone = document.importNode(template.content, true);
+                array.push(elClone);
+            } else if (el.nodeType === 1) {
                 el.style.display = '';
                 const elClone = el.cloneNode(true);
                 elClone.removeAttribute('slot');
-                array.push(elClone.outerHTML);
+                array.push(elClone);
                 el.style.display = 'none';
             }
         }
         return html`
             <div key=${tabContent.key}  ?disabled=${tabContent.disabled}
                   class="tab_tabs ${tabContent.key === this.activeKey ? 'tab_on' : ''}  tab_tabs_outer">
-                  ${unsafeHTML(array.join(''))}
+                  ${array.map((el: HTMLElement) => html`${el}`)}
          </div>`;
     }
     protected renderTab(): TemplateResult | Array<TemplateResult> {
@@ -223,7 +227,7 @@ class PTab extends LitElement {
         slots.addEventListener('touchstart', (event: TouchEvent) => {
             document.addEventListener('touchstart', stopBodyTouch, options);
             startX = event.changedTouches[0].pageX,
-            startY = event.changedTouches[0].pageY;
+                startY = event.changedTouches[0].pageY;
         }, options);
         function GetSlideAngle(dx: number, dy: number) {
             return Math.atan2(dy, dx) * 180 / Math.PI;
@@ -291,7 +295,7 @@ class PTab extends LitElement {
         this.requestUpdate();
         this.setHeaderScroll();
     }
-     dispatchChangeEvent(tabContent: PTabContent) {
+    dispatchChangeEvent(tabContent: PTabContent) {
         if (tabContent == null || tabContent.disabled) {
             return;
         }
@@ -335,7 +339,7 @@ class PTab extends LitElement {
         if (isTopPosition) {
             header.scrollTop = Math.max(0, active.top + active.offsetHeight / 2 - header.offsetHeight / 2);
         } else {
-            header.scrollLeft =Math.max(active.left + active.width / 2 - header.offsetWidth / 2);
+            header.scrollLeft = Math.max(active.left + active.width / 2 - header.offsetWidth / 2);
         }
     }
 
