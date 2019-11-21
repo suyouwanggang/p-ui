@@ -1,5 +1,6 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
+type lineSize=''|'mid'|'large';
 @customElement('p-slider')
 class PSlider extends LitElement {
     public get input(): HTMLInputElement | unknown {
@@ -8,15 +9,14 @@ class PSlider extends LitElement {
     @property({ type: String, reflect: true }) name: string;
     @property({ type: Number, reflect: true }) value: number = 0;
     @property({ type: Boolean, reflect: true }) vertical: boolean = false;
-    @property({ type: String, reflect: false,attribute:false }) height: string = undefined;
+    @property({ type: Boolean, reflect: true }) alwaysTip: boolean = false;
     @property({ type: Boolean, reflect: true }) showtips: boolean = false;
-    @property({ type: Boolean, reflect: true }) invalid: boolean = false;
-    @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
     @property({ type: Boolean, reflect: true }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
-    @property({ type: String, reflect: true }) errorMessage: string = undefined;
     @property({ type: String, reflect: true }) suffix: string = undefined;
     @property({ type: String, reflect: true }) prefix: string = undefined;
+    @property({ type: String, reflect: true }) lineSize: lineSize = undefined;
+    @property({ type: String, reflect: true }) lineColor: string = undefined;
     @property({ type: Number, reflect: true }) min: number = 0;
     @property({ type: Number, reflect: true }) max: number = undefined;
     @property({ type: Number, reflect: true }) step: number = 1;
@@ -26,18 +26,22 @@ class PSlider extends LitElement {
             box-sizing:border-box; 
             display:flex; 
             padding:0 5px;
+            --lineSize:2px;
+            --lineBorder:2px;
+            --trackSize:10px;
         }
         :host([vertical]){
            height:300px;
         }
         :host([disabled]){
-            opacity:var(--disabled-opaticity,0.8);
+            opacity:var(--disabled-opaticity,0.6);
             --themeColor:#999; 
             cursor:not-allowed;
         }
         
-        :host([disabled]) input[type="range"]{ 
+        :host([disabled]) #slider{ 
             pointer-events:none; 
+            opacity:var(--disabled-opaticity,0.6);
         }
         #slider-con{ 
             display:flex; 
@@ -62,33 +66,44 @@ class PSlider extends LitElement {
             background:none;
             border-radius:2px;
         }
+        :host([linesize='mid']){
+            --lineSize:4px;
+            --lineBorder:3px;
+            --trackSize:14px;
+        }
+
+        :host([linesize='larger']){
+            --lineSize:8px;
+            --lineBorder:4px;
+            --trackSize:22px;
+        }
         #slider::-webkit-slider-runnable-track{
             display: flex;
             align-items: center;
             position: relative;
-            height: 2px;
-            border-radius:2px;
-            background:linear-gradient(to right, var(--themeColor,#42b983) calc(100% * var(--percent)), rgba(0,0,0,.1) 0% );
+            height:var(--lineSize) ;
+            border-radius:var(--lineBorder) ;
+            background:linear-gradient(to right, var(--themeColor,#42b983) calc( 100% * var(--percent) ), rgba(0,0,0,.1) 0% );
         }
         #slider::-moz-range-progress {
             display: flex;
             align-items: center;
             position: relative;
-            height: 2px;
-            border-radius:2px;
+            height:var(--lineSize);
+            border-radius: var(--lineBorder);
             outline : 0;
             background:var(--themeColor,#42b983)
         }
         #slider::-moz-range-track{
-            height: 2px;
+            height:  var(--lineSize) ; 
             background: rgba(0,0,0,.1);
         }
         #slider::-webkit-slider-thumb{
             -webkit-appearance: none;
-            border:2px solid var(--themeColor,#42b983);
+            border:  var(--lineSize)  solid var(--themeColor,#42b983);
             position: relative;
-            width:10px;
-            height:10px;
+            width:   var(--trackSize) ; 
+            height:  var(--trackSize) ; 
             border-radius: 50%;
             background:var(--themeColor,#42b983);
             transition:.2s cubic-bezier(.12, .4, .29, 1.46);
@@ -98,8 +113,8 @@ class PSlider extends LitElement {
             pointer-events:none;
             border:2px solid var(--themeColor,#42b983);
             position: relative;
-            width:10px;
-            height:10px;
+            width:    var(--trackSize) ; 
+            height:   var(--trackSize) ; 
             border-radius: 50%;
             background:var(--themeColor,#42b983);
             transition:.2s cubic-bezier(.12, .4, .29, 1.46);
@@ -124,7 +139,7 @@ class PSlider extends LitElement {
             top: 50%;
             left: 50%;
             transform:translate(-50%, -50%) rotate(-90deg);
-            width:calc( var(--h,300px) - 10px);
+            width:calc( var(--h,300px)  - 10px );
         }
         :host([vertical]) #slider-con::before{
             writing-mode: vertical-lr;
@@ -136,7 +151,7 @@ class PSlider extends LitElement {
             width:20px;
         }
         :host([vertical]) p-tips::before,:host([vertical]) p-tips::after{
-            left: calc( var(--percent,.5) * 100% + 5px );
+            left: calc( var(--percent ,.5) * 100% + 5px );
         }
         :host(:focus-within) #slider-con,:host(:hover) #slider-con{
             z-index:10
@@ -153,8 +168,7 @@ class PSlider extends LitElement {
     }
     reset() {
         this.value = 0;
-        this.slider!.value = '0';
-        this.invalid = false;
+       
     }
     get form(): HTMLFormElement {
         return this.closest('form,p-form');
@@ -164,12 +178,17 @@ class PSlider extends LitElement {
         super.firstUpdated(_changedProperties);
         const sliderCon: HTMLElement = this.renderRoot.querySelector('#slider-con');
         this.addEventListener('wheel', (ev: WheelEvent) => {
-            if (ev.deltaY < 0 && !this.vertical || ev.deltaY > 0 && this.vertical) {
-                this.value -= this.step * 5;
-            } else {
-                this.value += this.step * 5;
+            if(this.disabled){
+                return ;
             }
-            sliderCon.style.setProperty('--percent', `${(this.value - this.min) / (this.max - this.min)}`);
+            ev.preventDefault();
+            if (ev.deltaY < 0 && !this.vertical || ev.deltaY > 0 && this.vertical) {
+                let newValue=this.value-this.step*5;
+                this.value =Math.max(this.min, newValue);
+            } else {
+                let newValue=this.value+this.step*5;
+                this.value=Math.min(this.max,newValue);
+            }
             this.dispatchEvent(new CustomEvent('change', {
                 detail: {
                     value: this.value
@@ -185,7 +204,8 @@ class PSlider extends LitElement {
                 this._resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     for (const entry of entries) {
                         const { height } = entry.contentRect;
-                        this.height = height + 'px';
+                        // this.height = height + 'px';
+                        this.style.setProperty('--h',height+"px");
                     }
                 });
                 this._resizeObserver.observe(this);
@@ -209,10 +229,10 @@ class PSlider extends LitElement {
     render() {
         return html`<p-tips id='slider-con' 
          dir=${this.vertical ? 'right' : 'top'} 
-         style="--percent: ${this.percent}; ${this.vertical ? '--h:' + this.height : ''}" 
-          .tips=${this.showtips && !this.disabled ? this.tipContent : ''}
+         style="--percent: ${this.percent}; "  .show=${this.alwaysTip?'true':''}
+          .tips=${this.alwaysTip||(this.showtips && !this.disabled) ? this.tipContent : ''}
          >
-          <input  type='range' id='slider' value=${this.value}  @input=${this.inputHander} @change=${this.changeHander}
+          <input  type='range' id='slider' .value=${String(this.value)}  @input=${this.inputHander} @change=${this.changeHander}
            min=${this.min} max=${this.max} step=${this.step} ?disabled=${this.disabled} /> </p-tips>
         `;
 
@@ -237,8 +257,10 @@ class PSlider extends LitElement {
     }
     disconnectedCallback() {
         super.disconnectedCallback();
-        this._resizeObserver.unobserve(this);
-        this._resizeObserver = null;
+        if(this._resizeObserver!=null){
+            this._resizeObserver.unobserve(this);
+            this._resizeObserver = null;
+        }
     }
 
     update(_changedProperties: Map<string | number | symbol, unknown>) {
@@ -254,15 +276,22 @@ class PSlider extends LitElement {
                 this.value = this.max;
             }
         }
-        if (_changedProperties.has('vertical')) {
-            this._initResizeObserver();
-        }
         if (_changedProperties.has('min')) {
             if (this.min < 0) {
                 this.min = 0;
             }
-            if (this.value < this.max) {
-                this.value = this.max;
+            if (this.value < this.min) {
+                this.value = this.min;
+            }
+        }
+        if (_changedProperties.has('vertical')) {
+            this._initResizeObserver();
+        }
+        if(_changedProperties.has('lineColor')){
+            if(this.lineColor){
+                this.style.setProperty('--themeColor',this.lineColor);
+            }else{
+                this.style.removeProperty('--themeColor');
             }
         }
     }
