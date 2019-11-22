@@ -3,7 +3,7 @@ interface ValidateResult {
     type?: string; //错误类型
     validationMessage?: string; //错误说明
 }
-
+import NP from   'number-precision';
 interface ValidateItem {
     method(input: unknown): ValidateResult | undefined;
 }
@@ -106,8 +106,7 @@ const stepValidte: ValidateItem = {
             return undefined;
         }
         const value = Number(input.value.trim());
-        let scale = Number(input.getAttribute('scale'));
-        scale = Math.abs(Number(scale.toFixed(0)));
+        const step = Number(input.getAttribute('step'));
         const result: ValidateResult = {
             valid: true
         }
@@ -117,16 +116,22 @@ const stepValidte: ValidateItem = {
             result.validationMessage = '请填写数字';
             return result;
         }
-        const countScales = getCountDecimals(value);
-        if (countScales > scale) {
+        let min = Number(input.getAttribute('min'));
+        if (isNaN(min)) {
+            min = 0;
+        }
+        const aValue = NP.minus( value ,min);
+        const bValue = NP.divide(aValue,step);
+        if (Math.floor(bValue)!==Math.ceil(bValue)) {
             result.valid = false;
             result.type = 'stepMismatch';
-            result.validationMessage = `请输入有效的${scale}位数字`;
+            const closeMin = NP.plus(NP.times(Math.floor(bValue) , step) ,min)
+            const  closeMax = NP.plus(NP.times(Math.ceil(bValue) , step) ,min);
+            result.validationMessage = `请输入有效值,两个最接近的数值分别是${closeMin}和${closeMax}`;
         }
         return result;
     }
 };
-
 
 const tooShortValidte: ValidateItem = {
     method(input: HTMLInputElement) {
@@ -216,14 +221,14 @@ const getDefaultValidateList = (inputEL: HTMLInputElement | unknown) => {
     if (input.maxLength) {
         items.push(tooLongValidte);
     }
-    if(input.type ==='number'){
+    if (input.type === 'number') {
         if (input.min !== undefined) {
             items.push(minValidte);
         }
         if (input.max !== undefined) {
             items.push(maxValidte);
         }
-        if (input.scale) {
+        if (input.step) {
             items.push(stepValidte);
         }
     }
@@ -269,7 +274,7 @@ const getValidityResult: any = (input: HTMLInputElement | unknown) => {
     }
     return Object.freeze(result);
 };
-export { getValidityResult };
+export { getValidityResult ,getCountDecimals };
 
 
 

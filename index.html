@@ -50,9 +50,11 @@
 <body>
 
 <form>
+  <p-color-pane value='yellow'></p-color-pane>
 
   <p-switch id="switch" checked value="1"></p-switch>
   <p-rate value=2  hover id="pRate" >  <span>sdfsfsd</span></p-rate>
+  <p-slider value=10  max=100></p-slider>
   <script>
       document.getElementById('pRate').tipStrings=['terrible','bad','normal','good','wonderful'];
   </script>
@@ -67,7 +69,6 @@
     <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>
     <p-icon name="heart" id="icon" size="50" lefticon="creditcard"></p-icon>
 
-    
   </div>
   <p>Tips </p>
  
@@ -102,6 +103,8 @@
     <p-tab-content label="wanggang" icon="search" key="first">
        <template slot='header'><p-button >按钮</p-button></template>
        <p-slider min=1 max=100 value='10'></p-slider>
+       <p-color-picker dir='topleft'  style='margin-left:200px;'></p-color-pick>
+
         <p-router-slot route='test/AB/B'>
             <p slot='test'>route= test </p>
             <p slot='test/AB/B'>route= test/AB/B  </p>

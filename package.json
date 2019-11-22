@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@webcomponents/webcomponentsjs": "latest",
     "ant-design-vue": "^1.3.17",
     "element-closest-polyfill": "^1.0.0",
     "lit-element": "latest",
     "lit-html": "latest",
+    "number-precision": "^1.3.2",
     "xy-ui": "^1.8.8"
   },
   "devDependencies": {
@@ -17,6 +17,7 @@
     "@babel/plugin-proposal-decorators": "^7.2.3",
     "@babel/preset-env": "^7.6.2",
     "@webcomponents/webcomponentsjs": "latest",
+    "lit-element": "latest",
     "resize-observer-polyfill": "^1.5.1",
     "rollup": "^1.23.1",
     "rollup-plugin-babel": "^4.3.3",

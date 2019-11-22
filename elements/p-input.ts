@@ -1,6 +1,7 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import { getValidityResult } from './helper/formValidate';
+import { getValidityResult ,getCountDecimals } from './helper/formValidate';
+import NP from 'number-precision';
 import PButton from './p-button';
 import PTips from './p-tips';
 type inputtype = 'text' | 'password' | 'email' | 'url' | 'number' | 'tel' | 'search';
@@ -19,7 +20,7 @@ class MinInputClass extends LitElement {
     @property({ type: Number, reflect: true }) maxLength: number = undefined;
     @property({ type: Number, reflect: true }) min: number = undefined;
     @property({ type: Number, reflect: true }) max: number =Number.MAX_VALUE;
-    @property({ type: Number, reflect: true }) scale: number = undefined;
+    @property({ type: Number, reflect: true }) step: number = 1;
     @property({ type: Object, attribute: false }) customValidateMethod: any = undefined;
     get validity(): boolean {
         return getValidityResult(this).valid;
@@ -42,7 +43,7 @@ class MinInputClass extends LitElement {
 
 }
 
-function throttleFunction(fn: any, delay: number, context: any) {
+function throttleFunction(fn: Function, delay: number, context: any) {
     let previous = 0;
     // 使用闭包返回一个函数并且用到闭包函数外面的变量previous
     return function () {
@@ -69,7 +70,6 @@ class PInput extends MinInputClass {
     @property({ type: Boolean, reflect: true }) clear: boolean = false;
     @property({ type: Number, reflect: true }) debounce: number = 0;
     @property({ type: Number, reflect: true }) throttle: number = 0;
-    @property({ type: Number, reflect: true }) step: number = undefined;
     @property({ type: Boolean, reflect: true }) showStep: boolean = false;
     static get styles() {
         return css`
@@ -196,6 +196,7 @@ class PInput extends MinInputClass {
         } else {
             this.pTipCon.show = 'true';
             this.invalid = true;
+            this.input.setCustomValidity('');
             this.pTipCon.tips = this.validationMessage;
             return false;
         }
@@ -260,7 +261,11 @@ class PInput extends MinInputClass {
         this.dispatchEvent(inputEvent);
     }
     private static NUMBERINPUTARRAY: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-'];
+    private _processInputInvlaide(event:Event){
+        this.input.setCustomValidity('');
+    }
     private _processInput(event: InputEvent) {
+        this.input.setCustomValidity('');
         if (this.type === 'number') {
             if (event.data && PInput.NUMBERINPUTARRAY.indexOf(event.data) === -1) {
                 const indexOf = this.input.value.lastIndexOf(event.data);
@@ -276,7 +281,7 @@ class PInput extends MinInputClass {
                 }
             }
         }
-        if (this.maxLength != undefined && this.input.value.length > this.maxLength) {
+        if (this.maxLength !== undefined && this.input.value.length > this.maxLength) {
             this.input.value = this.input.value.substr(0, this.maxLength);
         }
         this.value = this.input.value;
@@ -341,8 +346,8 @@ class PInput extends MinInputClass {
         }
         let n = Number(this.value);
         if (this.max === undefined || (n + Number(this.step) < this.max)) {
-            n = n + Number(this.step);
-            this.value = n.toString();
+            n = NP.plus(n, this.step);
+            this.value =n.toString();
             this.dispatchChange();
         }
     }
@@ -352,30 +357,26 @@ class PInput extends MinInputClass {
         }
         let n = Number(this.value);
         if (this.min === undefined || (n - Number(this.step) >= this.min)) {
-            n = n - Number(this.step);
-            this.value = n.toString();
+            n = NP.minus(n, this.step);
+            this.value =n.toString();
             this.dispatchChange();
         }
     }
     private _innerType() {
-        if (this.type === 'text' || this.type === 'password' || this.type === 'search') {
-            return this.type;
-        } else {
-            return 'text';
-        }
+        return this.type;
     }
     render() {
         return html`<p-tips  .tips=${this.tips} id="tips"  >
                 ${this.leftIcon ? html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>` : ''}
-                <input id="input" name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
-                  ?readOnly=${this.readonly}  .type="${this._innerType()}"    ?disabled=${this.disabled}
+                <input id="input"  name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
+                  ?readOnly=${this.readonly}  .type="${this._innerType()}"    ?disabled=${this.disabled} step=${ifDefined(this.step)} min=${ifDefined(this.min)} max=${ifDefined(this.max)} minLength=${ifDefined(this.minLength)} maxLength=${ifDefined(this.maxLength)}
                   @focus=${this.dispatchFocus} 
                    />
                 ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}
                 ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'  icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
                 ${this.clear ? html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>` : ''}
                 ${this.type ==='search' ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
-                ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number"><p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" ></p-button><p-button id="btn-sub" @click="${this._stepDel}" icon="down" type="flat"></p-button></div>` : ''}
+                ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number"><p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button><p-button id="btn-sub" @click="${this._stepDel}" icon="down" shape="circle" type="flat"></p-button></div>` : ''}
             </p-tips>`;
     }
 }
