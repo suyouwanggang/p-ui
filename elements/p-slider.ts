@@ -1,6 +1,6 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
-type lineSize=''|'mid'|'large';
+type lineSize = '' | 'mid' | 'large';
 @customElement('p-slider')
 class PSlider extends LitElement {
     public get input(): HTMLInputElement | unknown {
@@ -38,7 +38,6 @@ class PSlider extends LitElement {
             --themeColor:#999; 
             cursor:not-allowed;
         }
-        
         :host([disabled]) #slider{ 
             pointer-events:none; 
             opacity:var(--disabled-opaticity,0.6);
@@ -95,14 +94,14 @@ class PSlider extends LitElement {
             background:var(--themeColor,#42b983)
         }
         #slider::-moz-range-track{
-            height:  var(--lineSize) ; 
+            height:  var(--lineSize) ;
             background: rgba(0,0,0,.1);
         }
         #slider::-webkit-slider-thumb{
             -webkit-appearance: none;
             border:  var(--lineSize)  solid var(--themeColor,#42b983);
             position: relative;
-            width:   var(--trackSize) ; 
+            width:   var(--trackSize) ;
             height:  var(--trackSize) ; 
             border-radius: 50%;
             background:var(--themeColor,#42b983);
@@ -162,13 +161,12 @@ class PSlider extends LitElement {
     get slider(): HTMLInputElement {
         return this.renderRoot.querySelector('#slider');
     }
-   
+
     focus() {
         this.slider!.focus();
     }
     reset() {
         this.value = 0;
-       
     }
     get form(): HTMLFormElement {
         return this.closest('form,p-form');
@@ -178,16 +176,16 @@ class PSlider extends LitElement {
         super.firstUpdated(_changedProperties);
         const sliderCon: HTMLElement = this.renderRoot.querySelector('#slider-con');
         this.addEventListener('wheel', (ev: WheelEvent) => {
-            if(this.disabled){
-                return ;
+            if (this.disabled) {
+                return;
             }
             ev.preventDefault();
             if (ev.deltaY < 0 && !this.vertical || ev.deltaY > 0 && this.vertical) {
-                let newValue=this.value-this.step*5;
-                this.value =Math.max(this.min, newValue);
+                const newValue = this.value - this.step * 5;
+                this.value = Math.max(this.min, newValue);
             } else {
-                let newValue=this.value+this.step*5;
-                this.value=Math.min(this.max,newValue);
+                const newValue = this.value + this.step * 5;
+                this.value = Math.min(this.max, newValue);
             }
             this.dispatchEvent(new CustomEvent('change', {
                 detail: {
@@ -205,7 +203,7 @@ class PSlider extends LitElement {
                     for (const entry of entries) {
                         const { height } = entry.contentRect;
                         // this.height = height + 'px';
-                        this.style.setProperty('--h',height+"px");
+                        this.style.setProperty('--h', height + 'px');
                     }
                 });
                 this._resizeObserver.observe(this);
@@ -218,19 +216,17 @@ class PSlider extends LitElement {
         }
     }
     get tipContent() {
-        let tip = this.prefix != undefined ? this.prefix : '';
+        let tip = this.prefix !== undefined ? this.prefix : '';
         tip += this.value;
-        tip += this.suffix != undefined ? this.suffix : '';
+        tip += this.suffix !== undefined ? this.suffix : '';
         return tip;
     }
     get percent() {
         return (this.value - this.min) / (this.max - this.min);
     }
     render() {
-        return html`<p-tips id='slider-con' 
-         dir=${this.vertical ? 'right' : 'top'} 
-         style="--percent: ${this.percent}; "  .show=${this.alwaysTip?'true':''}
-          .tips=${this.alwaysTip||(this.showtips && !this.disabled) ? this.tipContent : ''}
+        return html`<p-tips id='slider-con'    dir=${this.vertical ? 'right' : 'top'}       style="--percent: ${this.percent}; "  .show=${this.alwaysTip ? 'true' : ''}
+          .tips=${this.alwaysTip || (this.showtips && !this.disabled) ? this.tipContent : ''}
          >
           <input  type='range' id='slider' .value=${String(this.value)}  @input=${this.inputHander} @change=${this.changeHander}
            min=${this.min} max=${this.max} step=${this.step} ?disabled=${this.disabled} /> </p-tips>
@@ -257,7 +253,7 @@ class PSlider extends LitElement {
     }
     disconnectedCallback() {
         super.disconnectedCallback();
-        if(this._resizeObserver!=null){
+        if (this._resizeObserver != null) {
             this._resizeObserver.unobserve(this);
             this._resizeObserver = null;
         }
@@ -287,10 +283,10 @@ class PSlider extends LitElement {
         if (_changedProperties.has('vertical')) {
             this._initResizeObserver();
         }
-        if(_changedProperties.has('lineColor')){
-            if(this.lineColor){
-                this.style.setProperty('--themeColor',this.lineColor);
-            }else{
+        if (_changedProperties.has('lineColor')) {
+            if (this.lineColor) {
+                this.style.setProperty('--themeColor', this.lineColor);
+            } else {
                 this.style.removeProperty('--themeColor');
             }
         }
