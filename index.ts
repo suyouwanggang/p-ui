@@ -17,8 +17,8 @@ import './elements/p-tab';
 import './elements/tree/PTree';
 import './elements/p-pop';
 import './elements/p-text';
+import './elements/p-color-panel';
 import './elements/p-color';
-import './elements/p-color-picker';
 import './elements/p-routslot';
 
 const LitHeler={
