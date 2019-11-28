@@ -61,7 +61,7 @@ class PInput extends MinInputClass {
     @property({ type: String, reflect: true }) tips: string;
     @property({ type: String, reflect: false }) errortips: string;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
-    @property({ type: Boolean, reflect: true }) readonly: boolean = false;
+    @property({ type: Boolean, reflect: true }) readOnly: boolean = false;
     @property({ type: String, reflect: true }) type: inputtype = 'text';
     @property({ type: String, reflect: true }) placeholder: string;
     @property({ type: String, reflect: false }) leftIcon: string;
@@ -380,3 +380,4 @@ class PInput extends MinInputClass {
             </p-tips>`;
     }
 }
+export { PInput };
