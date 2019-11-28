@@ -1,7 +1,7 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import  './p-button';
-import  './p-tips';
+import './p-button';
+import './p-tips';
 @customElement('p-pop')
 class Ppop extends LitElement {
 
@@ -210,7 +210,7 @@ class Ppop extends LitElement {
                 div.textContent = this.tipContent;
                 popContent.appendChild(div);
             }
-            (popContent as any).isAutoCreate=true;
+            (popContent as any).isAutoCreate = true;
             popContent.tipTitle = this.tipTitle;
             popContent.okText = this.okText;
             popContent.cancelText = this.cancelText;
@@ -224,7 +224,7 @@ class Ppop extends LitElement {
                 this._show(ev);
             } else {
                 const event = ev as any;
-                event.preventDefault();
+                ev.preventDefault();
                 const path = event.path || (ev.composedPath && ev.composedPath());
                 if (!path.includes(this.popContent)) {
                     this._show(ev);
@@ -252,18 +252,18 @@ class Ppop extends LitElement {
                 this.removeEventListener(trigger as string, (this as any)._showHandler);
                 this.addEventListener(this.trigger, (this as any)._showHandler);
             }
-            const pop =this.popContent as any;
-            if(pop && pop.isAutoCreate){
-                if( changedProperties.has('tipContent')){
-                    let firstChild=pop.firstChild;
-                    if(!firstChild){
-                        firstChild=document.createElement('div');
+            const pop = this.popContent as any;
+            if (pop && pop.isAutoCreate) {
+                if (changedProperties.has('tipContent')) {
+                    let firstChild = pop.firstChild;
+                    if (!firstChild) {
+                        firstChild = document.createElement('div');
                         pop.appendChild(firstChild);
                     }
-                    firstChild.textContent=this.tipContent;
+                    firstChild.textContent = this.tipContent;
                 }
-                if( changedProperties.has('tipTitle')){
-                    pop.tipTitle=this.tipTitle;
+                if (changedProperties.has('tipTitle')) {
+                    pop.tipTitle = this.tipTitle;
                 }
             }
 
@@ -298,9 +298,12 @@ class PPopContent extends LitElement {
             box-sizing: border-box;
             display:flex;
             width: max-content;
-            margin:0.8em 2.5em 1em 1em;
+            margin:0.8em 2.5em 0.8em 0.8em;
             flex:1;
             flex-direction:column;
+        }
+        :host([hiddenClose]) div[part="popContent"]{
+            margin-right:0.8em;
         }
        div[part=popTitle]  {
             line-height: 30px;
@@ -370,17 +373,17 @@ class PPopContent extends LitElement {
             </div>
         `;
     }
-    private   _toCloseEvent(ev: Event) {
+    private _toCloseEvent(ev: Event) {
         this.open = false;
         this.dispatchEvent(new CustomEvent('close'));
         //  await this.updateComplete;
     }
-    private  _cancleClick(ev: Event) {
+    private _cancleClick(ev: Event) {
         this.open = false;
         this.dispatchEvent(new CustomEvent('cancel'));
         // await this.updateComplete;
     }
-    private  _submitClick(ev: Event) {
+    private _submitClick(ev: Event) {
         this.dispatchEvent(new CustomEvent('submit'));
         if (!this.loading) {
             this.open = false;
@@ -393,11 +396,15 @@ class PPopContent extends LitElement {
         this.addEventListener('transitionend', (ev) => {
             //console.log('transitionend===');
             if (ev.propertyName === 'transform' && this.open) {
-               // console.log('transform===');
+                // console.log('transform===');
                 if (this.type === 'confirm') {
-                    btnSubmit!.focus();
+                   if(btnSubmit){
+                        btnSubmit.focus();
+                   } 
                 } else {
-                    btnClose!.focus();
+                   if(btnClose){
+                     btnClose.focus();
+                   } 
                 }
                 this.dispatchEvent(new CustomEvent('open'));
             }

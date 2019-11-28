@@ -1,12 +1,12 @@
 // Shorthands
-const {min, max, floor, round} = Math;
+const { min, max, floor, round } = Math;
 
 /**
  * Tries to convert a color name to rgb/a hex representation
  * @param name
  * @returns {string | CanvasGradient | CanvasPattern}
  */
-function standardizeColor(name:string) {
+function standardizeColor(name: string): string {
 
     // Since invalid color's will be parsed as black, filter them out
     if (name.toLowerCase() === 'black') {
@@ -25,22 +25,22 @@ function standardizeColor(name:string) {
  * @param v Value
  * @returns {number[]} Array with rgb values.
  */
-export function hsvToRgb(h:number, s:number, v:number) {
+export function hsvToRgb(h: number, s: number, v: number): number[] {
     h = (h / 360) * 6;
     s /= 100;
     v /= 100;
 
-    let i = floor(h);
+    const i = floor(h);
 
-    let f = h - i;
-    let p = v * (1 - s);
-    let q = v * (1 - f * s);
-    let t = v * (1 - (1 - f) * s);
+    const f = h - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
 
-    let mod = i % 6;
-    let r = [v, q, p, p, t, v][mod];
-    let g = [t, v, v, q, p, p][mod];
-    let b = [p, p, t, v, v, q][mod];
+    const mod = i % 6;
+    const r = [v, q, p, p, t, v][mod];
+    const g = [t, v, v, q, p, p][mod];
+    const b = [p, p, t, v, v, q][mod];
 
     return [
         r * 255,
@@ -56,8 +56,8 @@ export function hsvToRgb(h:number, s:number, v:number) {
  * @param v Value
  * @returns {string[]} Hex values
  */
-export function hsvToHex(h:number, s:number, v:number) {
-    return hsvToRgb(h, s, v).map(v =>
+export function hsvToHex(h: number, s: number, v: number): string[] {
+    return hsvToRgb(h, s, v).map((v) =>
         round(v).toString(16).padStart(2, '0')
     );
 }
@@ -69,7 +69,7 @@ export function hsvToHex(h:number, s:number, v:number) {
  * @param v Value
  * @returns {number[]} CMYK values
  */
-export function hsvToCmyk(h:number, s:number, v:number) {
+export function hsvToCmyk(h: number, s: number, v: number): number[] {
     const rgb = hsvToRgb(h, s, v);
     const r = rgb[0] / 255;
     const g = rgb[1] / 255;
@@ -98,10 +98,10 @@ export function hsvToCmyk(h:number, s:number, v:number) {
  * @param v Value
  * @returns {number[]} HSL values
  */
-export function hsvToHsl(h:number, s:number, v:number) {
+export function hsvToHsl(h: number, s: number, v: number): number[] {
     s /= 100, v /= 100;
 
-    let l = (2 - s) * v / 2;
+    const l = (2 - s) * v / 2;
 
     if (l !== 0) {
         if (l === 1) {
@@ -126,7 +126,7 @@ export function hsvToHsl(h:number, s:number, v:number) {
  * @param b Blue
  * @return {number[]} HSV values.
  */
-export function rgbToHsv(r:number, g:number, b:number) {
+export function rgbToHsv(r: number, g: number, b: number) {
     r /= 255, g /= 255, b /= 255;
 
     let h, s, v;
@@ -173,7 +173,7 @@ export function rgbToHsv(r:number, g:number, b:number) {
  * @param k Key (Black)
  * @return {number[]} HSV values.
  */
-export function cmykToHsv(c:number, m:number, y:number, k:number) {
+export function cmykToHsv(c: number, m: number, y: number, k: number) {
     c /= 100;
     m /= 100;
     y /= 100;
@@ -193,11 +193,11 @@ export function cmykToHsv(c:number, m:number, y:number, k:number) {
  * @param l Lightness
  * @return {number[]} HSV values.
  */
-export function hslToHsv(h:number, s:number, l:number) {
+export function hslToHsv(h: number, s: number, l: number) {
     s /= 100;
     l /= 100;
     s *= l < 0.5 ? l : 1 - l;
-    const ns = (l + s)?(2 * s / (l + s)) * 100:0;
+    const ns = (l + s) ? (2 * s / (l + s)) * 100 : 0;
     const v = (l + s) * 100;
     return [h, ns, v];
 }
@@ -207,9 +207,9 @@ export function hslToHsv(h:number, s:number, l:number) {
  * @param hex Hexadecimal string of rgb colors, can have length 3 or 6.
  * @return {number[]} HSV values.
  */
-export function hexToHsv(hex:string) {
-    const result:number[] =[...hex.match(/.{2}/g)] .map(v => parseInt(v, 16)) ;
-    return rgbToHsv(result[0],result[1],result[2] );
+export function hexToHsv(hex: string) {
+    const result: number[] = [...hex.match(/.{2}/g)].map(v => parseInt(v, 16));
+    return rgbToHsv(result[0], result[1], result[2]);
 }
 
 /**
@@ -218,14 +218,14 @@ export function hexToHsv(hex:string) {
  * @param str
  * @return {*}
  */
-export function parseToHSVA(str:string ) {
+export function parseToHSVA(str: string) {
     // Check if string is a color-name
     str = str.match(/^[a-zA-Z]+$/) ? standardizeColor(str) : str;
-    interface regexMap{
-        [key :string]:RegExp;
+    interface RegexMap {
+        [key: string]: RegExp;
     }
     // Regular expressions to match different types of color represention
-    const regex:regexMap = {
+    const regex: RegexMap = {
         cmyk: /^cmyk[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)/i,
         rgba: /^((rgba)|rgb)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]*?([\d.]+|$)/i,
         hsla: /^((hsla)|hsl)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]*?([\d.]+|$)/i,
@@ -239,7 +239,7 @@ export function parseToHSVA(str:string ) {
      * @param array
      * @return {*}
      */
-    const numarize =( array:string[]) => array.map(v => /^(|\d+)\.\d+|\d+$/.test(v) ? Number(v) : undefined);
+    const numarize = (array: string[]) => array.map((v) => /^(|\d+)\.\d+|\d+$/.test(v) ? Number(v) : undefined);
 
     let match;
     invalid: for (const type in regex) {
@@ -254,20 +254,20 @@ export function parseToHSVA(str:string ) {
         // Try to convert
         switch (type) {
             case 'cmyk': {
-                let [, c, m, y, k] = numarize(match);
+                const [, c, m, y, k] = numarize(match);
 
                 if (c > 100 || m > 100 || y > 100 || k > 100)
                     break invalid;
 
-                return {values: cmykToHsv(c, m, y, k), type};
+                return { values: cmykToHsv(c, m, y, k), type };
             }
             case 'rgba': {
-                let [, , , r, g, b, a] = numarize(match);
+                const [, , , r, g, b, a] = numarize(match);
 
                 if (r > 255 || g > 255 || b > 255 || a < 0 || a > 1)
                     break invalid;
 
-                return {values: [...rgbToHsv(r, g, b), a], a, type};
+                return { values: [...rgbToHsv(r, g, b), a], a, type };
             }
             case 'hexa': {
                 let [, hex] = match;
@@ -277,31 +277,31 @@ export function parseToHSVA(str:string ) {
                 }
 
                 const raw = hex.substring(0, 6);
-                let a = hex.substring(6);
+                const a = hex.substring(6);
 
                 // Convert 0 - 255 to 0 - 1 for opacity
-                const  b = a ? (parseInt(a, 16) / 255) : undefined;
+                const b = a ? (parseInt(a, 16) / 255) : undefined;
 
-                return {values: [...hexToHsv(raw), b], b, type};
+                return { values: [...hexToHsv(raw), b], b, type };
             }
             case 'hsla': {
-                let [, , , h, s, l, a] = numarize(match);
+                const [, , , h, s, l, a] = numarize(match);
 
                 if (h > 360 || s > 100 || l > 100 || a < 0 || a > 1)
                     break invalid;
 
-                return {values: [...hslToHsv(h, s, l), a], a, type};
+                return { values: [...hslToHsv(h, s, l), a], a, type };
             }
             case 'hsva': {
-                let [, , , h, s, v, a] = numarize(match);
+                const [, , , h, s, v, a] = numarize(match);
 
                 if (h > 360 || s > 100 || v > 100 || a < 0 || a > 1)
                     break invalid;
 
-                return {values: [h, s, v, a], a, type};
+                return { values: [h, s, v, a], a, type };
             }
         }
     }
 
-    return {values: null, type: null};
+    return { values: null, type: null };
 }

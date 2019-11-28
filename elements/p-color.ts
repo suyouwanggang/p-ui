@@ -12,14 +12,11 @@ export default class PColor extends LitElement {
         }
         :host([block]){
             display:block;
+            width:auto;
         }
 
         :host([disabled]){
             pointer-events:none;
-        }
-        
-        :host(:focus-within) p-pop,:host(:hover) p-pop{ 
-            z-index: 2;
         }
         p-pop{
             display:block;
@@ -32,9 +29,6 @@ export default class PColor extends LitElement {
             padding:5px;
             background-clip: content-box;
             background-color:var(--themeColor,#42b983);
-        }
-        .color-btn:hover{
-            z-index: auto;
         }
         p-pop-content{
             min-width:100%;
@@ -61,13 +55,13 @@ export default class PColor extends LitElement {
             background-size:10px 10px;
         `;
     };
-    @property({ type: Boolean, reflect: true}) disabled=false;
-    @property({ type: String, reflect: true }) value = '#ff0000';
-    @property({ type: String, reflect: true }) dir = 'bottomleft';
-    render():TemplateResult {
-        return  html`<p-pop id='popover' .dir=${this.dir} >
+    @property({ type: Boolean, reflect: true }) disabled: boolean = false;
+    @property({ type: String, reflect: true }) value: string = '#ff0000';
+    @property({ type: String, reflect: true }) dir: string = 'bottomleft';
+    render() {
+        return html`<p-pop id='popover' .dir=${this.dir} >
             <p-button class='color-btn' id="color-btn"  style='--themeColor:${this.value};' ?disabled=${this.disabled} ></p-button>
-            <p-pop-content id='popcon'>
+            <p-pop-content id='popcon' hiddenClose >
                 <div class='pop-footer'>
                     <p-button autoclose>取消</p-button>
                     <p-button type='primary' id='btn-submit' autoclose>确认</p-button>
@@ -75,13 +69,6 @@ export default class PColor extends LitElement {
             </p-pop-content>
         </p-pop>`;
     };
-    dispatchChangeEvent(){
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: {
-                value: this.value
-            }
-        }));
-    }
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(changedProperties);
         const popcon: HTMLElement = this.renderRoot.querySelector('#popcon');
@@ -93,15 +80,22 @@ export default class PColor extends LitElement {
                 this.colorPane.value = this.value;
                 popcon.insertBefore(this.colorPane, popcon.firstElementChild);
             }
-        })
-        btnSubmit.addEventListener('click', (event:Event) => {
+        });
+        btnSubmit.addEventListener('click', (event: Event) => {
             this.value = this.colorPane.copyValue;
             this.dispatchChangeEvent();
-        })
-        popcon.addEventListener('close', (event:Event) => {
+        });
+        popcon.addEventListener('close', (event: Event) => {
             this.colorPane.value = this.value;
-        })
+        });
     }
-    colorPane: PColorPanel = undefined;
+   private colorPane: PColorPanel = undefined;
 
+    dispatchChangeEvent() {
+        this.dispatchEvent(new CustomEvent('change', {
+            detail: {
+                value: this.value
+            }
+        }));
+    };
 }
