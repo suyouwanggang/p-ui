@@ -1,15 +1,15 @@
 // tslint:disable-next-line: quotemark
-import { LitElement ,customElement,html, css,property, TemplateResult} from "lit-element";
-import  {} from './p-icon';
-import {ifDefined} from 'lit-html/directives/if-defined';
-type targetType="_blank" | "_parent" | "_self" | "_top";
-type shapeType="circle"|'';
-type typeType= "primary" | "danger" | "flat"|'dashed';
+import { LitElement, customElement, html, css, property, TemplateResult } from "lit-element";
+import { } from './p-icon';
+import { ifDefined } from 'lit-html/directives/if-defined';
+type targetType = "_blank" | "_parent" | "_self" | "_top";
+type shapeType = "circle" | '';
+type typeType = "primary" | "danger" | "flat" | 'dashed';
 
 @customElement('p-button')
 export default class PButton extends LitElement {
 
-   static  get styles(){
+    static get styles() {
         return css`
           :host{ 
             position:relative; 
@@ -30,10 +30,11 @@ export default class PButton extends LitElement {
         :host([shape="circle"]){ 
             border-radius:50%; 
         }
-        :host(:not([disabled]):active){
+       
+ 		:host(:not([disabled]):active){
             z-index:1;
             transform:translateY(.1em);
-        }
+        } 
         :host([disabled]),:host([loading]){
             pointer-events: none; 
             opacity:.6; 
@@ -87,20 +88,11 @@ export default class PButton extends LitElement {
         :host([type="flat"]:not([disabled]):hover) .btn::before{ 
             opacity:.1 
         }
-        // :host(:not([disabled]):hover){ 
-        //     z-index:1 
-        // }
-        // :host([type="flat"]:focus-within) .btn:before,
-        // :host([type="flat"][focus]) .btn:before{ 
-        //     opacity:.2; 
-        // }
-
         .btn{ 
             background:none; 
             outline:0; 
             border:0; 
-            position: 
-            absolute; 
+            position:  absolute; 
             left:0; 
             top:0;
             width:100%;
@@ -158,39 +150,39 @@ export default class PButton extends LitElement {
         `;
 
     }
-    @property({ type: Boolean }) disabled:boolean;
-    @property({ type: Boolean,reflect:true }) block:boolean;
-    @property({ type: Boolean}) toggle:boolean;
-    @property({ type: String ,reflect:true }) type:typeType;
-    @property({ type: String,reflect:true }) shape:shapeType;
-    @property({ type: String,reflect:true }) name:string;
-    @property({ type: String,reflect:true }) value:string;
-    @property({ type: Boolean,reflect:true }) checked:boolean;
-    @property({ type: Boolean,reflect:true }) loading:boolean=false;
-    @property({ type: String,reflect:true }) href:string;
-    @property({ type: String,reflect:false }) target:targetType='_blank';
-    @property({ type: String,reflect:true }) rel:string;
-    @property({ type: String,reflect:true }) download:string;//下载图片名称
-    @property({ type: String,reflect:true }) icon:string;
+    @property({ type: Boolean }) disabled: boolean;
+    @property({ type: Boolean, reflect: true }) block: boolean;
+    @property({ type: Boolean }) toggle: boolean;
+    @property({ type: String, reflect: true }) type: typeType;
+    @property({ type: String, reflect: true }) shape: shapeType;
+    @property({ type: String, reflect: true }) name: string;
+    @property({ type: String, reflect: true }) value: string;
+    @property({ type: Boolean, reflect: true }) checked: boolean;
+    @property({ type: Boolean, reflect: true }) loading: boolean = false;
+    @property({ type: String, reflect: true }) href: string;
+    @property({ type: String, reflect: false }) target: targetType = '_blank';
+    @property({ type: String, reflect: true }) rel: string;
+    @property({ type: String, reflect: true }) download: string;//下载图片名称
+    @property({ type: String, reflect: true }) icon: string;
 
-    firstUpdated(){
+    firstUpdated() {
         // this.btn.addEventListener('mousedown', (ev:MouseEvent) =>{
         //     // const { left, top } = this.getBoundingClientRect();
         //     // this.style.setProperty('--x',(ev.clientX - left)+'px');
         //     // this.style.setProperty('--y',(ev.clientY - top)+'px');
         // });
-        this.addEventListener('click',(ev:MouseEvent) =>{
-            if(this.disabled){
+        this.addEventListener('click', (ev: MouseEvent) => {
+            if (this.disabled) {
                 ev.preventDefault();
             }
             const { left, top } = this.getBoundingClientRect();
-            this.style.setProperty('--x',(ev.clientX - left)+'px');
-            this.style.setProperty('--y',(ev.clientY - top)+'px');
-            if(this.toggle){
-                this.checked=!this.checked;
+            this.style.setProperty('--x', (ev.clientX - left) + 'px');
+            this.style.setProperty('--y', (ev.clientY - top) + 'px');
+            if (this.toggle) {
+                this.checked = !this.checked;
             }
         })
-        this.btn.addEventListener('keydown',(ev:KeyboardEvent) => {
+        this.btn.addEventListener('keydown', (ev: KeyboardEvent) => {
             switch (ev.keyCode) {
                 case 13://Enter
                     ev.stopPropagation();
@@ -200,31 +192,31 @@ export default class PButton extends LitElement {
             }
         });
     }
-    render(){
-          let renderIcon:TemplateResult;
-          if(this.icon && this.icon!=null) {
-              renderIcon=html`<p-icon id='icon' .name='${this.icon}'> </p-icon>`;
-          }
-        return html`${this.href ? 
-                html`<a id='btn' class='btn' ?disabled=${this.disabled} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>`:
-                html`<button id='btn'   class='btn' ?disabled=${this.disabled}></button>`}
-                ${this.loading? html`<p-loading id='loadingIcon'> </p-loading>`:''}
+    render() {
+        let renderIcon: TemplateResult;
+        if (this.icon && this.icon != null) {
+            renderIcon = html`<p-icon id='icon' .name='${this.icon}'> </p-icon>`;
+        }
+        return html`${this.href ?
+            html`<a id='btn' class='btn' ?disabled=${this.disabled} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>` :
+            html`<button id='btn'   class='btn' ?disabled=${this.disabled}></button>`}
+                ${this.loading ? html`<p-loading id='loadingIcon'> </p-loading>` : ''}
              ${renderIcon} <slot></slot>`;
     }
-     get iconEl(){
+    get iconEl() {
         return this.renderRoot.querySelector('#icon');
     }
-    get btn(){
+    get btn() {
         return this.renderRoot.querySelector('#btn');
     }
 }
 
 
 @customElement('p-button-group')
-export class PButtonGroup  extends LitElement {
+export class PButtonGroup extends LitElement {
 
-  static get styles() {
-    return css`
+    static get styles() {
+        return css`
     :host {
         display:inline-flex;
     }
@@ -249,38 +241,38 @@ export class PButtonGroup  extends LitElement {
         border-bottom-left-radius: 0;
     }
     `;
-  }
+    }
 
-  get elements():NodeListOf<PButton>{
-      return this.querySelectorAll('p-button');
-  }
-  firstUpdated(){
-      const slot=this.renderRoot.querySelector('#slot');
-      const child=this.elements;
-      const group=this;
-      slot.addEventListener('slotchange',() =>{
-          let handler= (ev:Event) =>{
-            const button:PButton=ev.target as PButton;
-            group.value=button.value;
-            const e=new CustomEvent('change',{
-                detail:{
-                    value: button.value
-                }
-            })
-            group.dispatchEvent(e);
-          }
-        child.forEach( (el:PButton ) => {
-            el.addEventListener('click',handler);
-        }); 
-      });
-  }
-  @property({ type: String }) value: string;
-  @property({ type: String ,reflect:true}) name: string;
-  render() {
-    return html`
+    get elements(): NodeListOf<PButton> {
+        return this.querySelectorAll('p-button');
+    }
+    firstUpdated() {
+        const slot = this.renderRoot.querySelector('#slot');
+        const child = this.elements;
+        const group = this;
+        slot.addEventListener('slotchange', () => {
+            const handler = (ev: Event) => {
+                const button: PButton = ev.target as PButton;
+                group.value = button.value;
+                const e = new CustomEvent('change', {
+                    detail: {
+                        value: button.value
+                    }
+                })
+                group.dispatchEvent(e);
+            }
+            child.forEach((el: PButton) => {
+                el.addEventListener('click', handler);
+            });
+        });
+    }
+    @property({ type: String }) value: string;
+    @property({ type: String, reflect: true }) name: string;
+    render() {
+        return html`
       <slot id='slot'></slot>
     `;
-  }
+    }
 }
 
 

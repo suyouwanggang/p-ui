@@ -369,7 +369,7 @@ class PInput extends MinInputClass {
         return html`<p-tips  .tips=${this.tips} id="tips"  >
                 ${this.leftIcon ? html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>` : ''}
                 <input id="input"  name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
-                  ?readOnly=${this.readonly}  .type="${this._innerType()}"    ?disabled=${this.disabled} step=${ifDefined(this.step)} min=${ifDefined(this.min)} max=${ifDefined(this.max)} minLength=${ifDefined(this.minLength)} maxLength=${ifDefined(this.maxLength)}
+                  ?readOnly=${this.readOnly}  .type="${this._innerType()}"    ?disabled=${this.disabled} step=${ifDefined(this.step)} min=${ifDefined(this.min)} max=${ifDefined(this.max)} minLength=${ifDefined(this.minLength)} maxLength=${ifDefined(this.maxLength)}
                   @focus=${this.dispatchFocus} 
                    />
                 ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}

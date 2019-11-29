@@ -283,6 +283,7 @@ class PPopContent extends LitElement {
         :host{
             position:absolute;
             display:flex;
+            flex-direction:column;
             box-shadow: 2px 2px 15px rgba(0,0,0,0.15);
             box-sizing: border-box;
             transform:scale(0);
@@ -294,64 +295,85 @@ class PPopContent extends LitElement {
             background:#fff;
             visibility:hidden;
         }
-        div[part='popContent']{
-            box-sizing: border-box;
+       div[part=popTitle] {
             display:flex;
-            width: max-content;
-            margin:0.8em 2.5em 0.8em 0.8em;
+        }
+        div[part=popTitle] >div[part=popTitleInner]{
             flex:1;
-            flex-direction:column;
-        }
-        :host([hiddenClose]) div[part="popContent"]{
-            margin-right:0.8em;
-        }
-       div[part=popTitle]  {
+            margin-left:0.5em;
             line-height: 30px;
             font-size: 1.2em;
             color: #4c5161;
             user-select: none;
             cursor: default;
         }
-        div[part=popBody] {
-            flex: 1;
-        }
-        div[part=popTitle]:not(:empty) ~ div[part]{ //选择E元素后面的所有兄弟元素F，元素E与F必须同属一个父级
-            margin-right:-1em;
-        }
-        div[part=popFooter]{
-            margin-top:8px;
-            padding: 3px 0 5px 0;
-            text-align: right;
-            white-space: nowrap;
+        div[part=popBody]{
+            width:max-content;
         }
         p-button[part="popClose"] {
-            position:absolute;
-            cursor:pointer;
-            right:5px;
-            top:5px;
+            margin-right:5px;
             border:0;
         }
-        div[part=popFooter] >p-button {
-            margin-left: 1em;
-            cursor:pointer;
+        :host([thinBar]) div[part=popBody] {
+            flex: 1;
+            overflow:auto;
+            width:max-content;
+            scrollbar-color: #DBDBDB #FFF;
+            scrollbar-width: thin;
+        }
+        :host([thinBar]) div[part=popBody] :hover{
+            scrollbar-color: rgb(189,189,189) #FFF ;
+        }
+        :host([thinBar]) div[part=popBody]::-webkit-scrollbar {
+            width:7px;
+            height: 7px;
+        }
+        /* 滚动槽 */
+        :host([thinBar]) div[part=popBody]::-webkit-scrollbar-track {
+            background-color:#FFF;
+        }
+        /* 滚动条滑块 */
+        :host([thinBar])  div[part=popBody]::-webkit-scrollbar-thumb {
+            border-radius:3px;
+            background:#DBDBDB;
+        }
+        :host([thinBar]) div[part=popBody]::-webkit-scrollbar-thumb:hover {
+            background-color: #BDBDBD;
         }
         p-icon[part=popIcon]{
-            display:flex;
+            flex:auto;
             font-size:1.2em;
             color:var(--waringColor,#faad14);
             margin: 1em 0px 0px 0.8em;
             align-self:flex-start;
         }
+        div[part=popFooter]{
+            margin-top:8px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        #btn-cancel,#btn-submit  {
+            margin-left: 0.6em;
+            margin-right:0.6em;
+            margin-bottom:8px;
+            cursor:pointer;
+        }
+        #btn-submit {
+            margin-right:1.5em;
+        }
         :host([type="confirm"]){
             min-width:250px;
         }
-        :host(:not([type])) div[part=popContent],:host(:not([type])) div[part=popBody]{
-            padding: 0;
-        }`;
+        :host([type="confirm"])  div[part=popBody] {
+            margin-left:0.8em;
+            margin-right:0.8em;
+        }`
+        ;
     }
 
     @property({ type: Boolean, reflect: true }) open: boolean = false;
     @property({ type: Boolean, reflect: true }) loading: boolean = false;
+    @property({ type: Boolean, reflect: true }) thinBar: boolean = false;
     @property({ type: Boolean, reflect: true }) hiddenClose: boolean = false;
     @property({ type: String, reflect: true }) type: string = undefined;
     @property({ type: String, reflect: true }) tipTitle: string = undefined;
@@ -359,18 +381,21 @@ class PPopContent extends LitElement {
     @property({ type: String, reflect: true }) cancelText: string = undefined;
     render() {
         return html`
-            ${this.type === 'confirm' ? html`<p-icon id="popcon-type" name="question-circle" part="popIcon" ></p-icon>` : ''}
-            ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}
-            <div  part="popContent">
-               <div  part="popTitle" id="title">${this.tipTitle}</div>
-                <div part="popBody">
-                    <slot></slot>
-                </div>
-                ${this.type === 'confirm' ?
-                html`<div  part="popFooter"><p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
-                     <p-button id="btn-submit" type="primary" @click="${this._submitClick}">${this.okText === undefined ? '确定' : this.okText}</p-button></div>`
-                : ''}
+           <div  part="popTitle" id="title">
+               <div class='title' part="popTitleInner">${this.tipTitle} <slot name="title"></slot></div>
+                ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}
+           </div>
+            <div part="popBody" >
+                <slot></slot>
             </div>
+            <div  part="popFooter">
+                <slot name="footer">
+                    ${this.type === 'confirm' ?
+                    html`<p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
+                            <p-button id="btn-submit" type="primary" @click="${this._submitClick}">${this.okText === undefined ? '确定' : this.okText}</p-button>`
+                    : ''}
+                </slot>
+           </div>
         `;
     }
     private _toCloseEvent(ev: Event) {

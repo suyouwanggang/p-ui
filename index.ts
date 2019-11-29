@@ -20,8 +20,8 @@ import './elements/p-pop';
 import './elements/p-text';
 import './elements/p-color-panel';
 import './elements/p-color';
+import './elements/p-select';
 import './elements/p-routslot';
-
 const LitHeler={
   html:html,
   css:css
@@ -35,4 +35,3 @@ const LitHeler={
   // This line will be used in regexes to search for LitElement usage.
   // TODO(justinfagnani): inject version number at build time
   (window['LitHelper'] || (window['LitHelper'] =LitHeler  ));
-     

@@ -23,7 +23,7 @@
   </style>
 </head>
 <body>
-    <p-pop id='popObj' style='margin-top:100px;margin-left:300px;' dir='top' type='confirm'  tipTitle='tips' 
+    <p-pop id='popObj' style='margin-top:100px;margin-left:300px;'  type='confirm'  tipTitle='tips' 
     tipContent='bundles index.ts → build\index.js, docs\build\index.js...
         created build\index.js, docs\build\index.js in 1.4s' >
         <p-tips dir='topleft' tips='wanggang'><p-icon name='search' ></p-icon></p-tips>
@@ -45,8 +45,9 @@
 
     <style>
     
-        p-pop-content::part(popBody){
+      #popObj  p-pop-content::part(popBody){
             color:red;
+            width:auto;
         }
         p-pop-content::part(popTitle){
             color:red;
@@ -54,14 +55,11 @@
     </style>
     <p-pop id='popObj2' style='margin-top:100px;margin-left:300px;'   tipTitle='tips'  >
         <p-tips dir='topleft' tips='wanggang'><p-icon name='search' ></p-icon></p-tips>
-        <!--
         <p-pop-content tipTitle='注意' type='confirm'>
-            
             <p>bundles index.ts → build\index.js,</p>
             <p>docs\build\index.js...
                created build\index.js,</p>
         </p-pop-content>
-       -->
     </p-pop>
     <script >
             var pop=document.getElementById('popObj');
