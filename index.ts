@@ -21,7 +21,9 @@ import './elements/p-text';
 import './elements/p-color-panel';
 import './elements/p-color';
 import './elements/p-select';
-import './elements/p-routslot';
+import PDialog from './elements/p-Dialog';
+import PMessage from './elements/p-message';
+import   './elements/p-routslot';
 const LitHeler={
   html:html,
   css:css
@@ -29,9 +31,15 @@ const LitHeler={
  declare global {
   interface Window {
       LitHelper:any
+      PDialog:any
+      PMessage:any
   }
 }
   // IMPORTANT: do not change the property name or the assignment expression.
   // This line will be used in regexes to search for LitElement usage.
   // TODO(justinfagnani): inject version number at build time
-  (window['LitHelper'] || (window['LitHelper'] =LitHeler  ));
+  (window['LitHelper'] || (window['LitHelper'] =LitHeler ));
+  (window['PDialog'] || (window['PDialog'] =PDialog  ));
+  (window['PMessage'] || (window['PMessage'] =PMessage  ));
+
+

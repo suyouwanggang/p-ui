@@ -58,7 +58,7 @@ export default function FormElementAble<LitElement extends Constructor>(Base: Li
             return this.customValidity.method(this);
         }
         connectedCallback(){
-            this.form=this.closest('form');
+            this.form=(this as any).closest('form');
 
         }
 
