@@ -13,19 +13,15 @@ export class PMessage extends LitElement {
     @property({ type: String, reflect: true }) color: string;
     static styles = css`
         :host{
-            display:none;
+            display:flex;
             visibility:hidden;
-            opacity:0;
-            transition:.3s;
             z-index:10;
-            transition:.3s display cubic-bezier(.645, .045, .355, 1) ;
         }
         :host([show]){
-            display:flex;
             opacity:1;
             visibility:visible;
         }
-        :host([block][show]){
+        :host([block]){
             display:block;
         }
         .message{
@@ -39,7 +35,7 @@ export class PMessage extends LitElement {
             background: #fff;
             border-radius: 3px;
             transform: translateY(-100%);
-            transition:.3s transform cubic-bezier(.645, .045, .355, 1);
+            transition:.3s transform cubic-bezier(.645, .045, .355, 1),.3s;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             pointer-events:all;
         }
@@ -67,8 +63,10 @@ export class PMessage extends LitElement {
         super();
     }
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
-        this.addEventListener('transitionend', (ev: TransitionEvent) => {
-            if (ev.propertyName === 'display' && !this.show) {
+        this.shadowRoot.addEventListener('transitionend', (ev: TransitionEvent) => {
+            console.log(ev);
+            console.log(2222);
+            if (ev.propertyName === 'transform' && !this.show) {
                 if (this.removeAble) {
                     this.parentElement.removeChild(this);
                 }
@@ -136,8 +134,8 @@ const messageObj = {
             message.loading = config.loading;
         }
         div.appendChild(message);
-        message.show = true;
         message.textContent = config.text;
+        message.show = true;
         let timer: number = undefined;
         if (config.duration && config.duration > 0) {
             timer = window.setTimeout(() => {
