@@ -141,9 +141,58 @@
       </p-tips>
    
   <p>Tab </p>
-  <p-tab id="tabDIV" style='width:80%;margin:10px auto;'  tabposition="bottom">
+  <p-tab id="tabDIV" style='width:80%;margin:10px auto;'  >
     <p-tab-content label="wanggang" icon="search" key="first">
        <template slot='header'><p-button >按钮</p-button></template>
+       <p-row grap=5 >
+          <p-col span=1 style='background: #42b983;'> col1</p-col>
+          <p-col span=2 style='background: red;'> col1</p-col>
+          <p-col span=21 style='background: #42b983;'> col1</p-col>
+          
+          <p-col span=8 style='background: #42b983;'> col1</p-col>
+          <p-col span=8 style='background: #42b983;'> col1</p-col>
+          <p-col span=8 style='background: #42b983;'> col1</p-col>
+
+          <p-col span=6 style='background: #42b983;'> col1</p-col>
+          <p-col span=6 style='background: #42b983;'> col1</p-col>
+          <p-col span=6 style='background: #42b983;'> col1</p-col>
+          <p-col span=6 style='background: #42b983;'> col1</p-col>
+       </p-row>
+       <p-layout center  style='height:100px;height:100px;background: greenyellow;margin:5px;'>
+          <p-layout style='background-color:aliceblue'  > 我是高度</p-layout>
+       </p-layout>
+       <p-layout row mainAgile='center' crossAgile='start'  style='height:100px;height:100px;background: greenyellow;margin:5px;'>
+          <p-layout  style='background-color:aliceblue;width:20%' > 
+              20%
+          </p-layout>
+          <p-layout expand>
+              <p-row grap=5 >
+                  <p-col span=1 style='background: #42b983;'> col1</p-col>
+                  <p-col span=2 style='background: red;'> col1</p-col>
+                  <p-col span=21 style='background:goldenrod;'> col1</p-col>
+               </p-row>
+          </p-layout>
+          <p-layout  style='background-color:gray ;width:20%' > 
+              20%
+          </p-layout>
+       </p-layout>
+
+       <p-layout  mainAgile='center' crossAgile='start'  style='height:100px;height:100px;background: greenyellow;margin:5px;'>
+          <p-layout  style='background-color:aliceblue;height:20%;width:100%' > 
+              20%
+          </p-layout>
+          <p-layout expand style='width:100%'>
+              <p-row grap=5 >
+                  <p-col span=1 style='background: #42b983;'> col1</p-col>
+                  <p-col span=2 style='background: red;'> col1</p-col>
+                  <p-col span=21 style='background:goldenrod;'> col1</p-col>
+               </p-row>
+          </p-layout>
+          <p-layout  style='background-color:gray ;height:20%;width:100%' > 
+              20%
+          </p-layout>
+       </p-layout>
+
        <p-slider min=1 max=100 value='10'></p-slider>
        <p-color dir='righttop'  style='margin-left:200px;'></p-color>
        <p-message block icon='heart' color='red' show>created build\index.js, docs\build\index.js in 4.7s</p-message>

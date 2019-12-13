@@ -23,6 +23,7 @@ import './elements/p-color';
 import './elements/p-select';
 import PDialog from './elements/p-Dialog';
 import PMessage from './elements/p-message';
+import   './elements/p-layout';
 import   './elements/p-routslot';
 const LitHeler={
   html:html,
