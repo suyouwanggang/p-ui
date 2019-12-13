@@ -2,30 +2,48 @@ import { css, customElement, html, LitElement, property } from 'lit-element';
 import './p-icon';
 import './p-loading';
 
-
+type positionType = 'topcenter' | 'topleft' | 'topright' | 'bottomcenter' | 'bottomleft' | 'bottomright';
+interface MessageType {
+    text?: string;
+    position?: positionType;
+    duration?: number;
+    loading?: boolean;
+    onclose?: Function;
+    color?: string;
+    icon?: string;
+}
 @customElement('p-message')
-export class PMessage extends LitElement {
+export default class PMessage extends LitElement {
     @property({ type: Boolean, reflect: true }) loading: boolean;
     @property({ type: Boolean, reflect: true }) block: boolean;
     @property({ type: Boolean, reflect: true }) show: boolean;
-    @property({ type: Boolean, reflect: true }) removeAble: boolean;
     @property({ type: String, reflect: true }) icon: string;
     @property({ type: String, reflect: true }) color: string;
+    @property({ type: String, reflect: true, attribute: 'horizontal-agile' }) hAgile: string;
     static styles = css`
         :host{
-            display:flex;
+            display:none;
             visibility:hidden;
             z-index:10;
         }
         :host([show]){
+            display:flex;
             opacity:1;
             visibility:visible;
         }
-        :host([block]){
+        :host([show][block]){
             display:block;
         }
+        :host([horizontal-agile='left']) {
+            justify-content:flex-start;
+        }
+        :host([horizontal-agile='right']) {
+            justify-content:flex-end;
+        }
+        :host([horizontal-agile='center']) {
+            justify-content:center;
+        }
         .message{
-            margin:auto;
             display:flex;
             padding:10px 15px;
             margin-top:10px;
@@ -63,16 +81,7 @@ export class PMessage extends LitElement {
         super();
     }
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
-        this.shadowRoot.addEventListener('transitionend', (ev: TransitionEvent) => {
-            console.log(ev);
-            console.log(2222);
-            if (ev.propertyName === 'transform' && !this.show) {
-                if (this.removeAble) {
-                    this.parentElement.removeChild(this);
-                }
-                this.dispatchEvent(new CustomEvent('close'));
-            }
-        })
+        super.firstUpdated(changedProperties);
     }
     render() {
         return html`<div class="message">
@@ -86,27 +95,16 @@ export class PMessage extends LitElement {
     }
     static zIndex = 1000;
     static DEFAULTPOSTION: positionType = 'topcenter';
-    static postionMap= {
+    static postionMap = {
         topcenter: 'top:11px;left:11px;right:11px;',
         topleft: 'top:11px;left:11px;',
         topright: 'top:11px;right:11px;',
-        bottomcenter: 'bottom:11px;right:11px;',
+        bottomcenter: 'bottom:11px;left:11px;right:11px;',
         bottomleft: 'bottom:11px;left:11px;',
         bottomright: 'bottom:11px;right:11px;'
     }
-}
-type positionType = 'topcenter' | 'topleft' | 'topright' | 'bottomcenter' | 'bottomleft' | 'bottomright';
-interface MessageType {
-    text?: string;
-    position?: positionType;
-    duration?: number;
-    loading?: boolean;
-    onclose?: Function;
-    color?: string;
-    icon?: string;
-};
-const messageObj = {
-    _getMessagePositionDIV: (position: positionType) => {
+
+    static _getMessagePositionDIV = (position: positionType) => {
         const divID = `PMessage___messagePositionDIV__${position}DIV`;
         let div: HTMLElement = document.getElementById(divID);
         if (div === null) {
@@ -116,14 +114,29 @@ const messageObj = {
             document.body.appendChild(div);
         }
         return div;
-    },
-    show: (config: MessageType) => {
+    }
+    static _mergerConfig(defaultInfoConfig: MessageType, text?: string | MessageType, duration: number = -1, onclose?: Function) {
+        let config: MessageType = null;
+        if (typeof text === 'object') {
+            config = Object.assign(defaultInfoConfig, text);
+        } else {
+            config = defaultInfoConfig;
+            config.text = text;
+            if (onclose) {
+                config.onclose = onclose;
+            }
+            if (duration) {
+                config.duration = duration;
+            }
+        }
+        return PMessage.show(config);
+    }
+    static show = (config: MessageType) => {
         if (config.position === undefined) {
             config.position = PMessage.DEFAULTPOSTION;
         }
-        const div = messageObj._getMessagePositionDIV(config.position);
+        const div = PMessage._getMessagePositionDIV(config.position);
         const message: PMessage = new PMessage();
-        message.removeAble = true;
         if (config.icon) {
             message.icon = config.icon;
         }
@@ -133,6 +146,13 @@ const messageObj = {
         if (config.loading !== undefined) {
             message.loading = config.loading;
         }
+        if (config.position.indexOf('left') >= 0) {
+            message.hAgile = 'left';
+        } else if (config.position.indexOf('right') >= 0) {
+            message.hAgile = 'right';
+        } else {
+            message.hAgile = 'center';
+        }
         div.appendChild(message);
         message.textContent = config.text;
         message.show = true;
@@ -141,100 +161,30 @@ const messageObj = {
             timer = window.setTimeout(() => {
                 message.show = false;
                 config.onclose && config.onclose;
+                message.parentElement.removeChild(message);
             }, config.duration);
         }
-        message.addEventListener('close', (ev: Event) => {
-            timer && window.clearTimeout(timer);
-            config.onclose && config.onclose();
-        });
         return message;
-    },
-    info: (arg0?: string | MessageType, duration: number = 3000, onclose?: Function) => {
+    }
+    static info = (text?: string | MessageType, duration: number = 3000, onclose?: Function) => {
         const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'info-circle-fill', color: 'var(--infoColor,#1890ff)' };
-        let config: MessageType = null;
-        if (typeof arg0 === 'object') {
-            config = Object.assign(defaultInfoConfig, arg0);
-        } else {
-            config = defaultInfoConfig;
-            config.text = arg0;
-            if (onclose) {
-                config.onclose = onclose;
-            }
-            if (duration) {
-                config.duration = duration;
-            }
-        }
-        return messageObj.show(config);
-    },
-    error: (arg0?: string | MessageType, duration: number = 3000, onclose?: Function) => {
+        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
+    }
+    static error = (text?: string | MessageType, duration: number = 3000, onclose?: Function) => {
         const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'close-circle-fill', color: 'var(--errorColor,#f4615c)' };
-        let config: MessageType = null;
-        if (typeof arg0 === 'object') {
-            config = Object.assign(defaultInfoConfig, arg0);
-        } else {
-            config = defaultInfoConfig;
-            config.text = arg0;
-            if (onclose) {
-                config.onclose = onclose;
-            }
-            if (duration) {
-                config.duration = duration;
-            }
-        }
-        return messageObj.show(config);
-
-    },
-    success: (arg0?: string | MessageType, duration: number = 3000, onclose?: Function) => {
+        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
+    }
+    static success = (text?: string | MessageType, duration: number = 3000, onclose?: Function) => {
         const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'check-circle-fill', color: 'var(--successColor,#52c41a)' };
-        let config: MessageType = null;
-        if (typeof arg0 === 'object') {
-            config = Object.assign(defaultInfoConfig, arg0);
-        } else {
-            config = defaultInfoConfig;
-            config.text = arg0;
-            if (onclose) {
-                config.onclose = onclose;
-            }
-            if (duration) {
-                config.duration = duration;
-            }
-        }
-        return messageObj.show(config);
-    },
-    warnging: (arg0?: string | MessageType, duration: number = 3000, onclose?: Function) => {
+        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
+    }
+    static warning = (text?: string | MessageType, duration: number = 3000, onclose?: Function) => {
         const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'warning-circle-fill', color: 'var(--waringColor,#faad14)' };
-        let config: MessageType = null;
-        if (typeof arg0 === 'object') {
-            config = Object.assign(defaultInfoConfig, arg0);
-        } else {
-            config = defaultInfoConfig;
-            config.text = arg0;
-            if (onclose) {
-                config.onclose = onclose;
-            }
-            if (duration) {
-                config.duration = duration;
-            }
-        }
-        return messageObj.show(config);
-    },
-    loading: (arg0?: string | MessageType, duration: number = -1, onclose?: Function) => {
+        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
+    }
+    static loading = (text?: string | MessageType, duration: number = -1, onclose?: Function) => {
         const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: -1, loading: true };
-        let config: MessageType = null;
-        if (typeof arg0 === 'object') {
-            config = Object.assign(defaultInfoConfig, arg0);
-        } else {
-            config = defaultInfoConfig;
-            config.text = arg0;
-            if (onclose) {
-                config.onclose = onclose;
-            }
-            if (duration) {
-                config.duration = duration;
-            }
-        }
-        return messageObj.show(config);
-    },
+        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
+    }
 }
-Object.assign(PMessage,messageObj);
-export default PMessage;
+
