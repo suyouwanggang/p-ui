@@ -287,7 +287,7 @@ export default class PColorPanel extends LitElement {
             }
         }));
     }
-    @query("#color-palette")
+    @query('#color-palette')
     palette: HTMLElement;
     private _colorSelectStart = false;
     private _moveColorPanel(ev: MouseEvent) {
@@ -331,7 +331,6 @@ export default class PColorPanel extends LitElement {
                 <input class="color-opacity" value="1" min="0" max="1" step="0.01" type="range" id="range-opacity" @input=${this._rangeOpacityHander} >
             </div>
         </div>
-       
         <div class="color-footer" data-type="${PColorPanel.COLOR_TYPE[this.typeindex]}">
             <div class="color-input">
                 <div class="color-label" id="color-hexa">
@@ -375,9 +374,9 @@ export default class PColorPanel extends LitElement {
     }
     get copyValue() {
         const color = this.color;
-        if (this.typeindex == 0) {
+        if (this.typeindex === 0) {
             return color.toHEXA().toString();
-        } else if (this.typeindex == 1) {
+        } else if (this.typeindex === 1) {
             return color.toRGBA().toString();
         } else {
             return color.toHSLA().toString();
@@ -413,18 +412,18 @@ export default class PColorPanel extends LitElement {
         }
     }
     get rgbaInputs(): HTMLInputElement[] {
-        return [...this.renderRoot.querySelectorAll("#color-rgba input") as any];
+        return [...this.renderRoot.querySelectorAll('#color-rgba input') as any];
     }
     get hlsaInputs(): HTMLInputElement[] {
-        return [...this.renderRoot.querySelectorAll("#color-hlsa input") as any];
+        return [...this.renderRoot.querySelectorAll('#color-hlsa input') as any];
     }
-    @query("#range-hue")
+    @query('#range-hue')
     private rangeHueEL: HTMLInputElement;
-    @query("#range-opacity")
+    @query('#range-opacity')
     private rangeOpcity: HTMLInputElement;
-    @query("#copyOnInfo")
+    @query('#copyOnInfo')
     private copyInfoInput: HTMLInputElement;
-    @query("#color_hexa_input")
+    @query('#color_hexa_input')
     private color_hexa_input: HTMLInputElement;
     private $value: any[];
     private _setValueAsyn() {

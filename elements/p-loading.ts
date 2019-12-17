@@ -72,7 +72,6 @@ export default class PLoading extends LitElement {
     get loadingEl(){
         return this.shadowRoot.getElementById('loading');
     }
-   
 }
 
 

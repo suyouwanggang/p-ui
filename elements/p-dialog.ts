@@ -10,7 +10,7 @@ export default class PDialog extends LitElement {
     @property({ type: Boolean, reflect: true }) removeAble: boolean = false;
     @property({ type: Boolean, reflect: true }) autoclose: boolean = true;
     @property({ type: Boolean, reflect: true }) loading: boolean = false;
-    @property({ type: String, reflect: true, attribute:'p-title' }) title: string = undefined;
+    @property({ type: String, reflect: true, attribute: 'p-title' }) title: string = undefined;
     @property({ type: String, reflect: true }) type: DialogType;
     @property({ type: String, reflect: true }) okText: string = undefined;
     @property({ type: Boolean, reflect: true }) showCancelBtn: boolean = false;
@@ -155,7 +155,7 @@ export default class PDialog extends LitElement {
             <p-icon id="dialog-type" class="dialog-type" name=${dialogTypeData.name} color=${dialogTypeData.color}></p-icon>
             <div class="dialog-content">
                 <div class="dialog-title" id="title">${this.title} <slot name='title'></slot></div>
-                ${this.autoclose?'': html`<p-button class="btn-close" id="btn-close" icon="close" @click=${this.closeBtnHandler} ></p-button>`}
+                ${this.autoclose ? '' : html`<p-button class="btn-close" id="btn-close" icon="close" @click=${this.closeBtnHandler} ></p-button>`}
                 <div class="dialog-body">
                     <slot></slot>
                     ${this.type === 'prompt' ? html`<p-input class='prompt' id='promptInput'></p-input>` : ''}
@@ -170,8 +170,8 @@ export default class PDialog extends LitElement {
         </div>
         `;
     }
-    private cancelBtn:PButton=null;
-    private submitBtn:PButton=null;
+    private cancelBtn: PButton = null;
+    private submitBtn: PButton = null;
     private btnActive: HTMLElement = null;
     submitBtnHandler() {
         this.dispatchEvent(new CustomEvent('submit'));
@@ -189,15 +189,15 @@ export default class PDialog extends LitElement {
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(changedProperties);
         const _input: PInput = this.renderRoot.querySelector('p-input');
-        const _btnSubmit:PButton = this.renderRoot.querySelector('#btn-submit');
-        this. cancelBtn=this.renderRoot.querySelector('#btn-cancel');
-        this.submitBtn=_btnSubmit;
+        const _btnSubmit: PButton = this.renderRoot.querySelector('#btn-submit');
+        this. cancelBtn = this.renderRoot.querySelector('#btn-cancel');
+        this.submitBtn = _btnSubmit;
         this.shadowRoot.addEventListener('transitionend', (ev: TransitionEvent) => {
             if (ev.propertyName === 'transform' && this.open) {
                 if (_input) {
                     _input.focus();
                 } else {
-                   if(_btnSubmit) {_btnSubmit.focus() } ;
+                   if (_btnSubmit) {_btnSubmit.focus(); } 
                 }
             }
             if (ev.propertyName === 'transform' && !this.open) {
@@ -244,7 +244,7 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
     static info = function () {
         const dialog = new PDialog();
         document.body.appendChild(dialog);
@@ -264,7 +264,7 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
 
     static success = function () {
         const dialog = new PDialog();
@@ -285,7 +285,7 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
     static error = function () {
         const dialog = new PDialog();
         document.body.appendChild(dialog);
@@ -305,7 +305,7 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
 
     static warning = function () {
         const dialog = new PDialog();
@@ -326,13 +326,13 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
 
     static confirm = async function () {
         const dialog = new PDialog();
         document.body.appendChild(dialog);
         await dialog.updateComplete;
-        const cancelBtn :PButton=dialog.cancelBtn;
+        const cancelBtn: PButton = dialog.cancelBtn;
         cancelBtn.style.visibility = 'visible';
         dialog.removeAble = true;
         if (typeof arguments[0] === 'object') {
@@ -353,14 +353,14 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
 
     static prompt = async function () {
         const dialog = new PDialog();
         dialog.type = 'prompt';
         document.body.appendChild(dialog);
         await dialog.updateComplete;
-        const cancelBtn:PButton = dialog.cancelBtn;
+        const cancelBtn: PButton = dialog.cancelBtn;
         cancelBtn.style.visibility = 'visible';
         dialog.removeAble = true;
         dialog.autoclose = false;
@@ -402,7 +402,7 @@ export default class PDialog extends LitElement {
         }
         dialog.open = true;
         return dialog;
-    }
+    };
 }
 
 

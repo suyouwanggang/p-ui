@@ -12,11 +12,13 @@ export default {
 		file: 'build/index.js',
         format: 'cjs',
 		sourcemap: true
-	}, {
-		file: 'docs/build/index.js',
-        format: 'cjs',
-		sourcemap: true
 	}
+	
+	// , {
+	// 	file: 'docs/build/index.js',
+    //     format: 'cjs',
+	// 	sourcemap: true
+	// }
 
 	// ,{
 	// 	file: 'build/index.umd.js',

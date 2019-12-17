@@ -69,6 +69,7 @@ export default class PColor extends LitElement {
             </p-pop-content>
         </p-pop>`;
     };
+
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(changedProperties);
         const popcon: HTMLElement = this.renderRoot.querySelector('#popcon');
