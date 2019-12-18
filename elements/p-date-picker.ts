@@ -113,7 +113,8 @@ export default class PDatePanel extends LitElement {
                 z-index:-1;
                 border-radius:inherit;
             }
-            .date-button:not([disabled]):not([current]):not([select]):not([selectstart]):not([selectend]):hover,.date-button:not([disabled]):not([current]):not([select]):not([selectstart]):not([selectend]):focus{
+            .date-button:not([disabled]):not([current]):not([select]):not([selectstart]):not([selectend]):hover,
+            .date-button:not([disabled]):not([current]):not([select]):not([selectstart]):not([selectend]):focus{
                 color:var(--themeColor,#42b983);
             }
             .date-button:not([disabled]):hover::before{
@@ -175,9 +176,6 @@ export default class PDatePanel extends LitElement {
             .date-button[selectstart][selectend]:not([other])::after{
                 opacity:0;
             }
-
-
-
             .date-con{
                 position:relative;
             }
@@ -198,8 +196,6 @@ export default class PDatePanel extends LitElement {
                 grid-template-columns: repeat(4, 1fr);
                 grid-template-rows: repeat(5, 1fr);
             }
-           
-
             .date-month-item,
             .date-year-item{
                 display:flex;
@@ -214,6 +210,7 @@ export default class PDatePanel extends LitElement {
                 transition:.3s opacity,.3s visibility;
             }
             .date-mode.show{
+                z-index:1;
                 opacity:1;
                 visibility:visible;
             }
@@ -222,7 +219,6 @@ export default class PDatePanel extends LitElement {
                 color:var(--themeColor,#42b983);
                 border-color:var(--themeColor,#42b983);
             }
-            
         `;
     }
     @property({ type: String, reflect: true }) type: string;
@@ -230,7 +226,7 @@ export default class PDatePanel extends LitElement {
     @property({ type: Boolean, reflect: true }) range: boolean;
     @property({ type: String, reflect: true }) min: string;
     @property({ type: String, reflect: true }) max: string;
-    @property({ type: String, reflect: true }) mode: selectDateType='date'; //是选择时间 还是选择年月 还是选择年
+    @property({ type: String, reflect: true }) mode: selectDateType = 'date'; //是选择时间 还是选择年月 还是选择年
     private _initalDated = false;
     render() {
         if (this._initalDated === false) {
@@ -250,7 +246,7 @@ export default class PDatePanel extends LitElement {
                 </p-button>
              </div>
             <div class='date-con' data-type='date'>
-                <div class="date-mode date-date ${this._dateType === 'date'?'show':''} "  >
+            <div class="date-mode date-date ${this._dateType === 'date' ? 'show' : ''} "  >
                     <div class="date-week">
                             <span class="date-week-item">日</span>
                             <span class="date-week-item">一</span>
@@ -259,38 +255,42 @@ export default class PDatePanel extends LitElement {
                             <span class="date-week-item">四</span>
                             <span class="date-week-item">五</span>
                             <span class="date-week-item">六</span>
-                     </div>
-                 
+                    </div>
                     <div class='date-body'>
                         <!--日期 6*7 -->
                         ${cache(this.renderDateBody())}
                     </div>
-              </div>
+                </div>
               ${this.mode === 'date' || this.mode === 'month' ?
                 html`
-                <div class='date-mode date-month ${this._dateType === 'month'?'show':''} '   >
+                <div class='date-mode date-month ${this._dateType === 'month' ? 'show' : ''} '   >
                      ${cache(this.renderMonthBody())}
                  </div>` : ''
-             }
-            <div class='date-mode date-year  ${this._dateType === 'year'?'show':''} '  >
+            }
+            <div class='date-mode date-year  ${this._dateType === 'year' ? 'show' : ''} '  >
                  ${cache(this.renderYearBody())}
             </div>
         </div>`;
     }
+    @property()
     private _dateType: string = undefined;
+    @property()
     private _dateYear: number = undefined;
+    @property()
     private _dateMonth: number = undefined;
     getMonths() {
         return ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
     }
     private renderDateBody(): TemplateResult[] {
+        const current = this.defaultDateVale;
+        const [currentYear, currentMonth, currentDate] = toDate(current);
         const year = this._dateYear;
         const month = this._dateMonth;
         const result = [];
         const days = PDatePanel.getDays(year, month);
         for (let i = 0, j = days.length; i < j; i++) {
-            const [_year,_month,_day] = days[i].split('-');
-            result.push(html`<button class="date-button date-day-item" date-day="${days[i]}" @click=${this.selectDateClick} >${_day}</button>`);
+            const [_year, _month, _day] = days[i].split('-');
+            result.push(html`<button class="date-button date-day-item" ?other=${parseInt(_year) !== year || parseInt(_month) !== month} ?current=${parseInt(_year) === currentYear && parseInt(_month) === currentMonth && parseInt(_day) === currentDate} date-day="${days[i]}" @click=${this.selectDateClick} >${_day}</button>`);
         }
         return result;
     }
@@ -316,20 +316,23 @@ export default class PDatePanel extends LitElement {
     }
 
     private renderMonthBody(): TemplateResult[] {
+        const current = this.defaultDateVale;
+        const currentMonth=current.getMonth();
         return this.getMonths().map((value: string, index: number) => {
-            return html`<button class="date-button date-month-item"  data-month="${index}" @click='${this.selectMonthClick}' >${value}</button>`;
+            return html`<button class="date-button date-month-item"  ?current=${index===currentMonth} data-month="${index}" @click='${this.selectMonthClick}' >${value}</button>`;
         });
     }
     private selectYearClick(ev: Event) {
 
     }
     private renderYearBody(): TemplateResult[] {
-        const nv = this.defaultDateVale.getFullYear();
-        const n = parseInt(String(nv/20));
+        const current = this.defaultDateVale;
+        const nv = current.getFullYear();
+        const n = parseInt(String(nv / 20));
         const year = n * 20;
         const result = [];
-        for (let i = year,j=year+20;i<j; i++) {
-            result.push(html`<button class="date-button date-year-item" data-year="${i}" @click=${this.selectYearClick} >${i}</button>`);
+        for (let i = year, j = year + 20; i < j; i++) {
+            result.push(html`<button class="date-button date-year-item" ?current=${i===nv} data-year="${i}"  @click=${this.selectYearClick} >${i}</button>`);
         }
         return result;
     }
@@ -359,7 +362,7 @@ export default class PDatePanel extends LitElement {
         }
         this._dateMonth = d.getMonth() + 1;
         this._dateYear = d.getFullYear();
-        this._dateType=this.mode;
+        this._dateType = this.mode;
         return d;
     }
     get maxDate() {
@@ -371,7 +374,15 @@ export default class PDatePanel extends LitElement {
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(changedProperties);
     }
-
+    update(changedProperties: Map<string | number | symbol, unknown>) {
+        super.update(changedProperties);
+        if (changedProperties.has('value') || changedProperties.has('mode')) {
+            this.__firstDateValue();
+            this.updateComplete.then(() => {
+                this.requestUpdate();
+            })
+        }
+    }
     dispatchChangeEvent() {
 
     }
