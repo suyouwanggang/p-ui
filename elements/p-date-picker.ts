@@ -278,7 +278,7 @@ export default class PDatePanel extends LitElement {
                     <div class='date-mode date-month ${this._dateType === 'month' ? 'show' : ''} '   >
                         ${cache(this.renderMonthBody())}
                     </div>` : ''
-               }
+            }
                 <div class='date-mode date-year  ${this._dateType === 'year' ? 'show' : ''} '  >
                     ${cache(this.renderYearBody())}
                 </div>
@@ -308,6 +308,7 @@ export default class PDatePanel extends LitElement {
             @click=${this.selectDateClick} >${_day}</button>`);
         }
         return result;
+        
     }
     private dateSwitchClick(ev: Event) {
         if (this._dateType === 'date') {
@@ -479,8 +480,11 @@ export default class PDatePanel extends LitElement {
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
         super.update(changedProperties);
-        if (changedProperties.has('value') || changedProperties.has('mode')) {
+        if (this.isConnected && (changedProperties.has('value') || changedProperties.has('mode'))) {
             this.__resetDateValue();
+            if (this.dateValue != null) {
+                this.value = parseDate(this.dateValue, this.mode);
+            }
             this.updateComplete.then(() => {
                 this.requestUpdate();
             });
