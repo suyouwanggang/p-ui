@@ -1,5 +1,6 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
 import { cache } from 'lit-html/directives/cache';
+import './p-button';
 type selectDateType = 'date' | 'month' | 'year' | 'week';
 type selectMode = 'date' | 'month' | 'year';
 const toDateObj = (d: string | number | undefined | null) => {
@@ -225,7 +226,7 @@ export default class PDatePanel extends LitElement {
     @property({ type: Boolean, reflect: true }) range: boolean;
     @property({ type: String, reflect: true }) min: string;
     @property({ type: String, reflect: true }) max: string;
-    @property({ type: String, reflect: true }) mode: selectDateType = 'date'; //是选择时间 还是选择年月 还是选择年
+    @property({ type: String, reflect: true }) mode: selectMode = 'date'; //是选择时间 还是选择年月 还是选择年
     private _initalDated = false;
 
     get renderHeaderStr() {
@@ -257,7 +258,7 @@ export default class PDatePanel extends LitElement {
                         <svg class="icon" viewBox="0 0 1024 1024"><path d="M765.7 486.8L314.9 134.7c-5.3-4.1-12.9-0.4-12.9 6.3v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1c16.4-12.8 16.4-37.6 0-50.4z"></path></svg>
                 </p-button>
             </div>
-            <div class='date-con' data-type='date'>
+            <div class='date-con' data-type='date' >
                 <div class="date-mode date-date ${this._dateType === 'date' ? 'show' : ''} "  >
                         <div class="date-week">
                                 <span class="date-week-item">日</span>
@@ -269,7 +270,6 @@ export default class PDatePanel extends LitElement {
                                 <span class="date-week-item">六</span>
                         </div>
                         <div class='date-body'>
-                            <!--日期 6*7 -->
                             ${cache(this.renderDateBody())}
                         </div>
                     </div>
@@ -278,7 +278,7 @@ export default class PDatePanel extends LitElement {
                     <div class='date-mode date-month ${this._dateType === 'month' ? 'show' : ''} '   >
                         ${cache(this.renderMonthBody())}
                     </div>` : ''
-            }
+               }
                 <div class='date-mode date-year  ${this._dateType === 'year' ? 'show' : ''} '  >
                     ${cache(this.renderYearBody())}
                 </div>
@@ -393,7 +393,7 @@ export default class PDatePanel extends LitElement {
         return result;
     }
     /**
-     *
+     * 处理设置 年，月，日，当日超过月最大天数， 则设置为最大天数
      * @param year
      * @param month 自然月
      * @param day
