@@ -309,16 +309,13 @@ export default class PDatePanel extends LitElement {
         for (let i = 0, j = days.length; i < j; i++) {
             const [_year, _month, _day] = days[i].split('-');
             const tempDate = toDateObj(days[i]);
-            if (days[i] === '2019-1-3') {
-                debugger;
-            }
             minDate = this.minDate;
             const disabled = (minDate != null && tempDate < minDate) || (maxDate != null && tempDate > maxDate);
-            console.log(`tempDate=${tempDate.toLocaleDateString()} minDate=${minDate?.toLocaleDateString()} maxDate=${maxDate?.toLocaleDateString()} disabled=${disabled}`)
+            //console.log(`tempDate=${tempDate.toLocaleDateString()} minDate=${minDate?.toLocaleDateString()} maxDate=${maxDate?.toLocaleDateString()} disabled=${disabled}`)
             result.push(html`<button class="date-button date-day-item" ?other=${parseInt(_year) !== year || parseInt(_month) !== month} ?current=${parseInt(_year) === currentYear && parseInt(_month) === currentMonth && parseInt(_day) === currentDate}
             data-date="${days[i]}"
             ?disabled=${disabled}
-            @click=${this.selectDateClick} >${_day}</button>`);
+            @click=${this.selectDateClick} >${tempDate.getDate()}</button>`);
         }
         return result;
     }
@@ -329,7 +326,7 @@ export default class PDatePanel extends LitElement {
             this._dateType = 'year';
         }
     }
-    private selectDateClick(ev: Event) {
+    private  selectDateClick(ev: Event) {
         const button = ev.target as HTMLElement;
         const day = button.dataset.date;
         const date = new Date(day);
@@ -340,13 +337,15 @@ export default class PDatePanel extends LitElement {
         const month = parseInt(button.dataset.month);
         let date = this.defaultDateValue;
         const year = date.getFullYear();
-        //const day = date.getDate();
         date.setMonth(month);
         if (date.getMonth() > month) {
             const lastDate = new Date(year, date.getMonth(), 0); //月最后一天
             date = lastDate;
         }
         this.setDateValue(date);
+        // this.updateComplete.then(() => {
+        //     this._dateType = this.mode === 'date' ? 'date' : 'month';
+        // });
     }
     private selectYearClick(ev: Event) {
         const button = ev.target as HTMLElement;
@@ -364,13 +363,18 @@ export default class PDatePanel extends LitElement {
      * @param month
      */
     static getDays(year: number, month: number = 1) {
-        const lastdays = new Date(year, month - 1, 0).getDate();
-        const days = new Date(year, month, 0).getDate();
-        const week = new Date(year, month - 1, 1).getDay();
-        const prev = Array.from({ length: week }, (el, i) => (month === 1 ? year - 1 : year) + '-' + String(month === 1 ? 12 : month - 1).padStart(2, '0') + '-' + String((lastdays + i - week + 1)).padStart(2, '0'));
-        const current = Array.from({ length: days }, (el, i) => year + '-' + (String(month).padStart(2, '0')) + '-' + String((i + 1)).padStart(2, '0'));
-        const next = Array.from({ length: 42 - days - week }, (el, i) => (month === 12 ? year + 1 : year) + '-' + (String(month === 12 ? 1 : month + 1)).padStart(2, '0') + '-' + String(i + 1).padStart(2, '0'));
-        return [...prev, ...current, ...next];
+        const date = new Date(year, month - 1, 1);
+        const week = date.getDay();
+        date.setDate(date.getDate() - week);
+        const array: string[] = [];
+        let i = 0;
+        while (i < 42) {
+            array.push(parseDate(date));
+            date.setDate(date.getDate() + 1);
+            i++;
+        }
+       // console.log(`${array}`);
+        return array;
     }
     private setDateValue(d: Date) {
         const minDate = this.minDate;
