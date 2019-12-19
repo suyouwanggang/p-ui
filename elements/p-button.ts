@@ -166,7 +166,7 @@ export default class PButton extends LitElement {
         `;
 
     }
-    @property({ type: Boolean }) disabled: boolean;
+    @property({ type: Boolean,reflect:true}) disabled: boolean;
     @property({ type: Boolean, reflect: true }) block: boolean;
     @property({ type: Boolean }) toggle: boolean;
     @property({ type: String, reflect: true }) type: typeType;
