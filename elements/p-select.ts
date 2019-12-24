@@ -1,10 +1,13 @@
 import { css, customElement, html, LitElement, property, svg } from 'lit-element';
 import { cache } from 'lit-html/directives/cache';
-import './p-button';
+import {buttonTypeValue}  from './p-button';
 import { PInput } from './p-input';
-import './p-pop';
 import { Ppop, PPopContent } from './p-pop';
 import './p-tips';
+type itemType = {
+    item?: POption,
+    index?: number
+};
 @customElement('p-option-group')
 class POptionGroup extends LitElement {
     static get styles() {
@@ -33,13 +36,18 @@ class POptionGroup extends LitElement {
 @customElement('p-option')
 class POption extends LitElement {
     @property({ type: String, reflect: true }) label: string;
+    @property({ type: String, reflect: true }) key: string;
     @property({ type: String, reflect: true }) value: string;
     @property({ type: Boolean, reflect: true }) selected: boolean;
+    @property({ type: Boolean, reflect: true }) hidden: boolean;
     @property({ type: Boolean, reflect: true }) disabled: boolean;
     static get styles() {
         return css`
         :host{
              display: block;
+        }
+        :host([hidden]){
+             display: none;
         }
         .option {
             display: flex;
@@ -69,7 +77,7 @@ class POption extends LitElement {
                 <slot></slot>
             </p-button>
         `;
-    };
+    }
     get option(): HTMLElement {
         return this.renderRoot.querySelector('#option');
     }
@@ -79,12 +87,12 @@ class POption extends LitElement {
 
 }
 
-
 @customElement('p-select')
 class PSelect extends LitElement {
-    @property({ type: String, reflect: true }) value: string;
+    @property({ type: String, reflect: true }) value: string = '';
     @property({ type: String, reflect: true }) name: string;
-    @property({ type: String, reflect: true }) type: string;
+    @property({ type: String, reflect: true }) type: buttonTypeValue;
+    @property({ type: String, reflect: true }) placeholder: string = '请选址';
     @property({ type: Boolean, reflect: true }) search: boolean;
     @property({ type: Boolean, reflect: true }) required: boolean;
     @property({ type: Boolean, reflect: true }) disabled: boolean;
@@ -92,6 +100,7 @@ class PSelect extends LitElement {
         return css`
         :host{
              display: inline-block;
+             --distance:5px;
         }
         :host([block]){
              display: block;
@@ -105,7 +114,7 @@ class PSelect extends LitElement {
             color:var(--themeColor,#42b983);
         }
 
-        :host([search]:focus-within:not([disabled])) #input, 
+        :host([search]:focus-within:not([disabled])) #input,
         :host([search]:not([disabled]):hover) #input{
             color: var(--themeColor,#42b983);
         }
@@ -148,7 +157,7 @@ class PSelect extends LitElement {
         #input[readonly]::after{
             pointer-events:all;
         }
-        :host(:focus-within) p-pop-content,:host(:active) p-pop-conten{ 
+        :host(:focus-within) p-pop-content,:host(:active) p-pop-conten{
             z-index: 2;
         }
         .option {
@@ -173,6 +182,7 @@ class PSelect extends LitElement {
             transition:color .3s  cubic-bezier(.645, .045, .355, 1),.3s transform cubic-bezier(.645, .045, .355, 1);
         }
         p-pop{
+            --distanceValue:var(--distance,5px);
             display:block;
             min-width:100%;
             height:inherit;
@@ -187,31 +197,16 @@ class PSelect extends LitElement {
             scroll-behavior: smooth;
         }
         p-pop-content::part(popBody){
-            min-width:100%; 
-        }
-        :host([search]) p-pop-content::before{
-            display:none;
-            box-sizing: border-box;
-            width:100%;
-            content:'没有匹配到任何选项';
-            padding: .25em .625em;
-            line-height: 1.8;
-            color:var(--fontColor,#333);
-            white-space:nowrap;
-            opacity:.5;
-        }
-        /***search 结果为空  */
-        :host([empty]) p-pop-content::before{
-            display:block;
+            min-width:100%;
         }
     `;
     }
     private renderTrigger() {
         const svgHRednder = svg`<svg class="arrow" viewBox="0 0 1024 1024"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3 0.1-12.7-6.4-12.7z"></path></svg>`;
         if (this.search) {
-            return html`<p-input id="input" type='text' debounce=200 readOnly ?disabled=${this.disabled}>${svgHRednder}</p-input>`;
+            return html`<p-input id="input" type='text'  @focusout=${this.focusOutHandler} @input=${this.inputHandler} .placeholder=${this.placeholder} debounce=200 readOnly ?disabled=${this.disabled}>${svgHRednder}</p-input>`;
         } else {
-            return html`<p-button id="input" ?disabled=${this.disabled} .type=${this.type}><span id="value"></span>${svgHRednder}</p-button>`;
+            return html`<p-button id="input" ?disabled=${this.disabled} .type=${this.type}><span id="value">${this.placeholder}</span>${svgHRednder}</p-button>`;
         }
     }
     render() {
@@ -234,37 +229,68 @@ class PSelect extends LitElement {
     get pop(): Ppop {
         return this.renderRoot.querySelector('#pop');
     }
+    private focusOutHandler(ev: Event) {
+        this._setSelectItemValue();
+    }
+    private _resetInputValue() {
+        const optionNodes = this.findChildOptions();
+        optionNodes.forEach((item: POption, index: number) => {
+            item.style.display = '';
+        })
+    }
+    private inputHandler(ev: Event) {
+        const input: PInput = ev.target as PInput;
+        const value = input.value;
+        const optionNodes = this.findChildOptions();
+        let matchesItmes = false;
+        optionNodes.forEach((item: POption, index: number) => {
+            const key = item.key;
+            if (value === '') {
+                item.style.display = '';
+                matchesItmes = true;
+            } else {
+                const matches = key === undefined ? item.textContent.indexOf(value) : key.indexOf(value);
+                if (matches >= 0) {
+                    item.style.display = '';
+                    matchesItmes = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        })
+        if (!matchesItmes) {
+
+        }
+    }
     firstUpdated(_changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(_changedProperties);
+        const optionNodes = this.findShowOption();
         if (this.value !== undefined) {
-            this.optionNodes = [...this.querySelectorAll('p-option:not([disabled]):not([hidden])') as any];
-            const currentOption: POption = this.optionNodes.find((opt) => {
+            const currentOption: POption = optionNodes.find((opt) => {
                 return opt.value === this.value;
             });
             if (currentOption) {
                 currentOption.selected = true;
-                this.focusInOptionIndex = this.optionNodes.indexOf(currentOption);
             }
-        } else {
-            this.optionNodes.forEach((opt, index) => {
-                if (opt.selected) {
-                    this.value = opt.value;
-                    this.focusInOptionIndex = index;
-                }
-            });
         }
         const optionTab = this.optionCotent;
         optionTab.addEventListener('open', (ev: CustomEvent) => {
-            this.renderRoot.querySelector('#pop').setAttribute('open','');
+            if (this.disabled) {
+                return;
+            }
+            this.renderRoot.querySelector('#pop').setAttribute('open', '');
             if (this.search) {
                 const input: PInput = this.renderRoot.querySelector('#input');
                 input.value = '';
                 input.readOnly = false;
                 input.focus();
+                this._resetInputValue();
             }
         });
-        optionTab.addEventListener('close',(ev: CustomEvent) => {
+        optionTab.addEventListener('close', (ev: CustomEvent) => {
             this.renderRoot.querySelector('#pop').removeAttribute('open');
+            const input: PInput = this.renderRoot.querySelector('#input');
+            input.readOnly = true;
         });
         optionTab.addEventListener('click', (ev: MouseEvent) => {
             this.focus();
@@ -275,6 +301,7 @@ class PSelect extends LitElement {
             const option: POption = (el as HTMLElement).closest('p-option');
             if (option) {
                 this.value = option.value;
+                this._setSelectItemValue();
                 optionTab.open = false;
                 this.dispatchChangeSelectEvent();
             }
@@ -282,37 +309,39 @@ class PSelect extends LitElement {
 
         const pop = this.pop;
         this.addEventListener('keydown', (ev: KeyboardEvent) => {
-            if (optionTab.open) { //下级内容打开的时候
+            if (optionTab.open && !this.disabled) { //下级内容打开的时候
                 const keycode = ev.keyCode;
-                console.log('keycode=='+keycode);
+                // console.log('keycode=='+keycode);
                 switch (keycode) {
                     case 9: //Tab
                         ev.preventDefault();
                         break;
                     case 38: //Up
                         ev.preventDefault();
-                        this.move(-1);
+                        this.move(false);
                         break;
                     case 40: //Down
                         ev.preventDefault();
-                        this.move(1);
+                        this.move(true);
                         break;
+                    case 13: //Enter
                     case 27: //Esc
                         optionTab.open = false;
                         ev.preventDefault();
+                        this._resetInputValue();
                         break;
                     default:
                         break;
                 }
-            } else {
+            } else if(!this.disabled) {
                 switch (ev.keyCode) {
                     case 38: //ArrowUp
                         ev.preventDefault();
-                        this.movein(-1);
+                        this.movein(false);
                         break;
                     case 40: //ArrowDown
                         ev.preventDefault();
-                        this.movein(1);
+                        this.movein(true);
                         break;
                     default:
                         break;
@@ -325,37 +354,84 @@ class PSelect extends LitElement {
         const input: HTMLElement = this.renderRoot.querySelector('#input');
         input.focus();
     }
+    private _setSelectItemValue() {
+        const value = this.value;
+        const childOption: POption[] = [...this.querySelectorAll('p-option') as any];
+        childOption.forEach((item: POption, index) => {
+            if (item.value === value) {
+                item.selected = true;
+                item.setAttribute('focusin', '');
+                const input = this.renderRoot.querySelector('#input');
+                let text = item.getAttribute('text');
+                if (text === null) {
+                    text = item.textContent;
+                }
+                // tslint:disable-next-line: no-any
+                (input as any).value = text;
+                (input as any).placeholder = text;
+                // tslint:disable-next-line: no-any
+                (input as any).readOnly = true;
+                const span = this.renderRoot.querySelector('span#value');
+                if (span != null && span !== undefined) {
+                    span.textContent = item.textContent;
+                }
+            } else {
+                item.selected = false;
+                item.removeAttribute('focusin');
+            }
+        });
+    }
     update(changedProperties: Map<string | number | symbol, unknown>) {
         super.update(changedProperties);
         if (this.isConnected && changedProperties.has('value') && this.value !== undefined) {
-            const value = this.value;
-            const childOption: POption[] = [...this.querySelectorAll('p-option') as any];
-            childOption.forEach((item: POption, index) => {
-                if (item.value === value) {
-                    item.selected = true;
-                    item.setAttribute('focusin', '');
-                    this.renderRoot.querySelector('span#value').textContent = item.textContent;
-                } else {
-                    item.selected = false;
-                    item.removeAttribute('focusin');
-                }
-            });
+            this._setSelectItemValue();
         }
     }
-    private optionNodes: POption[] = null;
-    private focusInOptionIndex: number = -1;
-    private selectOption: POption = undefined;
-    private move(changeIndex: number) {
-        if (this.optionNodes != null && this.optionNodes.length > 0) {
-            let index = this.focusInOptionIndex + changeIndex;
-            if (changeIndex > 0 && index > this.optionNodes.length) {
-                index = this.optionNodes.length - 1;
-            } else if (changeIndex < 0 && index < 0) {
-                index = 0;
+    private move(down: Boolean) {
+        const childOption: POption[] = this.findShowOption();
+        const result = this.findSelectedOption();
+        const length = childOption.length;
+        if (down) {
+            if (result.item == null || result.item === undefined) {
+                result.item = childOption[0];
+                result.index = 0;
             }
-            this.focusInOptionIndex = index;
-            this.setFocuseInOption();
+            if (result.index === length - 1) {
+                result.index = 0;
+            } else if (result.index + 1 < length) {
+                result.index = result.index + 1;
+            }
+        } else {
+            if (result.item == null || result.item === undefined) {
+                result.index = 0;
+            } else if (result.index === 0) {
+                result.index = length - 1;
+            } else if (result.index - 1 >= 0) {
+                result.index = result.index - 1;
+            }
         }
+        const option = childOption[result.index];
+        this.value = option.value;
+    }
+    private findChildOptions(){
+        return [...this.querySelectorAll('p-option:not([hidden])') as any];
+    }
+    private findShowOption() {
+        const childOption: POption[] = this.findChildOptions().filter((item: POption) => {
+            return item.style.display !== 'none';
+        });
+        return childOption;
+    }
+    private findSelectedOption() {
+        const result = {} as itemType;
+        const childOption = this.findShowOption();
+        childOption.forEach((item: POption, index: number) => {
+            if (item.value === this.value) {
+                result.item = item;
+                result.index = index;
+            }
+        })
+        return result;
     }
     private dispatchChangeSelectEvent() {
         const changeEvent = new CustomEvent('change', {
@@ -371,43 +447,9 @@ class PSelect extends LitElement {
         });
         this.dispatchEvent(selectEvent);
     }
-    private setFocuseInOption() {
-        if (this.optionNodes != null && this.optionNodes.length > 0) {
-            this.optionNodes.forEach((item, index) => {
-                if (index === this.focusInOptionIndex) {
-                    item.setAttribute('focusin', '');
-                    item.scrollIntoView({
-                        block: 'nearest'
-                    });
-                    this.value=item.value;
-                } else {
-                    item.removeAttribute('focusin');
-                }
-                this.dispatchChangeSelectEvent();
-            });
-        }
-    }
-    // private setSelectByFocuseInOption(){
-    //     if (this.optionNodes != null && this.optionNodes.length > 0) {
-    //         this.value=this.optionNodes[this.focusInOptionIndex].value;
-    //     }
-    // }
-    private setToSelectOption(selectOption: POption): void {
-        this.value = selectOption.value;
-    }
-    private movein(changeIndex: number) {
-        if (this.optionNodes != null && this.optionNodes.length > 0) {
-            let index = this.focusInOptionIndex + changeIndex;
-            if (changeIndex > 0 && index > this.optionNodes.length) {
-                index = this.optionNodes.length - 1;
-            } else if (changeIndex < 0 && index < 0) {
-                index = 0;
-            }
-            this.focusInOptionIndex = index;
-            const current: POption = this.optionNodes[index];
-            if(current){
-                this.setToSelectOption(current);
-            }
+    private movein(down: Boolean) {
+        this.move(down);
+        if (this.value !== undefined) {
             this.dispatchChangeSelectEvent();
         }
     }

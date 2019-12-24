@@ -1,6 +1,6 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import { getValidityResult ,getCountDecimals } from './helper/formValidate';
+import { getValidityResult, getCountDecimals } from './helper/formValidate';
 import NP from 'number-precision';
 import PButton from './p-button';
 import PTips from './p-tips';
@@ -9,19 +9,19 @@ class MinInputClass extends LitElement {
     public get input(): HTMLInputElement | unknown {
         return this;
     }
-    @property({ type: String, reflect: true }) name: string;
-    @property({ type: String, reflect: false }) value: string = '';
-    @property({ type: Boolean, reflect: true }) invalid: boolean = false;
-    @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
-    @property({ type: Boolean, reflect: true }) required: boolean = false;
-    @property({ type: String, reflect: true }) errorMessage: string = undefined;
-    @property({ type: String, reflect: true }) pattern: string = undefined;
-    @property({ type: Number, reflect: true }) minLength: number = undefined;
-    @property({ type: Number, reflect: true }) maxLength: number = undefined;
-    @property({ type: Number, reflect: true }) min: number = undefined;
-    @property({ type: Number, reflect: true }) max: number =Number.MAX_VALUE;
-    @property({ type: Number, reflect: true }) step: number = 1;
-    @property({ type: Object, attribute: false }) customValidateMethod: any = undefined;
+    @property({ type: String, reflect: true }) name?: string;
+    @property({ type: String, reflect: false }) value?: string = '';
+    @property({ type: Boolean, reflect: true }) invalid?: boolean = false;
+    @property({ type: Boolean, reflect: true }) novalidate?: boolean = false;
+    @property({ type: Boolean, reflect: true }) required?: boolean = false;
+    @property({ type: String, reflect: true }) errorMessage?: string = undefined;
+    @property({ type: String, reflect: true }) pattern?: string = undefined;
+    @property({ type: Number, reflect: true }) minLength?: number = undefined;
+    @property({ type: Number, reflect: true }) maxLength?: number = undefined;
+    @property({ type: Number, reflect: true }) min?: number = undefined;
+    @property({ type: Number, reflect: true }) max?: number = Number.MAX_VALUE;
+    @property({ type: Number, reflect: true }) step?: number = 1;
+    @property({ type: Object, attribute: false }) customValidateMethod?: any = undefined;
     get validity(): boolean {
         return getValidityResult(this).valid;
     }
@@ -58,27 +58,27 @@ function throttleFunction(fn: Function, delay: number, context: any) {
 
 @customElement('p-input')
 class PInput extends MinInputClass {
-    @property({ type: String, reflect: true }) tips: string;
-    @property({ type: String, reflect: false }) errortips: string;
-    @property({ type: Boolean, reflect: true }) disabled: boolean = false;
-    @property({ type: Boolean, reflect: true }) readOnly: boolean = false;
-    @property({ type: String, reflect: true }) type: inputtype = 'text';
-    @property({ type: String, reflect: true }) placeholder: string;
-    @property({ type: String, reflect: false }) leftIcon: string;
-    @property({ type: String, reflect: false }) rightIcon: string;
-    @property({ type: Boolean, reflect: true }) block: boolean = false;
-    @property({ type: Boolean, reflect: true }) clear: boolean = false;
-    @property({ type: Number, reflect: true }) debounce: number = 0;
-    @property({ type: Number, reflect: true }) throttle: number = 0;
-    @property({ type: Boolean, reflect: true }) showStep: boolean = false;
+    @property({ type: String, reflect: true }) label?: string;
+    @property({ type: String, reflect: true }) tips?: string;
+    @property({ type: String, reflect: false }) errortips?: string;
+    @property({ type: Boolean, reflect: true }) disabled?: boolean = false;
+    @property({ type: Boolean, reflect: true }) readOnly?: boolean = false;
+    @property({ type: String, reflect: true }) type?: inputtype = 'text';
+    @property({ type: String, reflect: true }) placeholder?: string;
+    @property({ type: String, reflect: false }) leftIcon?: string;
+    @property({ type: String, reflect: false }) rightIcon?: string;
+    @property({ type: Boolean, reflect: true }) block?: boolean = false;
+    @property({ type: Boolean, reflect: true }) clear?: boolean = false;
+    @property({ type: Number, reflect: true }) debounce?: number = undefined;
+    @property({ type: Number, reflect: true }) throttle?: number = undefined;
+    @property({ type: Boolean, reflect: true }) showStep?: boolean = false;
     static get styles() {
         return css`
         :host{
             display:inline-block;
-            height:2em;
             border:1px solid var(--borderColor,rgba(0,0,0,.2));
-            border-radius:var(--borderRadius,.25em);
-            transition:border-color .3s,box-shadow .3s;
+            border-radius:var(--borderRadius,0.25em);
+            transition:border-color 0.3s,box-shadow .3s;
             color: var(--fontColor,#333);
             cursor:text;
         }
@@ -107,6 +107,12 @@ class PInput extends MinInputClass {
             display:flex;
             align-items:center;
             height:100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 6px 6px;
+            font-family: inherit;
+            transition: .3s background-color;
         }
         p-tips[show=true]{
             --color:var(--errorColor,#f4615c);
@@ -115,6 +121,7 @@ class PInput extends MinInputClass {
             text-align: inherit;
             color: currentColor;
             padding:0;
+            padding-left:0.3em;
             border: 0;
             outline: 0;
             line-height: inherit;
@@ -127,7 +134,6 @@ class PInput extends MinInputClass {
             background: none;
             overflow-x: hidden;
             transition: color .3s;
-            margin:0.25em 0.25em;
         }
 
         input[type="number"]::-webkit-inner-spin-button{
@@ -143,14 +149,13 @@ class PInput extends MinInputClass {
         }
         p-icon{
             display: flex;
-            margin: 0.25em;
         }
         :host(:focus-within:not([disabled])) .leftIcon{
             color:var(--themeColor,#42b983);
         }
         .eye-icon{
+            padding:0;
             line-height: 1em;
-            padding:0.3em 0.3em;
             cursor:pointer;
         }
         :host([disabled]) .eye-icon{
@@ -159,7 +164,7 @@ class PInput extends MinInputClass {
         .btn-number{
             display:flex;
             flex-direction:column;
-            margin-right:0.25em;
+            margin:-6px 0;
             width:1em;
             visibility:hidden;
             transition:0s;
@@ -170,8 +175,8 @@ class PInput extends MinInputClass {
             border-radius:0;
             width:100%;
             flex:1;
-            padding:0;
-            font-size:.8em;
+            padding:0 2px;
+            font-size:1em;
             transition:.2s;
         }
         .btn-number p-button:hover{
@@ -179,6 +184,36 @@ class PInput extends MinInputClass {
         }
         :host(:focus-within:not([disabled])) .btn-number, :host(:not([disabled]):hover) .btn-number {
             visibility: visible;
+        }
+
+
+        .input-label{
+            pointer-events:none;
+            margin-left:0.14em;
+            position:absolute;
+            transition: transform .3s, color .3s, background-color .3s;
+            transform-origin: left;
+            color:#999;
+        }
+        :host([leftIcon]) .input-label{
+            margin-left:1.5em;
+        }
+        :host([label]) #input::placeholder{
+            color:transparent;
+        }
+        #input:not(:placeholder-shown) + .input-label,
+        #input:focus + .input-label{
+            transform: translateY( calc( -50% - 0.5em ) ) scale(0.8);
+            background:#fff;
+        }
+        #input:-moz-ui-invalid{
+            box-shadow:none;
+        }
+        :host(:focus-within:not([disabled])) .icon-pre,
+        :host(:not([disabled]):hover) .icon-pre,
+        :host(:not([disabled]):hover) .input-label,
+        :host(:focus-within:not([disabled])) .input-label{
+            color:var(--themeColor,#42b983);
         }
     `;
     }
@@ -261,7 +296,7 @@ class PInput extends MinInputClass {
         this.dispatchEvent(inputEvent);
     }
     private static NUMBERINPUTARRAY: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-'];
-    private _processInputInvlaide(event:Event){
+    private _processInputInvlaide(event: Event) {
         this.input.setCustomValidity('');
     }
     private _processInput(event: InputEvent) {
@@ -288,13 +323,13 @@ class PInput extends MinInputClass {
         this.checkValidity();
         const inputEl = this;
         event.stopPropagation();
-        if (this.debounce > 0) {
+        if (this.debounce && this.debounce > 0) {
             let timeout: number = (this as any).debounceTimeoutID;
             timeout && window.clearTimeout(timeout);
             (this as any).debounceTimeoutID = timeout = window.setTimeout(() => {
                 this._dispatchInput();
             }, this.debounce);
-        } else if (this.throttle > 0) {
+        } else if (this.throttle && this.throttle > 0) {
             let throttleFun = (this as any).throttleFun;
             if (throttleFun === undefined) {
                 throttleFun = throttleFunction(() => {
@@ -309,9 +344,9 @@ class PInput extends MinInputClass {
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
         super.update(changedProperties);
-        if (changedProperties.has('throttle')) {
+        if (changedProperties.has('throttle') && this.throttle !== undefined) {
             (this as any).throttleFun = undefined;
-        } else if (changedProperties.has('debounce')) {
+        } else if (changedProperties.has('debounce') && this.debounce !== undefined) {
             window.clearTimeout((this as any).debounceTimeoutID);
             (this as any).debounceTimeoutID = undefined;
         }
@@ -347,7 +382,7 @@ class PInput extends MinInputClass {
         let n = Number(this.value);
         if (this.max === undefined || (n + Number(this.step) < this.max)) {
             n = NP.plus(n, this.step);
-            this.value =n.toString();
+            this.value = n.toString();
             this.dispatchChange();
         }
     }
@@ -358,7 +393,7 @@ class PInput extends MinInputClass {
         let n = Number(this.value);
         if (this.min === undefined || (n - Number(this.step) >= this.min)) {
             n = NP.minus(n, this.step);
-            this.value =n.toString();
+            this.value = n.toString();
             this.dispatchChange();
         }
     }
@@ -368,15 +403,17 @@ class PInput extends MinInputClass {
     render() {
         return html`<p-tips  .tips=${this.tips} id="tips"  >
                 ${this.leftIcon ? html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>` : ''}
-                <input id="input"  name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
+                <input id="input"  name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.label?this.label:this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
                   ?readOnly=${this.readOnly}  .type="${this._innerType()}"    ?disabled=${this.disabled} step=${ifDefined(this.step)} min=${ifDefined(this.min)} max=${ifDefined(this.max)} minLength=${ifDefined(this.minLength)} maxLength=${ifDefined(this.maxLength)}
                   @focus=${this.dispatchFocus} 
                    />
+                ${this.label ? html`<label class='input-label'>${this.label}</label>` : ''}
                 ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}
                 ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'  icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
                 ${this.clear ? html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>` : ''}
-                ${this.type ==='search' ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
+                ${this.type === 'search' ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
                 ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number"><p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button><p-button id="btn-sub" @click="${this._stepDel}" icon="down" shape="circle" type="flat"></p-button></div>` : ''}
+                <slot></slot>
             </p-tips>`;
     }
 }

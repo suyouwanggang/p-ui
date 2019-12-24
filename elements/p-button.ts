@@ -4,7 +4,7 @@ import { } from './p-icon';
 import { ifDefined } from 'lit-html/directives/if-defined';
 type targetType = '_blank' | '_parent' | '_self' | '_top';
 type shapeType = 'circle' | '';
-type typeType = 'primary' | 'danger' | 'flat' | 'dashed';
+export type buttonTypeValue = 'primary' | 'danger' | 'flat' | 'dashed';
 
 @customElement('p-button')
 export default class PButton extends LitElement {
@@ -169,7 +169,7 @@ export default class PButton extends LitElement {
     @property({ type: Boolean,reflect:true}) disabled: boolean;
     @property({ type: Boolean, reflect: true }) block: boolean;
     @property({ type: Boolean }) toggle: boolean;
-    @property({ type: String, reflect: true }) type: typeType;
+    @property({ type: String, reflect: true }) type: buttonTypeValue;
     @property({ type: String, reflect: true }) shape: shapeType;
     @property({ type: String, reflect: true }) name: string;
     @property({ type: String, reflect: true }) value: string;

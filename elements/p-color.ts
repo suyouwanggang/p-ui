@@ -9,6 +9,7 @@ export default class PColor extends LitElement {
             width:30px;
             height:30px;
             font-size:14px;
+            --distance:10px;
         }
         :host([block]){
             display:block;
@@ -19,6 +20,7 @@ export default class PColor extends LitElement {
             pointer-events:none;
         }
         p-pop{
+            --distanceValue:var(--distance,10px);
             display:block;
             width:100%;
             height:100%;

@@ -1,5 +1,4 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
-import { ifDefined } from 'lit-html/directives/if-defined';
 import './p-button';
 import './p-tips';
 @customElement('p-pop')
@@ -11,105 +10,106 @@ class Ppop extends LitElement {
             display:inline-block;
             position:relative;
             overflow:visible;
+           --distanceValue: var(--distance,10px);
         }
         :host([dir="top"]) ::slotted(p-pop-content){
             bottom:100%;
             left:50%;
-            transform:translate(-50%,-10px) scale(0);
+            transform:translate(-50%,calc( -1 * var(--distanceValue) ) ) scale(0);
             transform-origin: center bottom;
         }
         :host([dir="top"]) ::slotted(p-pop-content[open]),
         :host([dir="top"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="top"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(-50%,-10px) scale(1);
+            transform:translate(-50%,calc( -1 * var(--distanceValue) ) ) scale(1);
         }
         :host([dir="right"]) ::slotted(p-pop-content){
             left:100%;
             top:50%;
-            transform:translate(10px,-50%) scale(0);
+            transform:translate(calc( 1 * var(--distanceValue) ),-50%) scale(0);
             transform-origin: left;
         }
         :host([dir="right"]) ::slotted(p-pop-content[open]),
         :host([dir="right"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="right"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(10px,-50%) scale(1);
+            transform:translate(calc( 1 * var(--distanceValue) ),-50%) scale(1);
         }
         :host([dir="bottom"]) ::slotted(p-pop-content){
             top:100%;
             left:50%;
-            transform:translate(-50%,10px) scale(0);
+            transform:translate(-50%,calc( 1 * var(--distanceValue) )) scale(0);
             transform-origin: center top;
         }
         :host([dir="bottom"]) ::slotted(p-pop-content[open]),
         :host([dir="bottom"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="bottom"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(-50%,10px) scale(1);
+            transform:translate(-50%,calc( 1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="left"]) ::slotted(p-pop-content){
             right:100%;
             top:50%;
-            transform:translate(-10px,-50%) scale(0);
+            transform:translate(calc( -1 * var(--distanceValue) ),-50%) scale(0);
             transform-origin: right;
         }
         :host([dir="left"]) ::slotted(p-pop-content[open]),
         :host([dir="left"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="left"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(-10px,-50%) scale(1);
+            transform:translate(calc( -1 * var(--distanceValue) ),-50%) scale(1);
         }
         :host([dir="lefttop"]) ::slotted(p-pop-content){
             right:100%;
             top:0;
-            transform:translate(-10px) scale(0);
+            transform:translate(calc( -1 * var(--distanceValue) )) scale(0);
             transform-origin: right top;
         }
         :host([dir="lefttop"]) ::slotted(p-pop-content[open]),
         :host([dir="lefttop"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="lefttop"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(-10px) scale(1);
+            transform:translate(calc( -1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="leftbottom"]) ::slotted(p-pop-content){
             right:100%;
             bottom:0;
-            transform:translate(-10px) scale(0);
+            transform:translate(calc( -1 * var(--distanceValue) )) scale(0);
             transform-origin: right bottom;
         }
         :host([dir="leftbottom"]) ::slotted(p-pop-content[open]),
         :host([dir="leftbottom"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="leftbottom"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(-10px) scale(1);
+            transform:translate(calc( -1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="topleft"]) ::slotted(p-pop-content){
             bottom:100%;
             left:0;
-            transform:translate(0,-10px) scale(0);
+            transform:translate(0,calc( -1 * var(--distanceValue) )) scale(0);
             transform-origin: left bottom;
         }
         :host([dir="topleft"]) ::slotted(p-pop-content[open]),
         :host([dir="topleft"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="topleft"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(0,-10px) scale(1);
+            transform:translate(0,calc( -1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="topright"]) ::slotted(p-pop-content){
             bottom:100%;
             right:0;
-            transform:translate(0,-10px) scale(0);
+            transform:translate(0,calc( -1 * var(--distanceValue) )) scale(0);
             transform-origin: right bottom;
         }
         :host([dir="topright"]) ::slotted(p-pop-content[open]),
         :host([dir="topright"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="topright"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(0,-10px) scale(1);
+            transform:translate(0,calc( -1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="righttop"]) ::slotted(p-pop-content){
             left:100%;
             top:0;
-            transform:translate(10px) scale(0);
+            transform:translate(calc( 1 * var(--distanceValue) )) scale(0);
             transform-origin: left top;
         }
         :host([dir="righttop"]) ::slotted(p-pop-content[open]),
         :host([dir="righttop"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="righttop"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(10px) scale(1);
+            transform:translate(calc( 1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="rightbottom"]) ::slotted(p-pop-content){
             left:100%;
@@ -120,13 +120,13 @@ class Ppop extends LitElement {
         :host([dir="rightbottom"]) ::slotted(p-pop-content[open]),
         :host([dir="rightbottom"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="rightbottom"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(10px) scale(1);
+            transform:translate(calc( 1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="bottomleft"]) ::slotted(p-pop-content),
         :host(:not([dir])) ::slotted(p-pop-content){
             left:0;
             top:100%;
-            transform:translate(0,10px) scale(0);
+            transform:translate(0,calc( 1 * var(--distanceValue) )) scale(0);
             transform-origin: left top;
         }
         :host(:not([dir])) ::slotted(p-pop-content[open]),
@@ -135,18 +135,18 @@ class Ppop extends LitElement {
         :host([dir="bottomleft"]) ::slotted(p-pop-content[open]),
         :host([dir="bottomleft"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="bottomleft"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(0,10px) scale(1);
+            transform:translate(0,calc( 1 * var(--distanceValue) )) scale(1);
         }
         :host([dir="bottomright"]) ::slotted(p-pop-content){
             right:0;
             top:100%;
-            transform:translate(0,10px) scale(0);
+            transform:translate(0,calc( 1 * var(--distanceValue) )) scale(0);
             transform-origin: right top;
         }
         :host([dir="bottomright"]) ::slotted(p-pop-content[open]),
         :host([dir="bottomright"][trigger="hover"]:not([disabled]):hover) ::slotted(p-pop-content),
         :host([dir="bottomright"][trigger="focus"]:not([disabled]):focus-within) ::slotted(p-pop-content){
-            transform:translate(0,10px) scale(1);
+            transform:translate(0,calc( 1 * var(--distanceValue) )) scale(1);
         }
         :host([trigger="contextmenu"]) ::slotted(p-pop-content){
             right:auto;
@@ -166,6 +166,20 @@ class Ppop extends LitElement {
             opacity:1;
             visibility:visible;
         }
+
+        :host([dir='center']) ::slotted(p-pop-content){
+            position:fixed;
+            right:auto;
+            bottom:auto;
+            top:50%;
+            left:50%;
+            transition: .15s;
+            transform:translate(-50%, -50%) scale(0);
+        }
+        :host([dir='center']) ::slotted(p-pop-content[open]){
+            transform:translate(-50%, -50%) scale(1);
+        }
+
         `;
     }
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
@@ -218,39 +232,57 @@ class Ppop extends LitElement {
         }
         return popContent;
     }
-    firstUpdated() {
-        const showHandler = (ev: MouseEvent) => {
-            if (this.trigger !== 'contextmenu') {
+    private _bindShowHanlder = (ev: MouseEvent) => {
+        if (this.trigger !== 'contextmenu') {
+            this._show(ev);
+        } else {
+            const event = ev as any;
+            ev.preventDefault();
+            const path = event.path || (ev.composedPath && ev.composedPath());
+            if (!path.includes(this.popContent)) {
                 this._show(ev);
-            } else {
-                const event = ev as any;
-                ev.preventDefault();
-                const path = event.path || (ev.composedPath && ev.composedPath());
-                if (!path.includes(this.popContent)) {
-                    this._show(ev);
-                }
             }
-
         }
-        this.addEventListener(this.trigger, showHandler);
-        (this as any)._showHandler = showHandler;
-        const hander = (ev: any) => {
-            const popContent = this.popContent;
-            const path = ev.path || (ev.composedPath && ev.composedPath());
-            if (popContent && !path.includes(popContent) && !popContent.loading && !path.includes(this.children[0]) || (this.trigger === 'contextmenu') && !path.includes(popContent) && ev.which === '1') {
-                popContent.open = false;
+    }
+    private _bindHiddenHanlder = (ev: MouseEvent) => {
+        const popContent = this.popContent;
+        popContent.open = false;
+    }
+    private _bindDocumentAutoHidde = (ev: any) => {
+        const popContent = this.popContent;
+        const path = ev.path || (ev.composedPath && ev.composedPath());
+        if (popContent && !path.includes(popContent) && !popContent.loading && !path.includes(this.children[0]) || (this.trigger === 'contextmenu') && !path.includes(popContent) && ev.which === '1') {
+             popContent.open = false;
+        }
+    }
+    private _bindTriggerEvent(oldTirgger?: string) {
+        if (oldTirgger !== undefined) {
+            if (oldTirgger === 'hover') {
+                this.removeEventListener('mouseenter', this._bindShowHanlder);
+                this.removeEventListener('mouseleave', this._bindHiddenHanlder);
+            } else {
+                this.removeEventListener(oldTirgger, this._bindShowHanlder);
             }
-        };
-        document.addEventListener('mousedown', hander);
-        (this as any)._mouseDown = hander;
+        }
+        if (this.trigger !== undefined && this.trigger !== 'hover') {
+            this.addEventListener(this.trigger, this._bindShowHanlder);
+        } else if ( 'hover' === this.trigger ) {
+            this.addEventListener('mouseenter', this._bindShowHanlder);
+            this.addEventListener('mouseleave', this._bindHiddenHanlder);
+        }
+    }
+    private firstUpdateFlag = false;
+    firstUpdated() {
+        this._bindTriggerEvent();
+        document.addEventListener('mousedown', this._bindDocumentAutoHidde);
+        this.firstUpdateFlag = true;
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
         super.update(changedProperties);
-        if (this.isConnected && (this as any)._showHandler) {
-            const trigger = changedProperties.get('trigger');
+        if (this.firstUpdateFlag) {
+            const trigger = changedProperties.get('trigger') as string;
             if (trigger !== undefined) {
-                this.removeEventListener(trigger as string, (this as any)._showHandler);
-                this.addEventListener(this.trigger, (this as any)._showHandler);
+                this._bindTriggerEvent(trigger);
             }
             const pop = this.popContent as any;
             if (pop && pop.isAutoCreate) {
@@ -270,9 +302,7 @@ class Ppop extends LitElement {
         }
     }
     disconnectedCallback() {
-        if ((this as any)._mouseDown) {
-            document.removeEventListener('mousedown', (this as any)._mouseDown);
-        }
+        document.removeEventListener('mousedown', this._bindDocumentAutoHidde);
     }
 }
 
@@ -368,7 +398,7 @@ class PPopContent extends LitElement {
             margin-left:0.8em;
             margin-right:0.8em;
         }`
-        ;
+            ;
     }
 
     @property({ type: Boolean, reflect: true }) open: boolean = false;
@@ -391,9 +421,9 @@ class PPopContent extends LitElement {
             <div  part="popFooter">
                 <slot name="footer">
                     ${this.type === 'confirm' ?
-                    html`<p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
+                html`<p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
                             <p-button id="btn-submit" type="primary" @click="${this._submitClick}">${this.okText === undefined ? '确定' : this.okText}</p-button>`
-                    : ''}
+                : ''}
                 </slot>
            </div>
         `;
@@ -423,13 +453,13 @@ class PPopContent extends LitElement {
             if (ev.propertyName === 'transform' && this.open) {
                 // console.log('transform===');
                 if (this.type === 'confirm') {
-                   if(btnSubmit){
+                    if (btnSubmit) {
                         btnSubmit.focus();
-                   } 
+                    }
                 } else {
-                   if(btnClose){
-                     btnClose.focus();
-                   } 
+                    if (btnClose) {
+                        btnClose.focus();
+                    }
                 }
                 this.dispatchEvent(new CustomEvent('open'));
             }
@@ -448,6 +478,4 @@ class PPopContent extends LitElement {
     }
 }
 
-export {
-    Ppop, PPopContent
-};
+export { Ppop, PPopContent };
