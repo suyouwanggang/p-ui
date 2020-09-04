@@ -1,7 +1,8 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 /**
- * @event  change beforeChange
+ * @event  tab-change 页签改变事件
+ * @event  tab-change-end 页签改变完成事件
  * 
  */
 type tabPosition = 'top' | 'bottom' | 'left' | 'right';
@@ -122,20 +123,21 @@ class PTab extends LitElement {
 
     protected renderTabTitle(tabContent: PTabContent): TemplateResult {
         const slots: HTMLSlotElement = tabContent.renderRoot.querySelector('#header');
-        const nodeList: Node[] = slots.assignedNodes({ flatten: true });
+        const nodeList: Element[] = slots.assignedElements({ flatten: true });
         const array = [];
         for (let i = 0, j = nodeList.length; i < j; i++) {
-            const el: any = nodeList[i];
+            const el: Element = nodeList[i];
             if (el instanceof HTMLTemplateElement) {
-                const template = el ;
+                const template = el;
                 const elClone = document.importNode(template.content, true);
                 array.push(elClone);
             } else if (el.nodeType === 1) {
-                el.style.display = '';
-                const elClone = el.cloneNode(true);
+                const EL = el as HTMLElement;
+                EL.style.display = '';
+                const elClone = el.cloneNode(true) as HTMLElement;
                 elClone.removeAttribute('slot');
                 array.push(elClone);
-                el.style.display = 'none';
+                EL.style.display = 'none';
             }
         }
         return html`
@@ -190,6 +192,9 @@ class PTab extends LitElement {
             let target = event.target as HTMLElement;
             if (target.nodeType !== 1) {
                 target = target.parentElement;
+            }
+            if(target===tab_nav){
+                return ;
             }
             if (target !== tab_nav) {
                 target = target.closest('div.tab_tabs[key]');
@@ -305,12 +310,14 @@ class PTab extends LitElement {
             index: this.getTabIndex(tabContent),
             key: tabContent.key
         }
-        this.dispatchEvent(new CustomEvent('change', {
+        this.dispatchEvent(new CustomEvent('tab-change', {
+            bubbles:true,
             detail: detail
         }));
         this.activeKey = tabContent.key;
         this.setHeaderScroll();
-        this.dispatchEvent(new CustomEvent('changeEnd', {
+        this.dispatchEvent(new CustomEvent('tab-change-end', {
+            bubbles:true,
             detail: detail
         }));
     }
@@ -413,12 +420,18 @@ class PTabContent extends LitElement {
     }
     updated(changeMap: Map<string | number | symbol, unknown>) {
         super.updated(changeMap);
+        if (changeMap != null && (changeMap.has('label') || changeMap.has('icon') || changeMap.has('disabled'))) {
+            this.updateTabHeader();
+        }
+    }
+    updateTabHeader() {
         this.tab.requestUpdate();
     }
     firstUpdated() {
+        const tabPanel = this;
         const slot: HTMLSlotElement = this.renderRoot.querySelector('#header');
         slot.addEventListener('slotchange', () => {
-            this.tab.requestUpdate();
+            tabPanel.updateTabHeader();
         });
     }
     setActive() {

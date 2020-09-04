@@ -9,34 +9,21 @@
       navigator.serviceWorker.register('/service-worker.js');
     }
   </script>
-  -->
 
-  <!-- Load polyfills 
-  <script 
-    src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
-    defer>
-  </script> 
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <script type="module" src="./build/index.js"> </script>
-  <!-- Load components via WebComponents.waitFor -->
-  <script type="module">
-    window.WebComponents = window.WebComponents || {
-      waitFor(cb) { addEventListener('WebComponentsReady', cb) }
-    }
-    WebComponents.waitFor(async () => {
-      import('./build/index.js');
-    });
-  </script>
+
   
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+  <!-- Load components via WebComponents.waitFor -->
+  
+  <!-- load the element -->
 
   <!-- Change stuff here for your app -->
   <meta name="description" content="start-lit-element">
   <meta name="theme-color" content="#ffffff">
   <title>start-lit-element</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <script type="text/javascript" src="./build/index.js"></script>
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
   <style>
@@ -216,8 +203,8 @@
         <p-checkbox checked value='12'> label  </p-checkbox>
         <p-checkbox checked disabled value='12'> label  </p-checkbox>
        <p></p>
-        <p-checkbox-group id='groupCheckbox' name='wanggang' value=[1,2,3]  min=2 max=3>
-            <p-checkbox  value=1 >1 </p-checkbox>
+        <p-checkbox-group id='groupCheckbox' name='wanggang'   min=2 max=3>
+            <p-checkbox checked  value=1 >1 </p-checkbox>
             <p-checkbox  value=2 >2 </p-checkbox>
             <p-checkbox  value=3 >3</p-checkbox>
             <p-checkbox  value=4 >4</p-checkbox>
@@ -308,32 +295,7 @@
   </p-tab>
 
 </form>
-    <script>
-      var a = document.getElementById('switch');
-      a.addEventListener('change', e => console.log(e.detail));
-      var b = document.getElementById('input');
-      b.addEventListener('change', e => console.log(e.detail));
-      var n = document.getElementById('number');
-      n.addEventListener('change', e => console.log(e.detail));
 
-
-      var c = document.getElementById('password');
-      c.addEventListener('change', e => console.log(e.detail));
-
-
-      var t = document.getElementById('tips');
-
-
-      var tab = document.getElementById('tabDIV');
-      tab.addEventListener('change', function (event) {
-        console.log(event.type);
-      })
-
-
-
-      tab.addEventListener('beforeChange', function (event) {
-         console.log(event.type);
-      })
       
       
      

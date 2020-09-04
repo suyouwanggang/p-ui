@@ -2,6 +2,7 @@ import { css, customElement, LitElement, property, html } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import PTips from './p-tips';
 import { isArray } from 'util';
+import { times } from 'number-precision';
 
 @customElement('p-checkbox')
 export class PCheckbox extends LitElement {
@@ -120,20 +121,26 @@ export class PCheckbox extends LitElement {
         }
     `;
     }
+    private _dispatchangeEvent() {
+        this.dispatchEvent(new CustomEvent('change', {
+            bubbles: true,
+            detail: {
+                value: this.value
+                , checed: this.checked
+            }
+        }));
+    }
     firstUpdated() {
-        this.checkbox!.addEventListener('change', (ev: Event) => {
+        this.checkbox.addEventListener('change', (ev: Event) => {
             this.checked = !this.checked;
-            this.dispatchEvent(new CustomEvent('change', {
-                detail: {
-                    value: this.value
-                }
-            }));
+            this._dispatchangeEvent();
         });
         this.checkbox.addEventListener('keydown', (ev: KeyboardEvent) => {
             switch (ev.keyCode) {
                 case 13://Enter
                     ev.stopPropagation();
                     this.checked = !this.checked;
+                    this._dispatchangeEvent();
                     break;
                 default:
                     break;
@@ -142,21 +149,19 @@ export class PCheckbox extends LitElement {
 
         this.checkbox.addEventListener('focus', (ev: FocusEvent) => {
             ev.stopPropagation();
-            if (this.checkbox.isfocus != true) {
-                this.dispatchEvent(new CustomEvent('focus', {
-                    detail: {
-                        value: this.value
-                    }
-                }));
-            }
-            this.checkbox.isfocus = true;
+            this.dispatchEvent(new CustomEvent('focus', {
+                detail: {
+                    value: this.value
+                    , checked: this.checked
+                }
+            }));
         });
         this.checkbox.addEventListener('blur', (ev: Event) => {
             ev.stopPropagation();
-            this.checkbox.isfocus = false;
             this.dispatchEvent(new CustomEvent('blur', {
                 detail: {
                     value: this.value
+                    , checked: this.checked
                 }
             }));
         });
@@ -205,7 +210,7 @@ export class PCheckbox extends LitElement {
             return false;
         }
     }
-    get checkbox(): HTMLInputElement | any {
+    get checkbox(): HTMLInputElement {
         return this.renderRoot.querySelector('#checkbox');
     }
 
@@ -219,6 +224,10 @@ export class PCheckboxGroup extends LitElement {
         return css`:host {
             display:inline-block;
         }
+        :host([invalid]) {
+            --borderColor: var(--errorColor,#f4615c);
+        }
+
         :host(:focus-within) p-tips,:host(:hover) p-tips{
             z-index:2;
         }
@@ -256,7 +265,7 @@ export class PCheckboxGroup extends LitElement {
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
 
     render() {
-        return html`<p-tips id="tip"  type="error"><slot id='slot'></slot></p-tips>`;
+        return html`<p-tips id="tip" @change="${this._handerEvent}" type="error"><slot id='slot'></slot></p-tips>`;
     }
     attributeChangedCallback(name: string, old: string, value: string) {
         super.attributeChangedCallback(name, old, value);
@@ -266,71 +275,68 @@ export class PCheckboxGroup extends LitElement {
             } else {
                 this.tip.removeAttribute('tabindex');
             }
-        }
-    }
-    setChildValue(arr: Array<String> | String) {
-        if (isArray(arr)) {
-            this.value = arr.map(e => String(e));
+        } if (name === 'value' && old !== value) {
             this._setChildValue();
-        } else {
-            this.setChildValue(arr.split(','));
         }
     }
     _setChildValue() {
-        if (this.value == undefined) {
-            this.value = [];
-        } else {
-            this.value = this.value.map(e => String(e));;
+        if (this.value != null) {
+            this.elements.forEach((el: PCheckbox) => {
+                const val = el.value;
+                if (this.value.includes(val)) {
+                    el.checked = true;
+                } else {
+                    el.checked = false;
+                }
+            })
         }
-        this.elements.forEach((el: any) => {
-            const val = (el as PCheckbox).value;
-            if (this.value.includes(val)) {
-                el.checked = true;
-            } else {
-                el.checked = false;
+    }
+    private getChildCheckValue() {
+        const result: Array<String> = [];
+        this.elements.forEach((el: PCheckbox) => {
+            if (el.checked) {
+                result.push(el.value);
             }
-        })
+        });
+        return result;
+    }
+    private _handerEvent(event: Event) {
+        const p = event.target;
+        if (p instanceof PCheckbox) {
+            this.value = this.getChildCheckValue();
+            this.dispatchEvent(new CustomEvent('change', {
+                bubbles: true,
+                detail: {
+                    value: this.value
+                }
+            }));
+            this.checkValidity();
+        }
     }
     firstUpdated() {
-        this._setChildValue();
-        const slots = this.shadowRoot.querySelector('#slot');
-        if (slots) {
-            let handler = (ev: Event) => {
-                let el: PCheckbox = ev.target as PCheckbox;
-                if (el.checked) {
-                    this.value.push(el.value);
-                } else {
-                    const index = this.value.indexOf(el.value);
-                    if (index != -1) {
-                        this.value.splice(index, 1);
-                    }
-                }
-                this.dispatchEvent(new CustomEvent('change', {
-                    detail: {
-                        value: this.value
-                    }
-                }));
-                this.checkValidity();
-            }
-            slots.addEventListener('slotchange', () => {
-                this.elements.forEach((el: HTMLElement) => {
-                    el.removeEventListener('change', handler);
-                    el.addEventListener('change', handler);
+        if (this.value && this.value.length > 0) {
+            this.value.forEach((item, index) => {
+                this.value[index] = String(item);
+            })
+        }
 
-                })
+        const slots: HTMLSlotElement = this.shadowRoot.querySelector('#slot');
+        if (slots) {
+            slots.addEventListener('slotchange', () => {
+                this._setChildValue();
             });
         }
     }
 
     get validity() {
-        const len = this.value.length;
+        const len = this.len;
         if (!this.required && len === 0) {
             return true;
         }
         return len >= this.min && len <= this.max;
     }
     get len() {
-        return this.value.length;
+        return this.value != null ? this.value.length : 0;
     }
     reset() {
         this.value = [];
@@ -338,10 +344,10 @@ export class PCheckboxGroup extends LitElement {
         this.tip.show = 'false';
     }
 
-    checkall() {
-        this.elements.forEach((el: any) => {
-            (el as PCheckbox).checked = true;
-        })
+    checkAll() {
+        this.elements.forEach((el: PCheckbox) => {
+            el.checked = true;
+        });
     }
     get elements(): NodeListOf<PCheckbox> {
         return this.querySelectorAll('p-checkbox');

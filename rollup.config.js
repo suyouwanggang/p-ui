@@ -13,25 +13,32 @@ export default {
         format: 'cjs',
 		sourcemap: true
 	}
-	
-	// , {
-	// 	file: 'docs/build/index.js',
-    //     format: 'cjs',
-	// 	sourcemap: true
-	// }
-
-	// ,{
-	// 	file: 'build/index.umd.js',
-    //     format: 'umd',
-	// 	sourcemap: false
-	// },{
-	// 	file: 'build/index.es.js',
-    //     format: 'es',
-	// 	sourcemap: false
-	// }
+	//  ,{
+	//  	file: 'build/index.umd.js',
+    //      format: 'umd',
+	//  	sourcemap: true
+	//  },{
+	//  	file: 'build/index.amd.js',
+    //      format: 'amd',
+	//  	sourcemap: true
+	//  },{
+	//  	file: 'build/index.es.js',
+	// 	format: 'esm',
+	//  	sourcemap: true
+	//  },
+	//  ,{
+	//  	file: 'build/index.iife.js',
+	// 	format: 'iife',
+	//  	sourcemap: true
+	//  },
+	//  ,{
+	//  	file: 'build/index.system.js',
+	// 	format: 'system',
+	//  	sourcemap: true
+	//  }
 	],	
 	plugins: [
-		//minifyHTML(),
+		minifyHTML(),
 		typescript(),
 		resolve(),
 		commonjs(),
@@ -40,7 +47,7 @@ export default {
 			/*exclude: 'node_modules/**'*/
 		})
 		
-		//,terser()  /*压缩js*/
+		,terser()  /*压缩js*/
   ]
 };
 

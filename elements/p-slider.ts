@@ -10,7 +10,7 @@ class PSlider extends LitElement {
     @property({ type: Number, reflect: true }) value: number = 0;
     @property({ type: Boolean, reflect: true }) vertical: boolean = false;
     @property({ type: Boolean, reflect: true }) alwaysTip: boolean = false;
-    @property({ type: Boolean, reflect: true }) showtips: boolean = false;
+    @property({ type: Boolean, reflect: true }) showtips: boolean = true;
     @property({ type: Boolean, reflect: true }) required: boolean = false;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: String, reflect: true }) suffix: string = undefined;
@@ -261,7 +261,7 @@ class PSlider extends LitElement {
 
     update(_changedProperties: Map<string | number | symbol, unknown>) {
         super.update(_changedProperties);
-        if (_changedProperties.has('value') && this.value > this.max) {
+        if (_changedProperties.has('value') &&this.max!=undefined&& this.value > this.max) {
             this.value = this.max;
         }
         if (_changedProperties.has('value') && this.value < this.min) {

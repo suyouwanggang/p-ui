@@ -2,7 +2,9 @@ import { css, customElement, html, LitElement, property } from 'lit-element';
 import './p-tips';
 import './p-icon';
 import PTips from './p-tips';
-
+/**
+ * @event change 
+ */
 @customElement('p-rate')
 export default class PRate extends LitElement {
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
@@ -47,12 +49,13 @@ export default class PRate extends LitElement {
         }`;
     }
     _hoverRate(ev: MouseEvent) {
-        if (!this.hoverable||this.disabled) {
+        if (!this.hoverable || this.disabled) {
             return;
         }
         // tslint:disable-next-line: no-any
         let el: any = ev.target as any;
         const div = this.renderRoot.querySelector('#rate');
+        // tslint:disable-next-line: no-any
         const array: PTips[] = [...div.querySelectorAll('p-tips') as any];
         const index = array.indexOf(el);
         for (let i = 0, j = array.length; i < j; i++) {
@@ -64,7 +67,7 @@ export default class PRate extends LitElement {
         }
     }
     _leaveRate(ev: MouseEvent) {
-        if (!this.hoverable||this.disabled) {
+        if (!this.hoverable || this.disabled) {
             return;
         }
         const div = this.renderRoot.querySelector('#rate');
@@ -72,7 +75,7 @@ export default class PRate extends LitElement {
         const array: PTips[] = [...div.querySelectorAll('p-tips') as any];
         // tslint:disable-next-line: no-any
         for (let i = 0, j = array.length; i < j; i++) {
-            const el = array[i] ;
+            const el = array[i];
             // tslint:disable-next-line: no-any
             if (this.value > (el as any).value) {
                 el.classList.add('mouseSelect');
@@ -87,7 +90,15 @@ export default class PRate extends LitElement {
         if (!(el instanceof PTips)) {
             el = el.closest('p-tips');
         }
+        const old = el.value;
         this.value = el.value + 1;
+        this.dispatchEvent(new CustomEvent('change', {
+            bubbles: true,
+            detail: {
+                old: old,
+                value: this.value
+            }
+        }));
     }
     render() {
         return html`<div id='rate'  @mouseleave=${this._leaveRate}>
@@ -98,30 +109,23 @@ export default class PRate extends LitElement {
         })}<slot></slot></div>
         `;
     }
-    update(changedProperties: Map<string | number | symbol, unknown>){
+    update(changedProperties: Map<string | number | symbol, unknown>) {
         super.update(changedProperties);
-        if(changedProperties.has('offColor')){
-            if(this.offColor){
-                this.style.setProperty('--rate-off-color',this.offColor);
-            }else{
+        if (changedProperties.has('offColor')) {
+            if (this.offColor) {
+                this.style.setProperty('--rate-off-color', this.offColor);
+            } else {
                 this.style.removeProperty('--rate-off-color');
             }
         }
-        if(changedProperties.has('onColor')){
-            if(this.onColor){
-                this.style.setProperty('--rate-on-color',this.onColor);
-            }else{
+        if (changedProperties.has('onColor')) {
+            if (this.onColor) {
+                this.style.setProperty('--rate-on-color', this.onColor);
+            } else {
                 this.style.removeProperty('--rate-on-color');
             }
         }
-        if(changedProperties.has('value')&&this.isConnected){
-            this.dispatchEvent(new CustomEvent('change',{
-                    detail:{
-                        old:changedProperties.get('value'),
-                        value:this.value
-                    }
-            }));
-        }
+
     }
 
 }
