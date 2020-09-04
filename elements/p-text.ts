@@ -1,7 +1,7 @@
 
 import { LitElement, svg, html, customElement, property, css } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
-type typeString=''|'warning'|'error'|'success';
+type typeString=''|'warning'|'error'|'success'|'code'|'mark';
 @customElement('p-text')
 export class PText extends LitElement {
     @property({ type: Number, reflect: true }) rows: number = undefined;

@@ -1,9 +1,6 @@
 import { css, customElement, LitElement, property, html } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import PTips from './p-tips';
-import { isArray } from 'util';
-import { times } from 'number-precision';
-
 @customElement('p-checkbox')
 export class PCheckbox extends LitElement {
     @property({ type: String, reflect: true }) errortips: string;
@@ -254,8 +251,8 @@ export class PCheckboxGroup extends LitElement {
 
 
     @property({ type: String, reflect: true }) name: string;
-    @property({ type: Number, reflect: true }) min: number = 0;
-    @property({ type: Number, reflect: true }) max: number = Infinity;
+    @property({ type: Number, attribute:false }) min: number = 0;
+    @property({ type: Number, attribute:false }) max: number = Infinity;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Array, reflect: true }) value: Array<String>;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
