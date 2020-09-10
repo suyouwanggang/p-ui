@@ -1,6 +1,5 @@
 
 import {  html,  css, LitElement } from 'lit-element';
-
 import 'element-closest-polyfill';
 import './elements/p-tips';
 import './elements/p-icon';
@@ -25,7 +24,10 @@ import PDialog from './elements/p-Dialog';
 import PMessage from './elements/p-message';
 import   './elements/p-date-picker';
 import   './elements/p-layout';
+import   './elements/p-panel';
+import   './elements/p-fieldset';
 import   './elements/p-routslot';
+import   './elements/p-for';
 const LitHeler={
   html:html,
   css:css

@@ -23,7 +23,9 @@
   <meta name="theme-color" content="#ffffff">
   <title>start-lit-element</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="./build/index.js"></script>
+  <script src="build/webcomponents-loader.js"></script>
+  <script src="build/index.js" type="module" ></script>
+  <script src='build/index.legacy.js' nomodule=""></script>
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
   <style>
@@ -37,6 +39,25 @@
 <body>
 
 <form>
+  <p-for id="items" value="value"  index="index">
+      <template>
+          <div >index:${index} ${value.name[0]}  <p-switch .item=${value}  @click=${value.handler} > ${value.label}</p-switch></div>
+      </template>
+  </p-for>
+  <script>
+   var forItem= document.getElementById("items");
+    const data=[];
+    for(let i=0,j=15;i<j;i++){
+      data.push({
+          name:['text'+i],
+          handler:function(event){
+            console.log(event.target.item +" this"+this) ;
+          },
+          label:'label'+i
+        });
+    };
+    forItem.items=data;
+  </script>
   <p-color-panel></p-color-panel>
   <p-switch id="switch" checked value="1"></p-switch>
   <p-rate value=2  hover id="pRate" >  <span>sdfsfsd</span></p-rate>
@@ -52,6 +73,25 @@
       <p-option value='4'>澳门</p-option>
       <p-option value='5'>武汉</p-option>
   </p-select>
+  <p-panel header='title' >
+      <p-text>
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p-text>
+  </p-panel>
+  <p-fieldset header='title' style='margin-top:10px;' collapsed >
+    <p-tips tips="提示" dir="top" slot="header"><p-icon name="heart" id="icon" size="20"></p-icon></p-tips>
+    <p-text>
+      通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+      通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+      通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+      通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+    </p-text>
+</p-fieldset>
+ <style>
+  
+ </style>
   <p-dialog open oktext='确定' canceltext='取消'>
     <wanggang>asfasasdf</wanggang>
   </p-dialog>
@@ -89,8 +129,8 @@
     bundles index.ts → build\index.js, docs\build\index.js...
     created build\index.js, docs\build\index.js in 1.1s
     
-    [2019-11-22 17:18:34] waiting for changes... </p-text>
-  <p-text code mark >wanggang </p-text>
+    [2019-11-22 17:18:34] waiting for changes...结束 </p-text>
+  <p-text  code mark >wanggang </p-text>
   <p>icon</p>
   <div style='color:var(--themeColor,#42b983)'>
     <p-icon name="heart" id="icon" size="20"></p-icon>
@@ -109,7 +149,7 @@
     我是内容
     我是内容
     我是内容 
-  " id="tips" show="">
+  " id="tips" >
     <p-icon name="heart" id="icon" size="20" lefticon="creditcard"></p-icon>
     <p-icon name="heart" id="icon" size="30" lefticon="creditcard"></p-icon>
     <p-icon name="heart" id="icon" size="40" lefticon="creditcard"></p-icon>

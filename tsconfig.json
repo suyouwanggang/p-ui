@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "ES2015",
+    "module": "ES6",
+    "downlevelIteration": true,
+      "lib": [
+          "dom",
+          "es5",
+          "es2015.collection",
+          "es2015.iterable"
+      ],
     "moduleResolution": "node",
-    "lib": ["esnext.array", "esnext", "es2017", "dom"],
+    "allowJs": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
