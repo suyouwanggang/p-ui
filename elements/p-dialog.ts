@@ -328,12 +328,13 @@ export default class PDialog extends LitElement {
         return dialog;
     };
 
-    static confirm = async function () {
+    static confirm =  function () {
         const dialog = new PDialog();
         document.body.appendChild(dialog);
-        await dialog.updateComplete;
-        const cancelBtn: PButton = dialog.cancelBtn;
-        cancelBtn.style.visibility = 'visible';
+        dialog.updateComplete.then(() =>{
+            const cancelBtn: PButton = dialog.cancelBtn;
+            cancelBtn!.style.visibility = 'visible';
+        });
         dialog.removeAble = true;
         if (typeof arguments[0] === 'object') {
             const { title, oktext, canceltext, type, content, ok } = arguments[0];
@@ -355,13 +356,15 @@ export default class PDialog extends LitElement {
         return dialog;
     };
 
-    static prompt = async function () {
+    static prompt =  function () {
         const dialog = new PDialog();
         dialog.type = 'prompt';
         document.body.appendChild(dialog);
-        await dialog.updateComplete;
-        const cancelBtn: PButton = dialog.cancelBtn;
-        cancelBtn.style.visibility = 'visible';
+        dialog.updateComplete.then(() =>{
+            const cancelBtn: PButton = dialog.cancelBtn;
+            cancelBtn!.style.visibility = 'visible';
+        });
+       
         dialog.removeAble = true;
         dialog.autoclose = false;
         if (typeof arguments[0] === 'object') {

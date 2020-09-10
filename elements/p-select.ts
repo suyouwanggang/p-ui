@@ -213,7 +213,7 @@ class PSelect extends LitElement {
         return html`
             <p-pop id="pop" >
                  <p-tips id='tip'>
-                    ${cache(this.renderTrigger())}
+                    ${this.renderTrigger()}
                  </p-tips>
                 <p-pop-content id="optionCotent" hiddenClose thinBar >
                     <slot id="slot"></slot>

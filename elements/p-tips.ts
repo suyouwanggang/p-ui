@@ -373,3 +373,8 @@ type dirType = 'top' | 'topleft' | 'topright' | 'left' | 'lefttop' | 'leftbottom
         }
     }
 }
+declare global {
+    interface HTMLElementTagNameMap {
+      'p-tips': PTips;
+    }
+  }

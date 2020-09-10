@@ -1,8 +1,9 @@
 // tslint:disable-next-line: quotemark
 import { LitElement ,customElement,html, css,property} from "lit-element";
 import {styleMap} from 'lit-html/directives/style-map';
-import { isNumber } from "util";
-
+const isNumber = function (value:any){
+   return typeof value === 'number' && isFinite(value);
+};
 @customElement('p-loading')
 export default class PLoading extends LitElement {
 

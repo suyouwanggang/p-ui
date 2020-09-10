@@ -1,5 +1,4 @@
 import { css, customElement, html, LitElement, property, TemplateResult, query } from 'lit-element';
-import { cache } from 'lit-html/directives/cache';
 import './p-button';
 import PButton from './p-button';
 type selectDateType = 'date' | 'month' | 'year' | 'week';
@@ -273,17 +272,17 @@ export default class PDatePanel extends LitElement {
                                 <span class="date-week-item">六</span>
                         </div>
                         <div class='date-body'>
-                            ${cache(this.renderDateBody())}
+                            ${this.renderDateBody()}
                         </div>
                     </div>
                 ${this.mode === 'date' || this.mode === 'month' ?
                 html`
                     <div class='date-mode date-month ${this._dateType === 'month' ? 'show' : ''} '   >
-                        ${cache(this.renderMonthBody())}
+                        ${this.renderMonthBody()}
                     </div>` : ''
             }
                 <div class='date-mode date-year  ${this._dateType === 'year' ? 'show' : ''} '  >
-                    ${cache(this.renderYearBody())}
+                    ${this.renderYearBody()}
                 </div>
             </div>
         </div>`;

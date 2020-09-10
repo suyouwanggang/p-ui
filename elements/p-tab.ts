@@ -133,40 +133,37 @@ class PTab extends LitElement {
                 array.push(elClone);
             } else if (el.nodeType === 1) {
                 const EL = el as HTMLElement;
-                EL.style.display = '';
+                // EL.style.display = '';
                 const elClone = el.cloneNode(true) as HTMLElement;
-                elClone.removeAttribute('slot');
+                // elClone.removeAttribute('slot');
                 array.push(elClone);
-                EL.style.display = 'none';
+                // EL.style.display = 'none';
             }
         }
         return html`
             <div key=${tabContent.key}  ?disabled=${tabContent.disabled}
                   class="tab_tabs ${tabContent.key === this.activeKey ? 'tab_on' : ''}  tab_tabs_outer">
-                  ${array.map((el: HTMLElement) => html`${el}`)}
+                  ${array.map((el) => html`${el}`)}
          </div>`;
     }
     protected renderTab(): TemplateResult | Array<TemplateResult> {
         const xTab = this;
-        const childchild = Array.from(this.children);
+        const childchild = this.childTabPanel;
         const result: TemplateResult[] = [];
         childchild.forEach((element, index) => {
-            if (element instanceof PTabContent) {
-                // tslint:disable-next-line: no-unnecessary-type-assertion
-                const tContent: PTabContent = element as PTabContent;
-                if (tContent.key == null) {
-                    tContent.key = index + '';
-                }
-                if (xTab.activeKey == null) {
-                    xTab.activeKey = tContent.key;
-                }
-                if (tContent.key === xTab.activeKey) {
-                    tContent.setAttribute('active', '');
-                } else {
-                    tContent.removeAttribute('active');
-                }
-                result.push(this.renderTabTitle(tContent));
+            const tContent = element ;
+            if (tContent.key == null) {
+                tContent.key = index + '';
             }
+            if (xTab.activeKey == null) {
+                xTab.activeKey = tContent.key;
+            }
+            if (tContent.key === xTab.activeKey) {
+                tContent.setAttribute('active', '');
+            } else {
+                tContent.removeAttribute('active');
+            }
+            result.push(this.renderTabTitle(tContent));
         });
         return result;
     }
@@ -193,8 +190,8 @@ class PTab extends LitElement {
             if (target.nodeType !== 1) {
                 target = target.parentElement;
             }
-            if(target===tab_nav){
-                return ;
+            if (target === tab_nav) {
+                return;
             }
             if (target !== tab_nav) {
                 target = target.closest('div.tab_tabs[key]');
@@ -208,6 +205,7 @@ class PTab extends LitElement {
                     return;
                 }
                 const beforeEvent = new CustomEvent('beforeChange', {
+                    bubbles:true,
                     cancelable: true, //标识可以取消
                     detail: {
                         tabContent: tabContent,
@@ -311,13 +309,13 @@ class PTab extends LitElement {
             key: tabContent.key
         }
         this.dispatchEvent(new CustomEvent('tab-change', {
-            bubbles:true,
+            bubbles: true,
             detail: detail
         }));
         this.activeKey = tabContent.key;
         this.setHeaderScroll();
         this.dispatchEvent(new CustomEvent('tab-change-end', {
-            bubbles:true,
+            bubbles: true,
             detail: detail
         }));
     }
@@ -349,17 +347,30 @@ class PTab extends LitElement {
             header.scrollLeft = Math.max(active.left + active.width / 2 - header.offsetWidth / 2);
         }
     }
-
+    get childTabPanel() {
+        const panels: Array<PTabContent> = [];
+        const children = this.children;
+        let temp = null;
+        for (let i = 0, j = children.length; i < j; i++) {
+            temp = children[i];
+            if (temp instanceof PTabContent) {
+                panels.push(temp);
+            }
+        }
+        return panels;
+    }
     findTab(key: string): PTabContent {
-        return this.querySelector(`p-tab-content[key="${key}"]`);
+       return this.childTabPanel.find((item) =>{
+           return item.key===key;
+       });
     }
     getTabIndex(tab: PTabContent) {
-        const children = [... this.querySelectorAll('p-tab-content') as any];
+        const children =this.childTabPanel;
         return children.indexOf(tab);
     }
     findTabByIndex(index: number): PTabContent {
-        const children = this.querySelectorAll('p-tab-content');
-        return index < children.length ? <PTabContent>children[index] : null;
+        const children = this.childTabPanel;
+        return index < children.length ? children[index] : null;
     }
     get activeTab(): PTabContent {
         return this.findTab(this.activeKey);
@@ -440,3 +451,9 @@ class PTabContent extends LitElement {
 }
 export { PTab, PTabContent };
 
+declare global {
+    interface HTMLElementTagNameMap {
+      'p-tab': PTab;
+      'p-tab-content': PTabContent;
+    }
+  }

@@ -87,7 +87,6 @@ export class PSwitch extends LitElement {
     /**(method) PSwitch.attributeChangedCallback(name: string, old: string | null, value: string | null): void
 Synchronizes property values when attributes change. */
     attributeChangedCallback(name: string, old: string | null, value: string | null) {
-		this.log('attributeChangedCallback', [...arguments]);
         super.attributeChangedCallback(name, old, value);
         
 

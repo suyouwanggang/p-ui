@@ -72,7 +72,6 @@ export class PText extends LitElement {
         // this._resizeObserver.observe(text);
     }
     disconnectedCallback() {
-        const text = this.shadowRoot.getElementById('text');
         super.disconnectedCallback();
         // this._resizeObserver.unobserve(text);
         // this._resizeObserver = null;
@@ -82,3 +81,8 @@ export class PText extends LitElement {
     }
 
 }
+declare global {
+    interface HTMLElementTagNameMap {
+      'p-text': PText;
+    }
+  }
