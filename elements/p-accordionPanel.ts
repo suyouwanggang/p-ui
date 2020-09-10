@@ -72,15 +72,16 @@ class PACTab extends LitElement {
                 display:block;
             }
             :host([active]) .ac-tab-header{
-                border: 1px solid var(--ac-tab-active-border,#007ad9);
-                background-color:  var(--ac-tab-active-background-color,#007ad9);
+                border: 1px solid var(--ac-tab-active-border,var(--theme-color,#42b983));
+                background-color:  var(--ac-tab-active-background-color,var(--theme-color,#42b983));
+                color:#FFF;
             }
 
             .ac-tab-header{
                 border: 1px solid var(--ac-tab-border,#c8c8c8);
                 background-color:  var(--ac-tab-background-color,#f4f4f4);
-                padding: .571em 1em .571em 1em;
-                font-size: 1.25em;
+                padding: .3em 0.6em;
+                font-size: 1.1em;
                 cursor:pointer;
             }
             :host(:not([active]))  .ac-tab-header:hover{
@@ -93,9 +94,8 @@ class PACTab extends LitElement {
             div[part=ac-tab-content]{
                 border: 1px solid var(--ac-tab-content-border,#c8c8c8)  ;
                 background-color: #fff;
-                padding: .571em 1em;
+                padding: .3em 0.6em;
                 border-top: 0 none;
-                margin: 0;
             }
         }`;
     }
