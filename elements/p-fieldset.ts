@@ -1,5 +1,6 @@
 
 import { LitElement,  html, customElement, property, css } from 'lit-element';
+import {}  from './p-icon';
 /**
  * panel 容器
  * @property {boolean} collapsed 是否关闭内容区

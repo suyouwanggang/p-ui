@@ -26,6 +26,7 @@ import   './elements/p-date-picker';
 import   './elements/p-layout';
 import   './elements/p-panel';
 import   './elements/p-fieldset';
+import   './elements/p-accordionPanel';
 import   './elements/p-routslot';
 import   './elements/p-for';
 const LitHeler={
