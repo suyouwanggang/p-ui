@@ -74,6 +74,7 @@
       <p-option value='5'>武汉</p-option>
   </p-select>
   <p-panel header='title' >
+     <span  slot="header-right">  <p-icon name='minus' color="red"></p-icon> <p-icon name='home' color="red"></p-icon></span> 
       <p-text>
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
@@ -89,27 +90,61 @@
       通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
     </p-text>
 </p-fieldset>
+
+   
  <style>
   
  </style>
   <p-dialog open oktext='确定' canceltext='取消'>
     <wanggang>asfasasdf</wanggang>
   </p-dialog>
-  <p-ac-panel style='margin-top:5px;'>
-      <p-ac-tab header=01 > 
+  <p-ac-panel style='margin-top:5px;' multi>
+      <p-ac-tab header=" 通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果" > 
+        <span  slot="header-right">  <p-icon name='minus'></p-icon> <p-icon name='home'></p-icon></span> 
           <div>内容01</div>
           <div>内容01</div>
           <div>内容01</div>
           <div>内容01</div>
       </p-ac-tab>
       <p-ac-tab header=02> 
-        <div>内容01</div>
-        <div>内容01</div>
-        <div>内容01</div>
-        <div>内容01</div>
-        <div>内容01</div>
-        <div>内容01</div>
+        <div style='margin:20px;'> 
+          <p-steps current=1 direction='vertical'>
+              <p-step title="first"  description='不同主题的 Icon  组件名为图标名加主题做为后缀' icon=home>
+                <span slot='step-title'>里程碑开始<spn style='color:gray;'> 小的内容</spn></span>
+                <p-text slot="step-description"> <p-text>
+                  通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+                  通过 @ant-design/icons 引用 Icon 组件，不同主题的 Icon 组件名为图标名加主题做为后缀，也可以通过设置 spin 属性来实现动画旋转效果。
+                 
+                </p-text></p-text>
+              </p-step>
+              <p-step title="Two"   description='不同主题的 Icon 组件名为图标名加主题做为后缀' ></p-step>
+              <p-step title="Three" sub-title=' Three subTitle'description='不同主题的 Icon 组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀 组件名为图标名加主题做为后缀' ></p-step>
+              <p-step title="Four" sub-title=' Four subTitle' >
+                <p-text slot="step-description"> 
+                </p-text>
+              </p-step>
+             
+              <p-step title="Two"   description='不同主题的 Icon 组件名为图标名加主题做为后缀' ></p-step>
+              <p-step title="Two"   description='不同主题的 Icon 组件名为图标名加主题做为后缀' ></p-step>
+          </p-steps>
+       </div>
     </p-ac-tab>
+    <p-ac-tab header=03> 
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+  </p-ac-tab>
+    <p-ac-tab header=04> 
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+      <div>内容01</div>
+  </p-ac-tab>
   </p-ac-panel>
   <p-select value='2'>
     <p-option-group>asdfaf

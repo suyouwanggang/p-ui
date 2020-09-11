@@ -32,13 +32,15 @@ export class PPanel extends LitElement {
             color: var(--panel-header-color,#495057);
             border-top-right-radius: 3px;
             border-top-left-radius: 3px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
-         .panel-header .panel-title {
-                font-weight: 600;
+        div[part="panel-title"]{
+            flex:1;
         }
-
         .panel-content{
-            padding: 1rem;
+            padding: var(--panel-content-padding,0.5em);
             border: 1px solid var(--panel-header-color,#dee2e6);
             background: #ffffff;
             color: #495057;
@@ -66,14 +68,13 @@ export class PPanel extends LitElement {
                     }
                 }))
             };
-
-            
         }
     }
     render() {
         return html`<div >
-                <div class='panel-header' id="header" part="panel-header" @click=${this._clickHeader} >
-                    <slot name="header"><span class='panel-title' part="panel-title">${this.header}</span></slot>
+                <div class='panel-header' id="header" part="panel-header"  >
+                    <slot id="slot-header" name="header"><div @click=${this._clickHeader} part="panel-title">${this.header}</div></slot>
+                    <slot id="header-right" name="header-right"></slot>
                 </div>
                 <div class='panel-content' id="content" part="panel-content" style="${this.collapsed ? 'display:none' : ''}">
                     <slot></slot>

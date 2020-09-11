@@ -20,43 +20,43 @@ export default [
 			typescript(),
 			resolve(),
 			//terser(), /*压缩js*/
-			filesize()
+//			filesize()
 	]
 },
-{
-    input: ['index.ts'],
-    output: {
-      file: 'build/index.legacy.js',
-	  sourcemap:true,
-      format: 'esm'
-    },
-    plugins: [
-	  resolve(),
-	  typescript({
-		exclude: "node_modules/**",
-		typescript: require("typescript")
-	  }),
-      commonjs({
-        include: 'node_modules/**'
-      }),
-      babel({
-        runtimeHelpers: true,
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              useBuiltIns: false,
-              modules: false,
-              targets: {
-                browsers: '> 1%, IE 11, not dead'
-              }
-            }
-          ]
-        ],
-        plugins: ['@babel/plugin-transform-runtime']
-      }),
-    //  terser(),
-      filesize()
-    ]
-  }
+// {
+//     input: ['index.ts'],
+//     output: {
+//       file: 'build/index.legacy.js',
+// 	  sourcemap:true,
+//       format: 'esm'
+//     },
+//     plugins: [
+// 	  resolve(),
+// 	  typescript({
+// 		exclude: "node_modules/**",
+// 		typescript: require("typescript")
+// 	  }),
+//       commonjs({
+//         include: 'node_modules/**'
+//       }),
+//       babel({
+//         runtimeHelpers: true,
+//         presets: [
+//           [
+//             '@babel/preset-env',
+//             {
+//               useBuiltIns: false,
+//               modules: false,
+//               targets: {
+//                 browsers: '> 1%, IE 11, not dead'
+//               }
+//             }
+//           ]
+//         ],
+//         plugins: ['@babel/plugin-transform-runtime']
+//       }),
+//     //  terser(),
+//       filesize()
+//     ]
+//   }
 ]

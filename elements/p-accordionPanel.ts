@@ -8,7 +8,7 @@ import { } from './p-icon';
 
 @customElement('p-ac-panel')
 class PAccordionPanel extends LitElement {
-    @property({ type: Boolean, reflect: true }) mutil: boolean = false;
+    @property({ type: Boolean, reflect: true }) multi: boolean = false;
     static get styles() {
         return css`
             :host{
@@ -53,7 +53,7 @@ class PAccordionPanel extends LitElement {
         });
     }
     public setTabToActive(tab: PACTab, active: boolean = false) {
-        if (active && !this.mutil) {
+        if (active && !this.multi) {
             const tabs = this.activeTab;
             tabs.forEach((item: PACTab) => {
                 item.active = false;
@@ -83,6 +83,10 @@ class PACTab extends LitElement {
                 padding: .3em 0.6em;
                 font-size: 1.1em;
                 cursor:pointer;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+
             }
             :host(:not([active]))  .ac-tab-header:hover{
                 border:1px solid var(--ac-tab-hover-border,#bdbdbd);
@@ -103,14 +107,15 @@ class PACTab extends LitElement {
     @property({ type: String, reflect: true }) key: string = undefined;
     @property({ type: String, reflect: true }) header: string = undefined;
     renderHeader() {
-        return html`<div class='ac-tab-header' @click="${this._clickHeader}" part='ac-tab-header' ><p-icon part='right-icon' name='${this.active ? 'down' : 'right'}'></p-icon>
-            <slot name='header-span'><span part='ac-tab-header-span'>${this.header}</span></slot>
+        return html`<div class='ac-tab-header' @click="${this._clickHeader}" part='ac-tab-header' >
+            <slot name='header'><div><p-icon part='right-icon' name='${this.active ? 'down' : 'right'}'></p-icon><span part='ac-tab-header-span'>${this.header}</span></div></slot>
+            <slot name='header-right'></slot>
         </div>`;
     }
     render() {
         return html`<div part='ac-tab-container'>${this.renderHeader()}
-        <div part='ac-tab-content' style='${!this.active ? 'display:none' : ''}'><slot></slot></div>
-    </div>`
+                    <div part='ac-tab-content' style='${!this.active ? 'display:none' : ''}'><slot></slot></div>
+            </div>`;
     }
     get accordionPanel(): PAccordionPanel {
         return this.closest('p-ac-panel');
