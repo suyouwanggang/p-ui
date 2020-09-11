@@ -23,8 +23,8 @@ const requiredValidte: ValidateItem = {
             valid: true
         };
         if (input.type === 'number') {
-            const n = Number(value);
-            if (isNaN(n)) {
+            const n =new Number(value);
+            if (Number.isNaN(n)) {
                 result.valid = false;
                 result.type = 'typeMismatch';
                 result.validationMessage = '请填写有效的数字';

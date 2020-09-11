@@ -46,7 +46,7 @@ export default function FormElementAble<LitElement extends Constructor>(Base: Li
             }
             if (this.type == 'number') {
                 const n = new Number(this.value);
-                let result = isNaN(n);
+                let result = Number.isNaN(n);
                 if (!result) {
                     this.errorTips = `请输入正确的数字`;
                 }
