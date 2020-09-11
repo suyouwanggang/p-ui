@@ -27,7 +27,7 @@ export class PSwitch extends LitElement {
             text-align:left;
             cursor:pointer;
         }
-        label[disabled]{
+        label[data-disabled=true]{
             pointer-events: all;
             cursor:not-allowed;
             opacity:0.4;
@@ -75,7 +75,7 @@ export class PSwitch extends LitElement {
     }
     
     render() {
-        return html`<label ?disabled=${this.disabled} value=${this.value} ?checked=${this.checked} name=${this.name}  @click="${this.changeCheck}"></label>`;
+        return html`<label data-disabled=${this.disabled} value=${this.value} ?checked=${this.checked} name=${this.name}  @click="${this.changeCheck}"></label>`;
     }
     log(methodName: string, array: any[]) {
         // console.log(`start methodName=${methodName}`);

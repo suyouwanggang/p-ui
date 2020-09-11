@@ -80,7 +80,7 @@ export class PStep extends LitElement {
     @property({ type: String, reflect: true }) description: string;
     @property({ type: String, reflect: true }) title: string;
 
-    @internalProperty()
+   @property({type:Number})
     index: number = 0;
     static styles = css`
         :host{

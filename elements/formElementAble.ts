@@ -3,16 +3,16 @@ type validateType = 'number' | 'email' | 'date'|'';
 export default function FormElementAble<LitElement extends Constructor>(Base: LitElement) {
     return class extends Base {
        form: HTMLFormElement=null;
-        @property({ type: Boolean }) novalidate: boolean = false;
-        @property({ type: Boolean }) disabled: boolean = false;
-        @property({ type: String }) value: string = '';
-        @property({ type: String }) pattern: string ='';
-        @property({ type: Boolean }) required: boolean = false;
-        @property({ type: Boolean }) readOnly: boolean = false;
-        @property({ type: String }) errorTips: string = '';
-        @property({ type: String }) type: validateType = '';
-        @property({ type: Number }) min: number = NaN;
-        @property({ type: Number }) max: number = NaN;
+         novalidate: boolean = false;
+        disabled: boolean = false;
+        value: string = '';
+         pattern: string ='';
+        required: boolean = false;
+         readOnly: boolean = false;
+         errorTips: string = '';
+         type: validateType = '';
+         min: number = NaN;
+        max: number = NaN;
         // tslint:disable-next-line: no-any
         $customValidity: any;
         invalid: boolean = false;

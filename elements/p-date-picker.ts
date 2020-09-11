@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property, TemplateResult, query } from 'lit-element';
+import { css, customElement, html, LitElement, property,internalProperty, TemplateResult, query } from 'lit-element';
 import './p-button';
 import PButton from './p-button';
 type selectDateType = 'date' | 'month' | 'year' | 'week';
@@ -287,11 +287,11 @@ export default class PDatePanel extends LitElement {
             </div>
         </div>`;
     }
-    @property()
+    @internalProperty()
     private _dateType: selectDateType = undefined;
-    @property()
+    @internalProperty()
     private _dateYear: number = undefined;
-    @property()
+    @internalProperty()
     private _dateMonth: number = undefined;
     getMonths() {
         return ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];

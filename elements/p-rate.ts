@@ -77,7 +77,8 @@ export default class PRate extends LitElement {
         for (let i = 0, j = array.length; i < j; i++) {
             const el = array[i];
             // tslint:disable-next-line: no-any
-            if (this.value > (el as any).value) {
+            
+            if (this.value > (Number(el.dataset['value']))) {
                 el.classList.add('mouseSelect');
             } else {
                 el.classList.remove('mouseSelect');
@@ -86,12 +87,12 @@ export default class PRate extends LitElement {
     }
     _click(ev: Event) {
         // tslint:disable-next-line: no-any
-        let el: any = ev.target as any;
+        let el = ev.target as HTMLElement;
         if (!(el instanceof PTips)) {
             el = el.closest('p-tips');
         }
-        const old = el.value;
-        this.value = el.value + 1;
+        const old =Number(el.dataset['value']);
+        this.value = old + 1;
         this.dispatchEvent(new CustomEvent('change', {
             bubbles: true,
             detail: {
@@ -103,7 +104,7 @@ export default class PRate extends LitElement {
     render() {
         return html`<div id='rate'  @mouseleave=${this._leaveRate}>
             ${Array.from({ length: this.number }).map((item, index) => {
-            return html`<p-tips  @click='${this._click}' dir='bottom' @mouseenter=${this._hoverRate}  .value=${index} class=${this.value > index ? 'mouseSelect' : ''}  .tips=${this.tipStrings && this.tipStrings.length > index ? this.tipStrings[index] : ''}>
+            return html`<p-tips  @click='${this._click}' dir='bottom' @mouseenter=${this._hoverRate}  data-value=${index} class=${this.value > index ? 'mouseSelect' : ''}  .tips=${this.tipStrings && this.tipStrings.length > index ? this.tipStrings[index] : ''}>
                     <p-icon  .name=${this.icon} .size=${this.size} ></p-icon>
                     </p-tips>`
         })}<slot></slot></div>

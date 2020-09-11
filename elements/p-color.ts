@@ -1,4 +1,5 @@
-import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
+
+import "./p-pop";import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
 import PColorPanel from './p-color-panel';
 @customElement('p-color')
 export default class PColor extends LitElement {

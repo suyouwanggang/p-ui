@@ -59,12 +59,12 @@ function throttleFunction(fn: Function, delay: number, context: any) {
 @customElement('p-input')
 class PInput extends MinInputClass {
     @property({ type: String, reflect: true }) label?: string;
-    @property({ type: String, reflect: true }) tips?: string;
+    @property({ type: String, reflect: true }) tips: string;
     @property({ type: String, reflect: false }) errortips?: string;
     @property({ type: Boolean, reflect: true }) disabled?: boolean = false;
     @property({ type: Boolean, reflect: true }) readOnly?: boolean = false;
-    @property({ type: String, reflect: true }) type?: inputtype = 'text';
-    @property({ type: String, reflect: true }) placeholder?: string;
+    @property({ type: String, reflect: true }) type: inputtype = 'text';
+    @property({ type: String, reflect: true }) placeholder: string;
     @property({ type: String, reflect: false }) leftIcon?: string;
     @property({ type: String, reflect: false }) rightIcon?: string;
     @property({ type: Boolean, reflect: true }) block?: boolean = false;

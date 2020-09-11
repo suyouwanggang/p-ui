@@ -33,7 +33,7 @@ export default class PPageBtn extends LitElement {
         .page-ellipsis p-icon{
             margin:auto;
         }
-        p-button[current] {
+        p-button[data-current=true] {
             background: var(--themeBackground,var(--themeColor,#42b983));
             border-color: var(--themeColor,#42b983);
             color:#fff;
@@ -77,13 +77,14 @@ export default class PPageBtn extends LitElement {
         const result: Array<TemplateResult> = [];
         place.forEach((temp, index) => {
             const isNumber = typeof temp === 'number';
-            const pbutton = html`<p-button ?disabled=${!isNumber} @click=${this._pageBtnHander} ?current=${isNumber && temp === this.value} pageNo=${isNumber ? temp : ''} type='flat'>${isNumber ? temp : '...'}</p-button>`;
+            const pbutton = html`<p-button ?disabled=${!isNumber} @click=${this._pageBtnHander} data-current=${isNumber && temp === this.value} data-pageNo=${isNumber ? temp : ''} type='flat'>${isNumber ? temp : '...'}</p-button>`;
             result.push(pbutton);
         });
         return result;
     }
     dispatchChange(){
-        this.dispatchEvent(new CustomEvent('change', {
+        this.dispatchEvent(new CustomEvent('page-change', {
+            bubbles:true,
             detail: {
                 current: this.value,
                 pagesize: this.pagesize,
@@ -94,10 +95,11 @@ export default class PPageBtn extends LitElement {
     _pageBtnHander(ev:Event){
         const button: PButton = (ev.target as PButton);
         if (button) {
-            let pageNo= Number(button.getAttribute('pageNo'));
+            let pageNo= Number(button.dataset['pageno']);
             if(!isNaN(pageNo)){
-                if(this.dispatchEvent(new CustomEvent('beforechange', {
+                if(this.dispatchEvent(new CustomEvent('before-page-change', {
                     cancelable:true,
+                    bubbles:true,
                     detail: {
                         current: this.value,
                         toPage:pageNo,
@@ -116,8 +118,9 @@ export default class PPageBtn extends LitElement {
         if(toValue<=0|| toValue>this.pageCount){
             return ;
         }
-        if(this.dispatchEvent(new CustomEvent('beforechange', {
+        if(this.dispatchEvent(new CustomEvent('before-page-change', {
             cancelable:true,
+            bubbles:true,
             detail: {
                 current: this.value,
                 toPage:toValue,
@@ -157,7 +160,7 @@ export default class PPageBtn extends LitElement {
         if(this.value!=current){
             this.value = current;
         }
-        const selector = `#page p-button[pageNo='${this.value}'] `;
+        const selector = `#page p-button[data-pageNo='${this.value}'] `;
         const currentButton: PButton = this.renderRoot.querySelector(selector);
         if (currentButton !== null) {
             currentButton.focus();

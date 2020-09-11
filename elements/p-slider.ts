@@ -1,4 +1,5 @@
-import { css, customElement, html, LitElement, property } from 'lit-element';
+
+import "./p-tips";import { css, customElement, html, LitElement, property } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
 type lineSize = '' | 'mid' | 'large';
 @customElement('p-slider')

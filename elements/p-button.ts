@@ -1,4 +1,5 @@
-// tslint:disable-next-line: quotemark
+
+import "./p-loading";// tslint:disable-next-line: quotemark
 import { LitElement, customElement, html, css, property, TemplateResult } from "lit-element";
 import { } from './p-icon';
 import { ifDefined } from 'lit-html/directives/if-defined';
@@ -214,7 +215,7 @@ export default class PButton extends LitElement {
             renderIcon = html`<p-icon id='icon' .name='${this.icon}'> </p-icon>`;
         }
         return html`${this.href ?
-            html`<a id='btn' class='btn' ?disabled=${this.disabled} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>` :
+            html`<a id='btn' class='btn' ?disabled=${ifDefined(this.disabled)} download=${ifDefined(this.download)} href='${ifDefined(this.href)}' target=${ifDefined(this.target)}></a>` :
             html`<button id='btn'   class='btn' ?disabled=${this.disabled}></button>`}
                 ${this.loading ? html`<p-loading id='loadingIcon'> </p-loading>` : ''}
              ${renderIcon} <slot></slot>`;
