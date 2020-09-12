@@ -251,14 +251,14 @@ export class PCheckboxGroup extends LitElement {
 
 
     @property({ type: String, reflect: true }) name: string;
-    @property({ type: Number, attribute:false }) min: number = 0;
-    @property({ type: Number, attribute:false }) max: number = Infinity;
+    @property({ type: Number, attribute:true }) min: number = 0;
+    @property({ type: Number, attribute:true }) max: number = Infinity;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Array, reflect: true }) value: Array<String>;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
     @property({ type: Boolean, reflect: true }) invalid: boolean = false;
-    @property({ type: Boolean, reflect: false }) required: boolean = false;
-    @property({ type: Boolean, reflect: false }) vertical: boolean = false;
+    @property({ type: Boolean, reflect: true }) required: boolean = false;
+    @property({ type: Boolean, reflect: true }) vertical: boolean = false;
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
 
     render() {

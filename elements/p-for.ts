@@ -1,16 +1,18 @@
 
 import { LitElement, html, customElement, property, TemplateResult ,css} from 'lit-element'
-const cache = new WeakMap<Array<String>, any>();
-const createTemplate = (template: string, value: string = 'value', index: string = 'index') =>{
-    const str = 'return html`'+template +'`;';
-    const key = [];
-    key.push(template);
-    key.push(value);
-    key.push(index);
+import { Ppop } from './p-pop';
+const cache = new Map<String,any>();
+type functionTemplate={
+    (item:any,index:number):unknown
+}
+const createTemplate = (template: string, value: string = 'value', index: string = 'index') :functionTemplate=>{
+    const str = 'return LitHelper.html`'+template +'`;';
+    const key = `${template}_${value}_${index}`;
     let f: any = cache.get(key);
     if (f == null || f === undefined) {
         f = new Function(value, index, str);
         cache.set(key, f);
+        console.log(`template=${str}`);
     }
     return f;
 }
@@ -28,9 +30,6 @@ export class PFor extends LitElement {
         :host{
             display:content;
         }
-        .container{
-            display:content;
-        }
     `
     ;
     firstUpdated(_changedProperties: Map<string | number | symbol, unknown>) {
@@ -42,44 +41,34 @@ export class PFor extends LitElement {
     }
     
     render() {
-        return html`
-        <div class='container' ><template><slot id="template" name="template"></slot></template>
-        <slot></slot></div>`;
+        return html`<slot></slot>`;
     }
+    private _oldTemplate:string=null;
     get templateHTML(){
-       const templateSlot:HTMLSlotElement= this.renderRoot.querySelector("#template");
-       const element:Element[]= templateSlot.assignedElements({flatten:true});
-       return element.join('');
+      if(this._oldTemplate==null){
+        const template:HTMLTemplateElement= this.querySelector("template");
+        if(template){
+            this._oldTemplate= template.innerHTML;
+            return this._oldTemplate;
+        }
+      }
+      return this._oldTemplate;
     }
     renderSubItem() {
-       if(this.items){
-           const templateHTML=this.templateHTML;
-           const templatFun=createTemplate(templateHTML,this.value,this.index);
-           const htmlArray:TemplateResult[]=[];
-           this.items.forEach( (item:Object,index:number) =>{
-                htmlArray.push(templatFun(item,index));
-           });
-           const frag=document.createDocumentFragment();
+        const templateHTML=this.templateHTML;
+        const render=LitElement.render;
+       if(this.items&&templateHTML){
            while(this.firstElementChild){
-               if((this.firstElementChild as any).isCreateBy==this){
-                   this.removeChild(this.firstElementChild);
-               }else{
-                 frag.appendChild(this.firstElementChild);
-               }
+               this.removeChild(this.firstElementChild);
            }
-           (this.constructor as typeof LitElement)
-          .render(
-            htmlArray,
-              this,
-              {scopeName: this.localName, eventContext: this});
-            for(let i=0,j=this.children.length;i<j;i++){
-                (this.children[i] as any).isCreateBy=this;
-            }
-            if(this.firstElementChild){
-                this.insertBefore(frag,this.firstElementChild);
-            }else{
-                this.appendChild(frag);
-            }
+           const templateFun=createTemplate(templateHTML,this.value,this.index);
+           const htmlArray=document.createDocumentFragment();
+           this.items.forEach( (item:Object,index:number) =>{
+               let temp=document.createDocumentFragment();
+               render(templateFun(item,index),temp ,{scopeName:this.localName});
+               htmlArray.appendChild(temp);
+           });
+           this.appendChild(htmlArray);
        }
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
@@ -87,8 +76,5 @@ export class PFor extends LitElement {
         if(this.isConnected&&changedProperties.size>0){
             this.renderSubItem();
         }
-      
     }
-
-
 }

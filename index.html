@@ -2,30 +2,12 @@
 <html lang="en">
 
 <head>
-  <!-- Register service worker if supported. -->
-  <!--
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
-    }
-  </script>
-
-
   
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
-  <!-- Load components via WebComponents.waitFor -->
-  
-  <!-- load the element -->
-
-  <!-- Change stuff here for your app -->
   <meta name="description" content="start-lit-element">
   <meta name="theme-color" content="#ffffff">
   <title>start-lit-element</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="build/webcomponents-loader.js"></script>
-  <script src="build/index.js" type="module" ></script>
-  <script src='build/index.legacy.js' nomodule=""></script>
+  
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta charset="UTF-8">
   <style>
@@ -41,8 +23,10 @@
 <form>
   <p-for id="items" value="value"  index="index">
       <template>
-          <div >index:${index} ${value.name[0]}  <p-switch .item=${value}  @click=${value.handler} > ${value.label}</p-switch></div>
-      </template>
+          <div >index:${index} ${value.name[0]}  
+            <p-switch .item=${value}  @click=${value.handler} > ${value.label}</p-switch>
+        </div>
+        </template>
   </p-for>
   <script>
    var forItem= document.getElementById("items");

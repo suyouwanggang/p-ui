@@ -1,6 +1,6 @@
 
 import {  html,  css, LitElement } from 'lit-element';
-import 'element-closest-polyfill';
+import './iconfont/icon.svg';
 import './elements/p-tips';
 import './elements/p-icon';
 import './elements/p-loading';
@@ -20,7 +20,7 @@ import './elements/p-text';
 import './elements/p-color-panel';
 import './elements/p-color';
 import './elements/p-select';
-import PDialog from './elements/p-Dialog';
+import PDialog from './elements/p-dialog';
 import PMessage from './elements/p-message';
 import   './elements/p-date-picker';
 import   './elements/p-layout';
@@ -47,5 +47,8 @@ const LitHeler={
   (window['LitHelper'] || (window['LitHelper'] =LitHeler ));
   (window['PDialog'] || (window['PDialog'] =PDialog  ));
   (window['PMessage'] || (window['PMessage'] =PMessage  ));
+  export default {
+    LitHeler
+  };
 
 
