@@ -2,30 +2,35 @@
 import { css, customElement, html, LitElement, property, internalProperty } from 'lit-element';
 import { } from './p-icon';
 /**
- * panel 容器
- * @property {boolean} collapsed 是否关闭内容区
- * @property {boolean} toogleable 点击header 取是否能关闭内容区
- * @event  before-panel-collpase 如果能关闭，点击header 触发
- * @event  panel-collpase 内容关闭、开启后触发
+ * 步骤条
  * @slot header 头部分发区
- * @part panel-header  header DIV
- * @part panel-title  title span
- * @part panel-content  内容区
+ * @part container  内容区
  */
-type directionType = 'horizontal' | 'vertical';
 type sizeType = 'small' | 'mid' | 'large';
 @customElement('p-steps')
 export class PSteps extends LitElement {
+    /**
+     * 当前步骤，默认从0 
+     */
     @property({ type: Number, reflect: true }) current: number = 0;
-    @property({ type: String, reflect: true }) direction: directionType = 'horizontal';
-    @property({ type: Number, reflect: true }) startIndex: number = 0;
-    @property({ type: String, reflect: true }) size: string;
+    /**
+     * 是否为竖直
+     */
+    @property({ type: Boolean, reflect: true }) vertical = false;
+    /**
+     * 起始节点显示 序号，默认为1
+     */
+    @property({ type: Number, reflect: true }) startIndex: number = 1;
+    /**
+     *  进度点 圆圈大小
+     */
+    @property({ type: String, reflect: true }) size: sizeType;
     static styles = css`
        :host{
             display:block;
             box-sizing:border-box;
         }
-       :host([direction='vertical']) div[part='container']{
+       :host([vertical]) div[part='container']{
            flex-direction:column;
            display:block;
        }
@@ -41,30 +46,47 @@ export class PSteps extends LitElement {
             this._setChildStepCss();
         });
     }
-    private _setChildStepCss(){
-        const childItems = this.childSteps;
+    private _setChildStepCss() {
+        const childItems = this.childStep;
         const length = childItems.length;
         childItems.forEach((item: PStep, index: number) => {
-            if (index == 0) {
+            if (index === 0) {
                 item.setAttribute('first', '');
+            } else {
+                item.removeAttribute('first');
             }
-            if (index == this.current) {
+            if (index === this.current) {
                 item.setAttribute('current', '');
+            } else {
+                item.removeAttribute('current');
+            }
+            if (index < this.current) {
+                item.setAttribute('finished', '');
+            } else {
+                item.removeAttribute('finished');
             }
             item.index = this.startIndex + index;
-            if (index == length - 1) {
+
+            if (index === length - 1) {
                 item.setAttribute('last', '');
+            } else {
+                item.removeAttribute('last');
             }
-            item.setAttribute('direction',this.direction);
+            if (this.vertical) {
+                item.setAttribute('direction', 'vertical');
+            } else {
+                item.removeAttribute('direction');
+            }
         });
     }
-    updated(_changedProperties: Map<string | number | symbol, unknown>){
+    updated(_changedProperties: Map<string | number | symbol, unknown>) {
         super.updated(_changedProperties);
-        if(_changedProperties.has('direction')||_changedProperties.has('current')){
+        if (_changedProperties.has('vertical') || _changedProperties.has('current')) {
             this._setChildStepCss();
         };
+
     }
-    get childSteps(): Array<PStep> {
+    get childStep(): Array<PStep> {
         return Array.from<PStep>(this.querySelectorAll('p-step'));
     }
     render() {
@@ -80,7 +102,7 @@ export class PStep extends LitElement {
     @property({ type: String, reflect: true }) description: string;
     @property({ type: String, reflect: true }) title: string;
 
-   @property({type:Number})
+    @property({ type: Number })
     index: number = 0;
     static styles = css`
         :host{
@@ -89,6 +111,21 @@ export class PStep extends LitElement {
             flex: 1;
             overflow: hidden;
         }
+
+        :host([finished]){
+            --step-background-color: #fff;
+            --step-border-color: #42b983 ;
+            --step-icon-color:#42b983 ;
+            --step-line-color:#42b983 ;
+
+        }
+        :host([current]){
+            --step-background-color: #42b983;
+            --step-border-color: #42b983;
+            --step-icon-color:#FFF;
+            -step-line-color:#f0f0f0;
+        }
+
         :host([last]){
             flex: 0 0 auto;
         }
@@ -107,7 +144,7 @@ export class PStep extends LitElement {
        div[part=icon-part]{
             display:inline-block;
             position: relative;
-            background-color: #fff;
+            background-color: var(--step-background-color,#fff); 
             flex:0 0 auto ;
             width: 32px;
             height: 32px;
@@ -115,14 +152,12 @@ export class PStep extends LitElement {
             font-size: 16px;
             line-height: 32px;
             text-align: center;
-            border: 1px solid rgba(0,0,0,.25);
+            border: 1px solid var(--step-border-color,rgba(0,0,0,.25));
             border-radius: 32px;
             transition: background-color .3s,border-color .3s;
+            color:var(--step-icon-color,inherit);
        }
-
-       :host([finished]){
-            border-color: var(--step-icon-border-color,#1890ff);
-       }
+       
        .icon-span{
             display: inline-block;
             color: inherit;
@@ -150,7 +185,7 @@ export class PStep extends LitElement {
             display: block;
             width: 9999px;
             height: 1px;
-            background: #f0f0f0;
+            background:var(--step-line-color,#f0f0f0);
             content: "";
         }
         div[part=step-description]{
@@ -184,7 +219,7 @@ export class PStep extends LitElement {
             background: #f0f0f0;
             border-radius: 1px;
             transition: background-color .3s;
-            background-color: #1890ff;
+            background-color:var(--step-border-color,rgba(0,0,0,.25));
             content:"";
           }
           :host([direction=vertical]) div[part=step-content]{
@@ -192,6 +227,24 @@ export class PStep extends LitElement {
                 min-height:46px;
           }
     `;
+    isCurrentStep() {
+        const steps = this.parentSteps;
+        if (steps) {
+            return steps.childStep.indexOf(this) === steps.current;
+        }
+        return false;
+    }
+    isFinished() {
+        const steps = this.parentSteps;
+        if (steps) {
+            return steps.childStep.indexOf(this) < steps.current;
+        }
+        return false;
+    }
+
+    get parentSteps(): PSteps {
+        return this.closest('p-steps');
+    }
     render() {
         return html`
             <div part='step-container' >

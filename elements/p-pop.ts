@@ -186,8 +186,8 @@ class Ppop extends LitElement {
     @property({ type: String, reflect: true }) type: string = undefined;
     @property({ type: String, reflect: true }) tipContent: string = undefined;
     @property({ type: String, reflect: true }) tipTitle: string = undefined;
-    @property({ type: String, reflect: true }) okText: string = '确定';
-    @property({ type: String, reflect: true }) cancelText: string = '取消';
+    @property({ type: String, reflect: true }) okText: string =undefined;
+    @property({ type: String, reflect: true }) cancelText: string =undefined;
     @property({ type: String, reflect: true }) trigger: string = 'click';
     @property({ type: Boolean, reflect: true }) accomplish: boolean = false;
     render() {
@@ -226,8 +226,12 @@ class Ppop extends LitElement {
             }
             (popContent as any).isAutoCreate = true;
             popContent.tipTitle = this.tipTitle;
-            popContent.okText = this.okText;
-            popContent.cancelText = this.cancelText;
+            if(this.okText ){
+                popContent.okText = this.okText;
+            }
+            if(this.cancelText ){
+                popContent.cancelText = this.cancelText;
+            }
             this.appendChild(popContent);
         }
         return popContent;
@@ -327,11 +331,15 @@ class PPopContent extends LitElement {
         }
        div[part=popTitle] {
             display:flex;
+            align-items:center;
+            padding:var(--title-padding-top,4px) var(--title-padding-left,4px);
+        }
+        p-icon[part="title-icon"]{
+            position:relative;
+            top:2px;
         }
         div[part=popTitle] >div[part=popTitleInner]{
             flex:1;
-            margin-left:0.5em;
-            line-height: 30px;
             font-size: 1.2em;
             color: #4c5161;
             user-select: none;
@@ -341,8 +349,7 @@ class PPopContent extends LitElement {
             width:max-content;
         }
         p-button[part="popClose"] {
-            margin-right:5px;
-            border:0;
+           /** closeIcon  */
         }
         :host([thinBar]) div[part=popBody] {
             flex: 1;
@@ -406,26 +413,27 @@ class PPopContent extends LitElement {
     @property({ type: Boolean, reflect: true }) thinBar: boolean = false;
     @property({ type: Boolean, reflect: true }) hiddenClose: boolean = false;
     @property({ type: String, reflect: true }) type: string = undefined;
-    @property({ type: String, reflect: true }) tipTitle: string = undefined;
+    @property({ type: String, reflect: true,attribute:'tip-title' }) tipTitle: string = undefined;
+    @property({ type: String, reflect: true,attribute:'tip-title-icon' }) tipTitleIcon: string = undefined;
     @property({ type: String, reflect: true }) okText: string = undefined;
     @property({ type: String, reflect: true }) cancelText: string = undefined;
     render() {
         return html`
            <div  part="popTitle" id="title">
-               <div class='title' part="popTitleInner">${this.tipTitle} <slot name="title"></slot></div>
-                ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}
+    <div class='title' part="popTitleInner"> <slot name="title"> ${this.tipTitleIcon? html`<p-icon parent='title-icon' name='${this.tipTitleIcon}' ></p-icon>`:''}<span part="title-span"> ${this.tipTitle}</span></slot></div>
+                <slot name="title-right"> ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}</slot>
            </div>
             <div part="popBody" >
                 <slot></slot>
             </div>
-            <div  part="popFooter">
-                <slot name="footer">
-                    ${this.type === 'confirm' ?
-                html`<p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
-                            <p-button id="btn-submit" type="primary" @click="${this._submitClick}">${this.okText === undefined ? '确定' : this.okText}</p-button>`
-                : ''}
-                </slot>
-           </div>
+            <slot name="footer">
+                <div  part="popFooter">
+                        ${this.type === 'confirm' ?
+                    html`<p-button id="btn-cancel" @click="${this._cancleClick}">${this.cancelText === undefined ? '取消' : this.cancelText}</p-button>
+                        <p-button id="btn-submit" type="primary" @click="${this._submitClick}">${this.okText === undefined ? '确定' : this.okText}</p-button>`
+                    : ''}
+            </div>
+           </slot>
         `;
     }
     private _toCloseEvent(ev: Event) {
