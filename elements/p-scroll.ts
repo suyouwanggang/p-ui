@@ -5,13 +5,14 @@ const getStyleProperty = function (oE: HTMLElement, sPr: string) {
   let d = document.defaultView.getComputedStyle(oE);
   return d.getPropertyValue(sPr);
 }
-
+type overflowType=''|'hidden';
 @customElement('p-scroll')
 export class PScroll extends LitElement {
-  @property({ type: Boolean, reflect: true }) overflowX: boolean = true;
-  @property({ type: Boolean, reflect: true }) overflowY: boolean = true;
-  static minScrollheight = 7;
-  static scrollWheelValue = 20;
+  @property({ type: String, reflect: true,attribute:'overflow-x' }) overflowX: string = '';
+  @property({ type: String, reflect: true,attribute:'overflow-y' }) overflowY: string = '';
+  @property({ type: Boolean, reflect: true }) keyEnable: boolean = true;
+  @property({ type: Number, reflect: true ,attribute:'scroll-bar-width'}) scrollBarWidth: number = 8;
+  static minScrollheight = 8;
   static get styles() {
     return css`
         :host{
@@ -28,10 +29,31 @@ export class PScroll extends LitElement {
           position: absolute;
           top: 0;
           right: 0;
-          width: var(--scroll-bar-width,7px);
-          bottom: 0px;
+          display:none;
+          width: var(--scroll-bar-width,8px);
+          bottom:0;
           cursor: default;
           user-select: none;
+        }
+        .showYScroll div[part=scroll-y]{
+          display:block;
+        }
+        .showXScroll div[part=scroll-y]{
+          bottom:var(--scroll-bar-width,8px);
+        }
+        
+        div[part=right-bottom]{
+          display:none;
+          position:absolute;
+          right:0;
+          bottom:0;
+          
+        }
+        .showYScroll.showXScroll div[part=right-bottom]
+        {
+          width: var(--scroll-bar-width,8px);
+          height: var(--scroll-bar-width,8px);
+          display:block;
         }
         div[part=scroll-y-handler],div[part=scroll-x-handler]{
           background-color: var(--scroll-bar-color, #DBDBDB);
@@ -43,18 +65,25 @@ export class PScroll extends LitElement {
             bottom:auto;
             width:100%;
         }
-        
-        div[part=scroll-y-handler]:hover,div[part=scroll-x-handler]:hover{
+        div[part=scroll-y-handler]:hover,
+        div[part=scroll-x-handler]:hover{
            background-color: var(--scroll-bar-hover-color, #BDBDBD);
         }
         div[part=scroll-x] {
           position: absolute;
           bottom: 0;
           left:0;
-          right:0px;
-          height: var(--scroll-bar-width,7px);
+          display:none;
+          right:0;
+          height: var(--scroll-bar-width,8px);
           cursor: default;
           user-select: none;
+        }
+        .showXScroll div[part=scroll-x]{
+          display:block;
+        }
+        .showYScroll div[part=scroll-x]{
+          right:var(--scroll-bar-width,8px);
         }
         div[part=scroll-x-handler]{
             position:absolute;
@@ -70,44 +99,54 @@ export class PScroll extends LitElement {
           right:0;
           left:0;
           bottom:0;
-          scroll-behavior:smooth;
+          /*scroll-behavior:smooth;*/
         }
-        div[part=content].showYScroll{
-          right:var(--scroll-bar-width,7px);
+        .showYScroll div[part=content]{
+          right:var(--scroll-bar-width,8px);
         }
-        div[part=content].showXScroll{
-          bottom:var(--scroll-bar-width,7px);
+        .showXScroll   div[part=content]{
+          bottom:var(--scroll-bar-width,8px);
         }
-
-       
       `;
   }
-
+  wheelScrollChange=60;
   private _wheelTimeoutID: number = null;
   @eventOptions({
     passive: false
   })
-  private _wheelHander(e: MouseWheelEvent) {
+  private _wheelHander(e: WheelEvent) {
     const scrollObj = this;
-    let changeValue = e.detail / 3;
-    if (changeValue > 0) {
-      changeValue = PScroll.scrollWheelValue;
-    }
-    window.clearTimeout(this._wheelTimeoutID);
+    let changeYValue = e.deltaY;
+    let changeXValue = e.deltaX;
+    e.preventDefault();
+     window.clearTimeout(this._wheelTimeoutID);
     this._wheelTimeoutID = window.setTimeout(() => {
-      scrollObj.changeYScroll(changeValue);
-    }, 60);
+      if(changeYValue!=0){
+        changeYValue= (changeYValue>0?1:-1)*this.wheelScrollChange;
+        scrollObj.changeYScroll(changeYValue);
+      }
+      if(changeXValue!=0){
+        changeXValue= (changeXValue>0?1:-1)*this.wheelScrollChange;
+        this.changeXScroll(changeXValue);
+      }
+    },10);
+   
   }
-
+  updated(_changedProperties: Map<string | number | symbol, unknown>){
+    super.updated(_changedProperties);
+    if(_changedProperties.has('overflowX')||_changedProperties.has('overflowY')||_changedProperties.has('scrollBarWidth')){
+      this.resize();
+    }
+  }
   private _touchStartX = 0;
   private _touchStartY = 0;
-  private _touchStartHanlder(e: TouchEvent) {
-    const touch = e.touches[0];
+  private _touchStartHanlder(event: TouchEvent) {
+    const touch = event.touches[0];
     this._touchStartX = touch.clientX;
     this._touchStartY = touch.clientY;
   }
-  private _touchMoveHanlder(e: TouchEvent) {
-    const touch = e.touches[0];
+  private _touchMoveHanlder(event: TouchEvent) {
+    const touch = event.touches[0];
     const newX = touch.clientX;
     const newY = touch.clientY;
     const changeX = this._touchStartX - newX;
@@ -116,16 +155,24 @@ export class PScroll extends LitElement {
     this.changeYScroll(changeY);
     this.changeXScroll(changeX);
   }
-
+  
   render() {
-    return html`<div part="container">
-        <div part='content' id="content" @mousewheel=${this._wheelHander} @touchmove=${this._touchMoveHanlder}  @touchstart=${this._touchStartHanlder} ><slot id='contentSlot'></slot></div>
+    return html`<div  part="container" id="container" style='--scroll-bar-width:${this.scrollBarWidth}px'>
+        <div part='content' id="content"  @mousewheel=${this._wheelHander} @touchmove=${this._touchMoveHanlder} 
+         @touchstart=${this._touchStartHanlder} ><slot id='contentSlot'></slot></div>
         <div part="scroll-y" id="scroll-y"><div part="scroll-y-handler" ></div></div>
         <div part="scroll-x" id="scroll-x"><div part="scroll-x-handler"></div></div>
+        <div part="right-bottom" id="right-bottom"></div>
     </div>`
+  }
+  get rightBottom():HTMLElement{
+    return this.renderRoot.querySelector("#right-bottom");
   }
   get contentDIV(): HTMLDivElement {
     return this.renderRoot.querySelector('#content');
+  }
+  get containerDIV(): HTMLDivElement {
+    return this.renderRoot.querySelector('#container');
   }
   get partYScroll(): HTMLDivElement {
     return this.renderRoot.querySelector('div[part=scroll-y]');
@@ -147,40 +194,91 @@ export class PScroll extends LitElement {
       this.resize();
     });
     this._obersver.observe(this);
+    this._obersver.observe(this.rightBottom);
+    //this._obersver.observe(this.containerDIV);
     this.resize();
+    this.renderRoot.querySelector('#contentSlot').addEventListener('slotchange',()=>{
+      this.resize();
+    });
+    this._intiKeyEvent();
+  }
+  private _isMouseOn=false;
+  private _MouseOnEventHandler:EventListener=null;
+  private _MouseOutEventHandler:EventListener=null;
+  private _docEventHandler:EventListener=null;
+  private _intiKeyEvent(){
+    this._MouseOnEventHandler=(event:Event)=>{
+      this._isMouseOn=true;
+    }
+    this._MouseOutEventHandler=(event:Event)=>{
+      this._isMouseOn=false;
+    }
+    this._docEventHandler=(event:KeyboardEvent)=>{
+      if(this._isMouseOn&&this.keyEnable){
+        const key=event.key;
+        let y=0,x=0;
+        switch (key){
+          case'ArrowDown':
+            y=this.wheelScrollChange;
+            break;
+          case'ArrowUp':
+            y=0-this.wheelScrollChange;
+            break;
+          case'ArrowLeft':
+            x=0-this.wheelScrollChange;
+            break;
+          case'ArrowRight':
+            x=this.wheelScrollChange;
+            break;
+          default:
+            break;
+        }
+        if(y!=0){
+          this.changeYScroll(y);
+        }
+        if(x!=0){
+          this.changeXScroll(x);
+        }
+      }
+    }
+    this.addEventListener('mouseover',this._MouseOnEventHandler);
+    this.addEventListener('mouseout',this._MouseOutEventHandler);
+    document.addEventListener('keydown',this._docEventHandler);
   }
   disconnectedCallback() {
     super.disconnectedCallback();
-    this._obersver.unobserve;
+    this._obersver.unobserve(this);
+    this._obersver.unobserve(this.rightBottom);
     this._obersver = null;
+    this.removeEventListener('mouseover',this._MouseOnEventHandler);
+    this.removeEventListener('mouseout',this._MouseOutEventHandler);
+    document.removeEventListener('keydown',this._docEventHandler);
   }
 
   resize() {
+    const container=this.containerDIV;
     const div = this.contentDIV;
-    if (this.overflowY) {
-      div.classList.add('showYScroll');
+    if (this.overflowY!='hidden') {
+      container.classList.add('showYScroll');
     } else {
-      div.classList.remove('showYScroll');
+      container.classList.remove('showYScroll');
     }
-
-    if (this.overflowX) {
-      div.classList.add('showXScroll');
+    if (this.overflowX!='hidden') {
+      container.classList.add('showXScroll');
     } else {
-      div.classList.remove('showXScroll');
+      container.classList.remove('showXScroll');
     }
 
     if (div.scrollHeight > div.offsetHeight) {
-      this.partYScroll.style.display = 'block';
       this.changeYScroll();
     } else {
-      this.partYScroll.style.display = 'none';
+      container.classList.remove('showYScroll');
     }
 
     if (div.scrollWidth > div.offsetWidth) {
-      this.partXScroll.style.display = 'block';
       this.changeXScroll();
     } else {
-      this.partXScroll.style.display = 'none';
+      container.classList.remove('showXScroll');
     }
 
   }
@@ -216,14 +314,13 @@ export class PScroll extends LitElement {
   }
   caculateYBarPosition() {
     const contentDIV = this.contentDIV;
-    const height = this.offsetHeight;
+    const height = contentDIV.offsetHeight;
     const scrollHeight = contentDIV.scrollHeight;
     if (scrollHeight <= height) {
       this.partYHandler.style.top = '0';
       return 0;
     } else {
       const barHeight = this.caculateYBarHeight;
-      this.partYHandler.style.height = barHeight + 'px';
       const canScrollDIVHeight = this.partYScroll.offsetHeight - barHeight;
       const topHeight = contentDIV.scrollTop / (scrollHeight - height) * canScrollDIVHeight;
       this.partYHandler.style.top = topHeight + 'px';
@@ -234,17 +331,16 @@ export class PScroll extends LitElement {
   caculateXBarPosition() {
     const contentDIV = this.contentDIV;
     const width = contentDIV.offsetWidth;
-    const scrollWidth = this.scrollWidth;
-    if (scrollWidth < width) {
+    const scrollWidth = contentDIV.scrollWidth;
+    if (scrollWidth <=width) {
       this.partXHandler.style.left = '0';
       return 0;
     } else {
-      const barHeight = this.caculateXBarWidth;
-      this.partXHandler.style.width = barHeight + 'px';
-      const canScrollDIVHeight = this.partXScroll.offsetWidth - barHeight;
-      const topHeight = contentDIV.scrollLeft / (scrollWidth - width) * canScrollDIVHeight;
-      this.partXHandler.style.left = topHeight + 'px';
-      return topHeight;
+      const barWidth = this.caculateXBarWidth;
+      const canScrollDIVHeight = this.partXScroll.offsetWidth - barWidth;
+      const topWidth = contentDIV.scrollLeft / (scrollWidth - width) * canScrollDIVHeight;
+      this.partXHandler.style.left = topWidth + 'px';
+      return topWidth;
     }
   }
   changeYScroll(scrollValue: number = 0) {
@@ -359,10 +455,6 @@ export class PScroll extends LitElement {
     this.changeXScroll(scrollLeft - currentLeft);
   }
 
-  updated(_changedProperties: Map<string | number | symbol, unknown>) {
-
-
-  }
 }
 
 
