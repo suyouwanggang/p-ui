@@ -55,5 +55,4 @@ export class PICon extends LitElement {
             </svg>
         `;
     }
-    
 }
