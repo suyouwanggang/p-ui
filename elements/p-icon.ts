@@ -22,6 +22,7 @@ export class PICon extends LitElement {
             margin: auto;
             fill: currentColor;
             overflow: hidden;
+            vertical-align: -0.15em;
             /*transition:inherit;*/
         }
         :host([spin]){
@@ -47,19 +48,12 @@ export class PICon extends LitElement {
         if (this.color) {
             styleValue += `color:${this.color}`;
         }
+        const icon=`${this.iconPath}#icon-${this.name}`;
         return svg`
              <svg xmlns="http://www.w3.org/2000/svg" class="svgclass" style='${styleValue}'   aria-hidden="true" viewBox="0 0 ${this.view} ${this.view}">
-                ${this.path ? svg`<path d=${this.path} id="path"></path>` : svg`<use id="use" ></use>`}
+                ${this.path ? svg`<path d=${this.path} id="path"></path>` : svg`<use id="use" xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"  href="${icon}" ></use>`}
             </svg>
         `;
     }
-
-    updated(changedProperty: any) {
-        super.updated(changedProperty);
-        const svg = this.shadowRoot.querySelector('svg');
-        const use = svg.querySelector('#use');
-        if (use) {
-            use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `${this.iconPath}#icon-${this.name}`);
-        }
-    }
+    
 }

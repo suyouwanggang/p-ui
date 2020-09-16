@@ -13,9 +13,8 @@ class PAccordionPanel extends LitElement {
         return css`
             :host{
                 display:block;
-            }
-            :host ::slotted(p-ac-tab){
-                margin-top:1px;
+                border: 1px solid var(--ac-tab-border-color,#c8c8c8);
+                border-top:none;
             }
         `;
     }
@@ -72,14 +71,12 @@ class PACTab extends LitElement {
                 display:block;
             }
             :host([active]) .ac-tab-header{
-                border: 1px solid var(--ac-tab-active-border,var(--theme-color,#42b983));
-                background-color:  var(--ac-tab-active-background-color,var(--theme-color,#42b983));
-                color:#FFF;
+                background-color:  var(--ac-tab-active-background-color,#fafafa);
             }
 
             .ac-tab-header{
-                border: 1px solid var(--ac-tab-border,#c8c8c8);
-                background-color:  var(--ac-tab-background-color,#f4f4f4);
+                border-top: 1px solid var(--ac-tab-border-color,#c8c8c8);
+                background-color:  var(--ac-tab-background-color,#fafafa);
                 padding: .3em 0.6em;
                 font-size: 1.1em;
                 cursor:pointer;
@@ -88,19 +85,18 @@ class PACTab extends LitElement {
                 justify-content:space-between;
 
             }
-            :host(:not([active]))  .ac-tab-header:hover{
-                border:1px solid var(--ac-tab-hover-border,#bdbdbd);
-                background-color:  var(--ac-tab-hover-background-color,#bdbdbd);
-            }
             p-icon[part=right-icon]{
                  margin-right: .429em;
             }
             div[part=ac-tab-content]{
-                border: 1px solid var(--ac-tab-content-border,#c8c8c8)  ;
+                border-top: 1px solid var(--ac-tab-border-color,#c8c8c8) ;
                 background-color: #fff;
                 padding: .3em 0.6em;
-                border-top: 0 none;
             }
+            div[part=ac-tab-content].close{
+                display:none;
+            }
+
         }`;
     }
     @property({ type: Boolean, reflect: true }) active: boolean = false;
@@ -114,7 +110,7 @@ class PACTab extends LitElement {
     }
     render() {
         return html`<div part='ac-tab-container'>${this.renderHeader()}
-                    <div part='ac-tab-content' style='${!this.active ? 'display:none' : ''}'><slot></slot></div>
+                    <div part='ac-tab-content' class='${!this.active ? 'close' : ''}'><slot></slot></div>
             </div>`;
     }
     get accordionPanel(): PAccordionPanel {
