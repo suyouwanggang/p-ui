@@ -121,8 +121,8 @@ export class PScroll extends LitElement {
     const scrollObj = this;
     const changeYValue = e.deltaY;
     const changeXValue = e.deltaX;
-    console.log(e);
-    //console.log(`x=${changeXValue} y=${changeYValue} detail=${e.detail} wheelData=${(e as any).wheelDelta}`);
+    //console.log(e);
+    //console.log(` detail=${e.detail} wheelDataX=${(e as any).wheelDeltaX} wheelDataY=${(e as any).wheelDeltaY}`);
     e.preventDefault();
     window.clearTimeout(this._wheelTimeoutID);
     this._wheelTimeoutID = window.setTimeout(() => {
@@ -133,6 +133,9 @@ export class PScroll extends LitElement {
         this.changeXScroll((changeXValue > 0 ? 1 : -1) * this.wheelScrollChange);
       }else{
         scrollObj.changeYScroll(e.detail* this.wheelScrollChange);
+        if(e.detail%2==0){
+          scrollObj.changeXScroll(0-e.detail* this.wheelScrollChange);
+        }
       }
     }, 10);
 
@@ -202,9 +205,7 @@ export class PScroll extends LitElement {
     this.removeEventListener('mouseover', this._MouseOnEventHandler);
     this.removeEventListener('mouseout', this._MouseOutEventHandler);
     document.removeEventListener('keydown', this._docEventHandler);
-    this._docMoveHander.forEach(item => {
-       document.removeEventListener('mousemove', item);
-    })
+    
   }
 
 
@@ -213,6 +214,10 @@ export class PScroll extends LitElement {
   firstUpdated(_changedProperties: Map<string | number | symbol, unknown>) {
     super.firstUpdated(_changedProperties);
     const scrollDiv = this;
+    this._intiKeyEvent();
+    this._initScrollBarEvent();
+    this.contentDIV.scrollTop=0;
+    this.contentDIV.scrollLeft=0;
     this._obersver = new ResizeObserver((entries: ResizeObserverEntry[], observer: ResizeObserver) => {
       this.resize();
     });
@@ -224,13 +229,11 @@ export class PScroll extends LitElement {
     this.renderRoot.querySelector('#contentSlot').addEventListener('slotchange', () => {
       this.resize();
     });
-    this._intiKeyEvent();
-    this._initScrollBarEvent();
+    this.resize();
   }
   private _isMouseOn = false;
   private _MouseOnEventHandler: EventListener = null;
   private _MouseOutEventHandler: EventListener = null;
-  private _docMoveHander: EventListener[] = [];
   private _docEventHandler: EventListener = null;
   private _initScrollBarEvent() {
     const scrollObj = this;
