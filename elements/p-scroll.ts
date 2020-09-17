@@ -133,9 +133,9 @@ export class PScroll extends LitElement {
         this.changeXScroll((changeXValue > 0 ? 1 : -1) * this.wheelScrollChange);
       }else{
         scrollObj.changeYScroll(e.detail* this.wheelScrollChange);
-        if(e.detail%2==0){
-          scrollObj.changeXScroll(0-e.detail* this.wheelScrollChange);
-        }
+        // if(e.detail%2==0){
+        //   scrollObj.changeXScroll(0-e.detail* this.wheelScrollChange);
+        // }
       }
     }, 10);
 
