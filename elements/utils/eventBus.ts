@@ -4,7 +4,7 @@ type Listener = {
     scope?: unknown,
     args?: unknown[]
 };
-type ListenerMap{
+type ListenerMap={
     [Key: string]: Listener[]
 };
 class EventBus {
