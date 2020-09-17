@@ -5,7 +5,7 @@ type Listener = {
     args?: unknown[]
 };
 type ListenerMap{
-    [Key:string]: Listener[]
+    [Key: string]: Listener[]
 };
 class EventBus {
     private listenersMap: ListenerMap = {};
@@ -36,16 +36,14 @@ class EventBus {
      */
     off(type: string, callback?: (...args: unknown[]) => void, scope?: unknown) {
         const result = this.getTypeListeners(type);
-        const findList = [];
+        let findList:Listener[] = [];
         for (let i = result.length - 1; i >= 0; i--) {
             const l = result[i];
             if ((callback == null || l.callback === callback) && (scope == null || l.scope === scope)) {
-                findList.push(i);
+                findList=[...findList, ...result.splice(i,1)];
             }
         }
-        findList.forEach((item) => {
-            result.splice(item, 1);
-        });
+        return findList;
     }
     /**
      * 触发事件
