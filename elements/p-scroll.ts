@@ -10,12 +10,39 @@ interface ScrollBack {
   (x: number, y: number): void;
 }
 type overflowType = '' | 'hidden';
+
+/**
+ * 滚动容器
+ * @slot 内容slot
+ * @part container the root coantainer
+ * @part content children container
+ * @part scroll-x 水平滚动条容器
+ * @part scroll-x-handler 水平滚动条
+ * @part scroll-y 竖直滚动条容器
+ * @part scroll-y-handler 竖直滚动条
+ * 
+ */
 @customElement('p-scroll')
 export class PScroll extends LitElement {
+  /**
+   * hidden,则水平滚动条永远隐藏，否则根据内容自动显示隐藏
+   */
   @property({ type: String, reflect: true, attribute: 'overflow-x' }) overflowX: string = '';
+  /**
+   * hidden,则竖直滚动条隐藏，，否则根据内容自动显示隐藏
+   */
   @property({ type: String, reflect: true, attribute: 'overflow-y' }) overflowY: string = '';
+  /**
+   * 是否允许 键盘 上下左右按键滚动
+   */
   @property({ type: Boolean, reflect: true }) keyEnable: boolean = true;
-  @property({ type: Number, reflect: true, attribute: 'scroll-bar-width' }) scrollBarWidth: number = 8;
+  /**
+   * 滚动条宽度
+   */
+  @property({ type: Number, reflect: true, attribute: 'scroll-bar-width' }) scrollBarWidth: number = 8 ;
+  /**
+   * 滚动条 容器宽度，必须大与 滚动条宽度
+   */
   @property({ type: Number, reflect: true, attribute: 'scroll-bar-out-width' }) scrollBarOutWidth: number = 12;
   static minScrollheight = 8;
   static get styles() {
@@ -52,8 +79,7 @@ export class PScroll extends LitElement {
           right:0;
           bottom:0;
         }
-        .showYScroll.showXScroll div[part=right-bottom]
-        {
+        .showYScroll.showXScroll div[part=right-bottom]{
           width: var(--scroll-bar-out-width,12px);
           height: var(--scroll-bar-out-width,12px);
           display:block;
@@ -114,7 +140,7 @@ export class PScroll extends LitElement {
         }
       `;
   }
-  wheelScrollChange = 60;
+  wheelScrollChange = 120;
   private _wheelTimeoutID: number = null;
   @eventOptions({
     passive: false
@@ -320,7 +346,10 @@ export class PScroll extends LitElement {
     document.addEventListener('keydown', this._docEventHandler);
   }
 
-
+  private _resizeDispachFun: () => void;
+  /**
+   * 当容器，或者子元素发生变化，触发resize 函数和事件
+   */
   resize() {
     const container = this.containerDIV;
     const div = this.contentDIV;
@@ -334,7 +363,16 @@ export class PScroll extends LitElement {
     } else {
       container.classList.remove('showXScroll');
     }
-
+    const elCompontent = this;
+    if (this._resizeDispachFun == null) {
+      this._resizeDispachFun = throttle(() => {
+        /**
+         * resize事件，当容器或者子孩子放生变化，此时触发
+         */
+        elCompontent.dispatchEvent(new CustomEvent('resize'));
+      }, this.throttTime);
+      this._resizeDispachFun();
+    }
     if (div.scrollHeight > div.offsetHeight) {
       this.changeYScroll();
     } else {
@@ -417,7 +455,10 @@ export class PScroll extends LitElement {
     const elRoot = this;
     if (this._scrollDispatchMethod == null) {
       const d = () => {
-        elRoot.dispatchEvent(new CustomEvent('scroll', {
+        /**
+         *  滚动事件，detail scrollTop,detail scrollLeft 说明内容滚动位置,
+         */
+        elRoot.dispatchEvent(new CustomEvent('scroll-change', {
           bubbles: true,
           detail: {
             scrollTop: elRoot.contentDIV.scrollTop,
@@ -425,10 +466,14 @@ export class PScroll extends LitElement {
           }
         }));
       };
-      this._scrollDispatchMethod = throttle(d, 20);
+      this._scrollDispatchMethod = throttle(d, this.throttTime);
     }
     this._scrollDispatchMethod();
   }
+  /**
+   * 
+   * @param scrollValue 改变竖直内容滚动位置
+   */
   changeYScroll(scrollValue: number = 0) {
     const root = this;
     const contentDIV = this.contentDIV;
@@ -451,12 +496,21 @@ export class PScroll extends LitElement {
     this.caculateYBarPosition();
     if (oldScrollTop !== scrollTop) {
       if (scrollTop === maxScroll) {
+        /**
+         *  竖直滚动到底部时触发，detail.value,内容滚动高度
+         */
         this.dispatchEvent(new CustomEvent('scroll-y-end', {
-          bubbles: true
+          bubbles: true,
+          detail: {
+            value: scrollTop
+          }
         }));
       }
       if (this._yDispatchMethod == null) {
         const d = (oldValue: number, newValue: number) => {
+        /**
+         * 竖直滚动的时触发, detail.value,内容滚动高度 detail.oldvalue,原来内容滚动高度
+         */
           root.dispatchEvent(new CustomEvent('scroll-y', {
             bubbles: true,
             detail: {
@@ -465,14 +519,21 @@ export class PScroll extends LitElement {
             }
           }));
         };
-        this._yDispatchMethod = throttle(d, 20);
+        this._yDispatchMethod = throttle(d, this.throttTime);
       }
       this._yDispatchMethod(oldScrollTop, scrollTop);
       this._scrollEvent();
 
     }
-
   }
+  /**
+   * 事件节流时间
+   */
+  throttTime = 20;
+  /**
+   * 改变水平内容滚动位置
+   * @param scrollValue 改变多少
+   */
   changeXScroll(scrollValue: number = 0) {
     const root = this;
     const contentDIV = this.contentDIV;
@@ -493,16 +554,23 @@ export class PScroll extends LitElement {
     }
     contentDIV.scrollLeft = scrollLeft;
     this.caculateXBarPosition();
-
-
     if (oldScrollLeft !== scrollLeft) {
       if (scrollLeft === maxScroll) {
+        /**
+         * 水平滚动到最右侧触发      * detail.value 内容水平滚动大小
+         */
         this.dispatchEvent(new CustomEvent('scroll-x-end', {
-          bubbles: true
+          bubbles: true,
+          detail: {
+            value: scrollLeft
+          }
         }));
       }
       if (this._xDispatchMethod == null) {
         const d = (oldValue: number, newValue: number) => {
+          /**
+         * 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小
+         */
           root.dispatchEvent(new CustomEvent('scroll-x', {
             bubbles: true,
             detail: {
@@ -511,13 +579,16 @@ export class PScroll extends LitElement {
             }
           }));
         };
-        this._xDispatchMethod = throttle(d, 20);
+        this._xDispatchMethod = throttle(d, this.throttTime);
       }
       this._xDispatchMethod(oldScrollLeft, scrollLeft);
       this._scrollEvent();
     }
   }
-
+  /**
+   * 改变竖直滚动调大位置
+   *  @param changeValue 竖直滚动条的改变值，>0 向下
+   */
   changeYBarPosition(changeValue: number = 0) {
     const contentDIV = this.contentDIV;
     let scrollTop = parseInt(getStyleProperty(this.partYHandler, 'top'), 10);
@@ -541,6 +612,10 @@ export class PScroll extends LitElement {
       this.scrollYToValue(0);
     }
   }
+  /**
+   * 改变水平滚动条的位置
+   * @param changeValue 改变的大小
+   */
   changeXBarPosition(changeValue: number = 0) {
     const contentDIV = this.contentDIV;
     let scrollLeft = parseInt(getStyleProperty(this.partXHandler, 'left'), 10);
@@ -564,24 +639,36 @@ export class PScroll extends LitElement {
       this.scrollXToValue(0);
     }
   }
-
+  /**
+   * 竖直滚动条 滚动到底部
+   */
   scrollYToEnd() {
     const contentDIV = this.contentDIV;
     const offsetHeight = contentDIV.offsetHeight;
     const maxScrollTop = contentDIV.scrollHeight - offsetHeight;
     this.changeYScroll(maxScrollTop - contentDIV.scrollTop);
   }
+  /**
+   * 竖直内容滚动到特定位置
+   * @param scrollTop 
+   */
   scrollYToValue(scrollTop: number = 0) {
     const currentTop = this.contentDIV.scrollTop;
     this.changeYScroll(scrollTop - currentTop);
   }
-
+  /**
+   * 水平滚动条滚动到 最右侧
+   */
   scrollXToEnd() {
     const contentDIV = this.contentDIV;
     const offsetWidth = contentDIV.offsetWidth;
     const maxScrollTop = contentDIV.scrollWidth - offsetWidth;
     this.changeXScroll(maxScrollTop - contentDIV.scrollLeft);
   }
+  /**
+   * 
+   * @param scrollLeft 水平内容滚动到特定位置
+   */
   scrollXToValue(scrollLeft: number = 0) {
     const currentLeft = this.contentDIV.scrollLeft;
     this.changeXScroll(scrollLeft - currentLeft);

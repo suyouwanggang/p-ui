@@ -28,11 +28,15 @@
     "serve": "^10.1.1",
     "tslint": "^5.20.1",
     "typedoc": "^0.15.8",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "web-component-analyzer": "^1.1.6"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c --watch",
+    "analyze": "wca analyze \"elements/**/*.ts\" --outFile custom-elements.json",
+	"analyze2": "wca analyze \"elements/**/*.ts\" --format markdown --outFile custom-elements.md",
+	"vscode": "wca analyze \"elements/**/*.ts\" --format vscode --outFile custom-elements.vscode",
     "copywc": "cp -r node_modules/@webcomponents/webcomponentsjs/bundles build && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
     "docs": "docsify serve ./docs",
     "start": "serve ",

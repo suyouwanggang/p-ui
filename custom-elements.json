@@ -1,0 +1,3559 @@
+{
+  "version": "experimental",
+  "tags": [
+    {
+      "name": "simple-greeting",
+      "path": "./elements\\greeting.ts",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "default": "\"中国 \""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "default": "14"
+        },
+        {
+          "name": "itemSize",
+          "type": "number",
+          "default": "10"
+        }
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"中国 \""
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "number",
+          "default": "14"
+        },
+        {
+          "name": "itemSize",
+          "attribute": "itemSize",
+          "type": "number",
+          "default": "10"
+        }
+      ]
+    },
+    {
+      "name": "p-ac-panel",
+      "path": "./elements\\p-accordionPanel.ts",
+      "attributes": [
+        {
+          "name": "multi",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "multi",
+          "attribute": "multi",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "childTabPanel",
+          "type": "PACTab[]"
+        },
+        {
+          "name": "activeTab",
+          "type": "PACTab[]"
+        }
+      ],
+      "events": [
+        {
+          "name": "before-tab",
+          "description": "change 改变child panel 之前"
+        },
+        {
+          "name": "tab",
+          "description": "change 改变 child panel state 之后"
+        }
+      ]
+    },
+    {
+      "name": "p-ac-tab",
+      "path": "./elements\\p-accordionPanel.ts",
+      "attributes": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "header",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "active",
+          "attribute": "active",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "key",
+          "attribute": "key",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "header",
+          "attribute": "header",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "accordionPanel",
+          "type": "PAccordionPanel"
+        }
+      ],
+      "events": [
+        {
+          "name": "before-tab-change"
+        },
+        {
+          "name": "tab-change"
+        }
+      ]
+    },
+    {
+      "name": "p-button",
+      "path": "./elements\\p-button.ts",
+      "attributes": [
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "block",
+          "type": "boolean"
+        },
+        {
+          "name": "toggle",
+          "type": "boolean"
+        },
+        {
+          "name": "type",
+          "type": "buttonTypeValue"
+        },
+        {
+          "name": "shape",
+          "type": "shapeType"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "checked",
+          "type": "boolean"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "href",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "targetType",
+          "default": "\"_blank\""
+        },
+        {
+          "name": "rel",
+          "type": "string"
+        },
+        {
+          "name": "download",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "block",
+          "attribute": "block",
+          "type": "boolean"
+        },
+        {
+          "name": "toggle",
+          "attribute": "toggle",
+          "type": "boolean"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "buttonTypeValue"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "shapeType"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "checked",
+          "attribute": "checked",
+          "type": "boolean"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "href",
+          "attribute": "href",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "attribute": "target",
+          "type": "targetType",
+          "default": "\"_blank\""
+        },
+        {
+          "name": "rel",
+          "attribute": "rel",
+          "type": "string"
+        },
+        {
+          "name": "download",
+          "attribute": "download",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string"
+        },
+        {
+          "name": "iconEl",
+          "type": "Element | null"
+        },
+        {
+          "name": "btn",
+          "type": "Element | null"
+        }
+      ]
+    },
+    {
+      "name": "p-button-group",
+      "path": "./elements\\p-button.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "elements",
+          "type": "NodeListOf<PButton>"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-checkbox",
+      "path": "./elements\\p-checkbox.ts",
+      "attributes": [
+        {
+          "name": "errortips",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "errortips",
+          "attribute": "errortips",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "novalidate",
+          "attribute": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "checked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "readonly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        },
+        {
+          "name": "tip",
+          "type": "PTips"
+        },
+        {
+          "name": "validity",
+          "type": "boolean"
+        },
+        {
+          "name": "checkbox",
+          "type": "HTMLInputElement"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "focus"
+        },
+        {
+          "name": "blur"
+        }
+      ]
+    },
+    {
+      "name": "p-checkbox-group",
+      "path": "./elements\\p-checkbox.ts",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "default": "\"Infinity\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "type": "String[]"
+        },
+        {
+          "name": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "vertical",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "min",
+          "attribute": "min",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "number",
+          "default": "\"Infinity\""
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "String[]"
+        },
+        {
+          "name": "novalidate",
+          "attribute": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "vertical",
+          "attribute": "vertical",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "readonly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "validity",
+          "type": "boolean"
+        },
+        {
+          "name": "len",
+          "type": "number"
+        },
+        {
+          "name": "elements",
+          "type": "NodeListOf<PCheckbox>"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        },
+        {
+          "name": "tip",
+          "type": "PTips"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-color-panel",
+      "path": "./elements\\p-color-panel.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"#ff0000\""
+        },
+        {
+          "name": "typeindex",
+          "type": "number",
+          "default": "0"
+        }
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"#ff0000\""
+        },
+        {
+          "name": "typeindex",
+          "attribute": "typeindex",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "COLOR_TYPE",
+          "type": "string[]",
+          "default": "[\"HEXA\",\"RGBA\",\"HSLA\"]"
+        },
+        {
+          "name": "color",
+          "type": "{ h: number; s: number; v: number; a: number; toHSVA(): number[]; toHSLA(): number[]; toRGBA(): number[]; toCMYK(): number[]; toHEXA(): string[]; clone: () => ...; }"
+        },
+        {
+          "name": "rgbColor",
+          "type": "string"
+        },
+        {
+          "name": "palette",
+          "type": "HTMLElement"
+        },
+        {
+          "name": "copyValue",
+          "type": "string"
+        },
+        {
+          "name": "rgbaInputs",
+          "type": "HTMLInputElement[]"
+        },
+        {
+          "name": "hlsaInputs",
+          "type": "HTMLInputElement[]"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-color",
+      "path": "./elements\\p-color.ts",
+      "attributes": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"#ff0000\""
+        },
+        {
+          "name": "dir",
+          "type": "string",
+          "default": "\"bottomleft\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"#ff0000\""
+        },
+        {
+          "name": "dir",
+          "attribute": "dir",
+          "type": "string",
+          "default": "\"bottomleft\""
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-date-panel",
+      "path": "./elements\\p-date-picker.ts",
+      "attributes": [
+        {
+          "name": "type",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "range",
+          "type": "boolean"
+        },
+        {
+          "name": "min",
+          "type": "string"
+        },
+        {
+          "name": "max",
+          "type": "string"
+        },
+        {
+          "name": "mode",
+          "type": "selectMode",
+          "default": "\"date\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "range",
+          "attribute": "range",
+          "type": "boolean"
+        },
+        {
+          "name": "min",
+          "attribute": "min",
+          "type": "string"
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "string"
+        },
+        {
+          "name": "mode",
+          "attribute": "mode",
+          "type": "selectMode",
+          "default": "\"date\""
+        },
+        {
+          "name": "renderHeaderStr",
+          "type": "string"
+        },
+        {
+          "name": "dateValue",
+          "type": "Date | null | undefined"
+        },
+        {
+          "name": "defaultDateValue",
+          "type": "Date"
+        },
+        {
+          "name": "maxDate",
+          "type": "Date | null | undefined"
+        },
+        {
+          "name": "minDate",
+          "type": "Date | null | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-dialog",
+      "path": "./elements\\p-dialog.ts",
+      "attributes": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "removeAble",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "autoclose",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "p-title",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "type",
+          "type": "DialogType"
+        },
+        {
+          "name": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "showCancelBtn",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "removeAble",
+          "attribute": "removeAble",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "autoclose",
+          "attribute": "autoclose",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "title",
+          "attribute": "p-title",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "DialogType"
+        },
+        {
+          "name": "okText",
+          "attribute": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "showCancelBtn",
+          "attribute": "showCancelBtn",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "cancelText",
+          "attribute": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "alert",
+          "type": "(obj: any) => PDialog",
+          "default": "\"function (obj: any) {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, okText, content, ok } = arguments[0];\\r\\n            dialog.title = title || 'Alert';\\r\\n            dialog.okText = okText || '确 定';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.title = 'Alert';\\r\\n            dialog.okText = '确 定';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "info",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.type = 'info';\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, oktext, content, ok } = arguments[0];\\r\\n            dialog.title = title || 'Info';\\r\\n            dialog.okText = oktext || '知道了';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.title = 'Info';\\r\\n            dialog.okText = '知道了';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "success",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.type = 'success';\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, oktext, content, ok } = arguments[0];\\r\\n            dialog.title = title || 'Success';\\r\\n            dialog.okText = oktext || '知道了';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.title = 'Success';\\r\\n            dialog.okText = '知道了';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "error",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.type = 'error';\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, oktext, content, ok } = arguments[0];\\r\\n            dialog.title = title || 'Error';\\r\\n            dialog.okText = oktext || '知道了';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.title = 'Error';\\r\\n            dialog.okText = '知道了';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "warning",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.type = 'warning';\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, oktext, content, ok } = arguments[0];\\r\\n            dialog.title = title || 'Warning';\\r\\n            dialog.okText = oktext || '知道了';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.title = 'Warning';\\r\\n            dialog.okText = '知道了';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "confirm",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.updateComplete.then(() =>{\\r\\n            const cancelBtn: PButton = dialog.cancelBtn;\\r\\n            cancelBtn!.style.visibility = 'visible';\\r\\n        });\\r\\n        dialog.removeAble = true;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, oktext, canceltext, type, content, ok } = arguments[0];\\r\\n            dialog.type = type || 'confirm';\\r\\n            dialog.title = title || 'confirm';\\r\\n            dialog.okText = oktext || '知道了';\\r\\n            dialog.cancelText = canceltext || '取消';\\r\\n            dialog.onsubmit = ok || null;\\r\\n            dialog.innerHTML = content || '';\\r\\n        } else {\\r\\n            dialog.type = 'confirm';\\r\\n            dialog.title = 'confirm';\\r\\n            dialog.okText = '确 定';\\r\\n            dialog.cancelText = '取 消';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            dialog.onsubmit = arguments[1] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        },
+        {
+          "name": "prompt",
+          "type": "() => PDialog",
+          "default": "\"function () {\\r\\n        const dialog = new PDialog();\\r\\n        dialog.type = 'prompt';\\r\\n        document.body.appendChild(dialog);\\r\\n        dialog.updateComplete.then(() =>{\\r\\n            const cancelBtn: PButton = dialog.cancelBtn;\\r\\n            cancelBtn!.style.visibility = 'visible';\\r\\n        });\\r\\n       \\r\\n        dialog.removeAble = true;\\r\\n        dialog.autoclose = false;\\r\\n        if (typeof arguments[0] === 'object') {\\r\\n            const { title, content, oktext, canceltext, ok, cancel } = arguments[0];\\r\\n            dialog.title = title || 'Prompt';\\r\\n            dialog.okText = oktext || '确 定';\\r\\n            dialog.cancelText = canceltext || '取 消';\\r\\n            dialog.innerHTML = content || '';\\r\\n            const input: PInput = dialog.renderRoot.querySelector('p-input');\\r\\n            input.onsubmit = dialog.onsubmit = () => {\\r\\n                const value = input.value;\\r\\n                if (value) {\\r\\n                    ok && ok(value);\\r\\n                    dialog.open = false;\\r\\n                } else {\\r\\n                    // XyMessage.error('内容不能为空');\\r\\n                    input.focus();\\r\\n                }\\r\\n            };\\r\\n            dialog.oncancel = cancel || null;\\r\\n        } else {\\r\\n            dialog.title = 'Prompt';\\r\\n            dialog.okText = '确 定';\\r\\n            dialog.cancelText = '取 消';\\r\\n            dialog.innerHTML = arguments[0] || '';\\r\\n            const input: PInput = dialog.renderRoot.querySelector('p-input');\\r\\n            input.onsubmit = dialog.onsubmit = () => {\\r\\n                const value = input.value;\\r\\n                if (value) {\\r\\n                    arguments[1] && arguments[1](value);\\r\\n                    dialog.open = false;\\r\\n                } else {\\r\\n                    //XyMessage.error('内容不能为空');\\r\\n                    input.focus();\\r\\n                }\\r\\n            };\\r\\n            dialog.oncancel = arguments[2] || null;\\r\\n        }\\r\\n        dialog.open = true;\\r\\n        return dialog;\\r\\n    }\""
+        }
+      ],
+      "events": [
+        {
+          "name": "submit"
+        },
+        {
+          "name": "cancel"
+        },
+        {
+          "name": "close"
+        }
+      ]
+    },
+    {
+      "name": "p-fieldset",
+      "path": "./elements\\p-fieldset.ts",
+      "description": "panel 容器",
+      "attributes": [
+        {
+          "name": "toogleable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean"
+        },
+        {
+          "name": "header",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "toogleable",
+          "attribute": "toogleable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "collapsed",
+          "attribute": "collapsed",
+          "type": "boolean"
+        },
+        {
+          "name": "header",
+          "attribute": "header",
+          "type": "string"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            display:block;\\r\\n            box-sizing:border-box;\\r\\n        }\\r\\n       .p-fieldset{\\r\\n            display:block;\\r\\n            box-sizing:border-box;\\r\\n            border-radius: 3px;\\r\\n            border: 1px solid #c8c8c8;\\r\\n            background-color: #fff;\\r\\n            color: #333;\\r\\n            padding: .571em 1em;\\r\\n        }\\r\\n        :host([toogleable])  .fieldset-legend{\\r\\n            cursor:pointer;\\r\\n        }\\r\\n        .fieldset-legend{\\r\\n            border: 1px solid var(--legend-border-color,#dee2e6);\\r\\n            background-color: var(--legend-background-color,#f4f4f4);\\r\\n            color: #333;\\r\\n            padding: .571em 1em .571em 1em;\\r\\n            font-weight: 600;\\r\\n        }\\r\\n        .icon-toogle{\\r\\n            padding:auto 0.7em;\\r\\n        }\\r\\n        .fieldset-content{\\r\\n            transition: all 0.5s cubic-bezier(0,1,0.5,1);\\r\\n        }\\r\\n    `\""
+        }
+      ],
+      "events": [
+        {
+          "name": "before-fieldset",
+          "description": "collpase 如果能关闭，点击header 触发"
+        },
+        {
+          "name": "fieldset",
+          "description": "collpase 内容关闭、开启后触发"
+        },
+        {
+          "name": "before-fieldset-collpase"
+        },
+        {
+          "name": "fieldset-collpase"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "header header 分发区"
+        }
+      ]
+    },
+    {
+      "name": "p-for",
+      "path": "./elements\\p-for.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"value\""
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "default": "\"index\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "items",
+          "type": "Object[]",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"value\""
+        },
+        {
+          "name": "index",
+          "attribute": "index",
+          "type": "string",
+          "default": "\"index\""
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            display:content;\\r\\n        }\\r\\n        .container{\\r\\n            display:content;\\r\\n        }\\r\\n    `\""
+        },
+        {
+          "name": "templateHTML",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "p-icon",
+      "path": "./elements\\p-icon.ts",
+      "attributes": [
+        {
+          "name": "view",
+          "type": "number",
+          "default": "1024"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "iconPath",
+          "type": "string",
+          "default": "\"./iconfont/icon.svg\""
+        },
+        {
+          "name": "path",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "default": "-1"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "spin",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "view",
+          "attribute": "view",
+          "type": "number",
+          "default": "1024"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "iconPath",
+          "attribute": "iconPath",
+          "type": "string",
+          "default": "\"./iconfont/icon.svg\""
+        },
+        {
+          "name": "path",
+          "attribute": "path",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "number",
+          "default": "-1"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "spin",
+          "attribute": "spin",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n       :host{\\r\\n            font-size:inherit;\\r\\n            display:inline-block;\\r\\n            transition:.3s;\\r\\n        }\\r\\n        .svgclass {\\r\\n            display:block;\\r\\n            width: 1em;\\r\\n            height: 1em;\\r\\n            margin: auto;\\r\\n            fill: currentColor;\\r\\n            overflow: hidden;\\r\\n            vertical-align: -0.15em;\\r\\n            /*transition:inherit;*/\\r\\n        }\\r\\n        :host([spin]){\\r\\n            animation: rotate 1.4s linear infinite;\\r\\n        }\\r\\n        @keyframes rotate{\\r\\n            to{\\r\\n                transform: rotate(360deg);\\r\\n            }\\r\\n        }\\r\\n    `\""
+        }
+      ]
+    },
+    {
+      "name": "p-input",
+      "path": "./elements\\p-input.ts",
+      "attributes": [
+        {
+          "name": "label",
+          "type": "string | undefined"
+        },
+        {
+          "name": "tips",
+          "type": "string"
+        },
+        {
+          "name": "errortips",
+          "type": "string | undefined"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "type": "inputtype",
+          "default": "\"text\""
+        },
+        {
+          "name": "placeholder",
+          "type": "string"
+        },
+        {
+          "name": "leftIcon",
+          "type": "string | undefined"
+        },
+        {
+          "name": "rightIcon",
+          "type": "string | undefined"
+        },
+        {
+          "name": "block",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "clear",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "debounce",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "throttle",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "showStep",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined"
+        },
+        {
+          "name": "value",
+          "type": "string | undefined",
+          "default": "\"\""
+        },
+        {
+          "name": "invalid",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "novalidate",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "errorMessage",
+          "type": "string | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "pattern",
+          "type": "string | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "minLength",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "maxLength",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "min",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "max",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "step",
+          "type": "number | undefined",
+          "default": "1"
+        }
+      ],
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string | undefined"
+        },
+        {
+          "name": "tips",
+          "attribute": "tips",
+          "type": "string"
+        },
+        {
+          "name": "errortips",
+          "attribute": "errortips",
+          "type": "string | undefined"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readOnly",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "inputtype",
+          "default": "\"text\""
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string"
+        },
+        {
+          "name": "leftIcon",
+          "attribute": "leftIcon",
+          "type": "string | undefined"
+        },
+        {
+          "name": "rightIcon",
+          "attribute": "rightIcon",
+          "type": "string | undefined"
+        },
+        {
+          "name": "block",
+          "attribute": "block",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "clear",
+          "attribute": "clear",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "debounce",
+          "attribute": "debounce",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "throttle",
+          "attribute": "throttle",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "showStep",
+          "attribute": "showStep",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        },
+        {
+          "name": "pTipCon",
+          "type": "PTips"
+        },
+        {
+          "name": "input",
+          "type": "HTMLInputElement"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string | undefined"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string | undefined",
+          "default": "\"\""
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "novalidate",
+          "attribute": "novalidate",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean | undefined",
+          "default": "false"
+        },
+        {
+          "name": "errorMessage",
+          "attribute": "errorMessage",
+          "type": "string | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "pattern",
+          "attribute": "pattern",
+          "type": "string | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "minLength",
+          "attribute": "minLength",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "maxLength",
+          "attribute": "maxLength",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "min",
+          "attribute": "min",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "number | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "step",
+          "attribute": "step",
+          "type": "number | undefined",
+          "default": "1"
+        },
+        {
+          "name": "customValidateMethod",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "validity",
+          "type": "boolean"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string"
+        }
+      ],
+      "events": [
+        {
+          "name": "submit"
+        },
+        {
+          "name": "change"
+        },
+        {
+          "name": "focus"
+        },
+        {
+          "name": "input"
+        }
+      ]
+    },
+    {
+      "name": "p-row",
+      "path": "./elements\\p-layout.ts",
+      "attributes": [
+        {
+          "name": "grap",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "column",
+          "type": "number",
+          "default": "24"
+        }
+      ],
+      "properties": [
+        {
+          "name": "grap",
+          "attribute": "grap",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "column",
+          "attribute": "column",
+          "type": "number",
+          "default": "24"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            display:grid;\\r\\n            grid-template-columns:repeat(var(--column),1fr);\\r\\n            grid-gap:var(--grap,0);\\r\\n        }\\r\\n    `\""
+        }
+      ]
+    },
+    {
+      "name": "p-col",
+      "path": "./elements\\p-layout.ts",
+      "attributes": [
+        {
+          "name": "span",
+          "type": "number",
+          "default": "1"
+        }
+      ],
+      "properties": [
+        {
+          "name": "span",
+          "attribute": "span",
+          "type": "number",
+          "default": "1"
+        }
+      ]
+    },
+    {
+      "name": "p-layout",
+      "path": "./elements\\p-layout.ts",
+      "attributes": [
+        {
+          "name": "row",
+          "type": "boolean"
+        },
+        {
+          "name": "expand",
+          "type": "boolean"
+        },
+        {
+          "name": "center",
+          "type": "boolean"
+        },
+        {
+          "name": "mainAgile",
+          "type": "layAgileType"
+        },
+        {
+          "name": "crossAgile",
+          "type": "layAgileType"
+        }
+      ],
+      "properties": [
+        {
+          "name": "row",
+          "attribute": "row",
+          "type": "boolean"
+        },
+        {
+          "name": "expand",
+          "attribute": "expand",
+          "type": "boolean"
+        },
+        {
+          "name": "center",
+          "attribute": "center",
+          "type": "boolean"
+        },
+        {
+          "name": "mainAgile",
+          "attribute": "mainAgile",
+          "type": "layAgileType"
+        },
+        {
+          "name": "crossAgile",
+          "attribute": "crossAgile",
+          "type": "layAgileType"
+        }
+      ]
+    },
+    {
+      "name": "p-loading",
+      "path": "./elements\\p-loading.ts",
+      "attributes": [
+        {
+          "name": "size",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "string"
+        },
+        {
+          "name": "loadingEl",
+          "type": "HTMLElement | null"
+        }
+      ]
+    },
+    {
+      "name": "p-menu",
+      "path": "./elements\\p-menu.ts",
+      "attributes": [
+        {
+          "name": "overlay",
+          "description": "定义是 static 还是动态触发位置的mneu",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "trigger",
+          "description": "如果是动态触发的，触发元素选择器",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "trigger-event",
+          "description": "如果是动态触发的，",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "overlay",
+          "attribute": "overlay",
+          "description": "定义是 static 还是动态触发位置的mneu",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "trigger",
+          "attribute": "trigger",
+          "description": "如果是动态触发的，触发元素选择器",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "triggerEvent",
+          "attribute": "trigger-event",
+          "description": "如果是动态触发的，",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ]
+    },
+    {
+      "name": "p-menuitem",
+      "path": "./elements\\p-menu.ts",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "如果是动态触发的，触发元素选择器",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "disable",
+          "description": "是否 禁用",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "description": "点击事件 传值",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "icon",
+          "description": "菜单图标",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "href",
+          "description": "点击url",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "description": "如果是动态触发的，触发元素选择器",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "disable",
+          "attribute": "disable",
+          "description": "是否 禁用",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "description": "点击事件 传值",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "description": "菜单图标",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "href",
+          "attribute": "href",
+          "description": "点击url",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ]
+    },
+    {
+      "name": "p-message",
+      "path": "./elements\\p-message.ts",
+      "attributes": [
+        {
+          "name": "block",
+          "type": "boolean"
+        },
+        {
+          "name": "icon",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "type": "string"
+        },
+        {
+          "name": "horizontal-agile",
+          "type": "string"
+        },
+        {
+          "name": "show",
+          "type": "boolean",
+          "default": "\"(config: MessageType) => {\\r\\n        if (config.position === undefined) {\\r\\n            config.position = PMessage.DEFAULTPOSTION;\\r\\n        }\\r\\n        const div = PMessage._getMessagePositionDIV(config.position);\\r\\n        const message: PMessage = new PMessage();\\r\\n        if (config.icon) {\\r\\n            message.icon = config.icon;\\r\\n        }\\r\\n        if (config.color) {\\r\\n            message.color = config.color;\\r\\n        }\\r\\n        if (config.loading !== undefined) {\\r\\n            message.loading = config.loading;\\r\\n        }\\r\\n        if (config.position.indexOf('left') >= 0) {\\r\\n            message.hAgile = 'left';\\r\\n        } else if (config.position.indexOf('right') >= 0) {\\r\\n            message.hAgile = 'right';\\r\\n        } else {\\r\\n            message.hAgile = 'center';\\r\\n        }\\r\\n        div.appendChild(message);\\r\\n        message.textContent = config.text;\\r\\n        message.show = true;\\r\\n        let timer: number = undefined;\\r\\n        if (config.duration && config.duration > 0) {\\r\\n            timer = window.setTimeout(() => {\\r\\n                message.show = false;\\r\\n                config.onclose && config.onclose;\\r\\n                message.parentElement.removeChild(message);\\r\\n            }, config.duration);\\r\\n        }\\r\\n        return message;\\r\\n    }\""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "\"(text?: string | MessageType, duration: number = -1, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: -1, loading: true };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "block",
+          "attribute": "block",
+          "type": "boolean"
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "string"
+        },
+        {
+          "name": "hAgile",
+          "attribute": "horizontal-agile",
+          "type": "string"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            display:none;\\r\\n            visibility:hidden;\\r\\n            z-index:10;\\r\\n        }\\r\\n        :host([show]){\\r\\n            display:flex;\\r\\n            opacity:1;\\r\\n            visibility:visible;\\r\\n        }\\r\\n        :host([show][block]){\\r\\n            display:block;\\r\\n        }\\r\\n        :host([horizontal-agile='left']) {\\r\\n            justify-content:flex-start;\\r\\n        }\\r\\n        :host([horizontal-agile='right']) {\\r\\n            justify-content:flex-end;\\r\\n        }\\r\\n        :host([horizontal-agile='center']) {\\r\\n            justify-content:center;\\r\\n        }\\r\\n        .message{\\r\\n            display:flex;\\r\\n            padding:10px 15px;\\r\\n            margin-top:10px;\\r\\n            align-items:center;\\r\\n            font-size: 14px;\\r\\n            color: #666;\\r\\n            background: #fff;\\r\\n            border-radius: 3px;\\r\\n            transform: translateY(-100%);\\r\\n            transition:.3s transform cubic-bezier(.645, .045, .355, 1),.3s;\\r\\n            box-shadow: 0 4px 12px rgba(0,0,0,0.15);\\r\\n            pointer-events:all;\\r\\n        }\\r\\n        :host([show]) .message{\\r\\n            transform: translateY(0);\\r\\n        }\\r\\n\\r\\n        .message>*{\\r\\n            margin-right:5px;\\r\\n        }\\r\\n\\r\\n        p-loading{\\r\\n            display:none;\\r\\n        }\\r\\n\\r\\n        :host([show][loading]) p-loading{\\r\\n            display:block;\\r\\n        }\\r\\n        :host p-icon{\\r\\n            color:var(--themeColor,#42b983);\\r\\n        }\\r\\n    `\""
+        },
+        {
+          "name": "zIndex",
+          "type": "number",
+          "default": "1000"
+        },
+        {
+          "name": "DEFAULTPOSTION",
+          "type": "positionType",
+          "default": "\"topcenter\""
+        },
+        {
+          "name": "postionMap",
+          "type": "{ topcenter: string; topleft: string; topright: string; bottomcenter: string; bottomleft: string; bottomright: string; }",
+          "default": "{\"topcenter\":\"top:11px;left:11px;right:11px;\",\"topleft\":\"top:11px;left:11px;\",\"topright\":\"top:11px;right:11px;\",\"bottomcenter\":\"bottom:11px;left:11px;right:11px;\",\"bottomleft\":\"bottom:11px;left:11px;\",\"bottomright\":\"bottom:11px;right:11px;\"}"
+        },
+        {
+          "name": "show",
+          "attribute": "show",
+          "type": "boolean",
+          "default": "\"(config: MessageType) => {\\r\\n        if (config.position === undefined) {\\r\\n            config.position = PMessage.DEFAULTPOSTION;\\r\\n        }\\r\\n        const div = PMessage._getMessagePositionDIV(config.position);\\r\\n        const message: PMessage = new PMessage();\\r\\n        if (config.icon) {\\r\\n            message.icon = config.icon;\\r\\n        }\\r\\n        if (config.color) {\\r\\n            message.color = config.color;\\r\\n        }\\r\\n        if (config.loading !== undefined) {\\r\\n            message.loading = config.loading;\\r\\n        }\\r\\n        if (config.position.indexOf('left') >= 0) {\\r\\n            message.hAgile = 'left';\\r\\n        } else if (config.position.indexOf('right') >= 0) {\\r\\n            message.hAgile = 'right';\\r\\n        } else {\\r\\n            message.hAgile = 'center';\\r\\n        }\\r\\n        div.appendChild(message);\\r\\n        message.textContent = config.text;\\r\\n        message.show = true;\\r\\n        let timer: number = undefined;\\r\\n        if (config.duration && config.duration > 0) {\\r\\n            timer = window.setTimeout(() => {\\r\\n                message.show = false;\\r\\n                config.onclose && config.onclose;\\r\\n                message.parentElement.removeChild(message);\\r\\n            }, config.duration);\\r\\n        }\\r\\n        return message;\\r\\n    }\""
+        },
+        {
+          "name": "info",
+          "type": "(text?: string | MessageType | undefined, duration?: number, onclose?: Function | undefined) => PMessage",
+          "default": "\"(text?: string | MessageType, duration: number = 3000, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'info-circle-fill', color: 'var(--infoColor,#1890ff)' };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        },
+        {
+          "name": "error",
+          "type": "(text?: string | MessageType | undefined, duration?: number, onclose?: Function | undefined) => PMessage",
+          "default": "\"(text?: string | MessageType, duration: number = 3000, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'close-circle-fill', color: 'var(--errorColor,#f4615c)' };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        },
+        {
+          "name": "success",
+          "type": "(text?: string | MessageType | undefined, duration?: number, onclose?: Function | undefined) => PMessage",
+          "default": "\"(text?: string | MessageType, duration: number = 3000, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'check-circle-fill', color: 'var(--successColor,#52c41a)' };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        },
+        {
+          "name": "warning",
+          "type": "(text?: string | MessageType | undefined, duration?: number, onclose?: Function | undefined) => PMessage",
+          "default": "\"(text?: string | MessageType, duration: number = 3000, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: 3000, icon: 'warning-circle-fill', color: 'var(--waringColor,#faad14)' };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "\"(text?: string | MessageType, duration: number = -1, onclose?: Function) => {\\r\\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: -1, loading: true };\\r\\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\\r\\n    }\""
+        }
+      ]
+    },
+    {
+      "name": "p-page-btn",
+      "path": "./elements\\p-pagebtn.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "pagesize",
+          "type": "number",
+          "default": "20"
+        },
+        {
+          "name": "simple",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "pagesize",
+          "attribute": "pagesize",
+          "type": "number",
+          "default": "20"
+        },
+        {
+          "name": "simple",
+          "attribute": "simple",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "total",
+          "attribute": "total",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "pageCount",
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "name": "page-change"
+        },
+        {
+          "name": "before-page-change"
+        }
+      ]
+    },
+    {
+      "name": "p-panel",
+      "path": "./elements\\p-panel.ts",
+      "description": "panel 容器",
+      "attributes": [
+        {
+          "name": "toogleable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean"
+        },
+        {
+          "name": "header",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "toogleable",
+          "attribute": "toogleable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "collapsed",
+          "attribute": "collapsed",
+          "type": "boolean"
+        },
+        {
+          "name": "header",
+          "attribute": "header",
+          "type": "string"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n       :host{\\r\\n            font-size:inherit;\\r\\n            display:block;\\r\\n            box-sizing:border-box;\\r\\n        }\\r\\n        :host([toogleable]) .panel-header{\\r\\n            cursor:pointer;\\r\\n        }\\r\\n        .panel-header{\\r\\n            border: 1px solid var(--panel-header-color,#dee2e6);\\r\\n            padding: 0.5rem 1rem;\\r\\n            background: #f8f9fa;\\r\\n            color: var(--panel-header-color,#495057);\\r\\n            border-top-right-radius: 3px;\\r\\n            border-top-left-radius: 3px;\\r\\n            display:flex;\\r\\n            justify-content:space-between;\\r\\n            align-items:center;\\r\\n        }\\r\\n        div[part=\\\"panel-title\\\"]{\\r\\n            flex:1;\\r\\n        }\\r\\n        .panel-content{\\r\\n            padding: var(--panel-content-padding,0.5em);\\r\\n            border: 1px solid var(--panel-header-color,#dee2e6);\\r\\n            background: #ffffff;\\r\\n            color: #495057;\\r\\n            border-bottom-right-radius: 3px;\\r\\n            border-bottom-left-radius: 3px;\\r\\n            border-top: 0 none;\\r\\n            transition: all 0.5s cubic-bezier(0,1,0.5,1);\\r\\n        }\\r\\n    `\""
+        }
+      ],
+      "events": [
+        {
+          "name": "before-panel",
+          "description": "collpase 如果能关闭，点击header 触发"
+        },
+        {
+          "name": "panel",
+          "description": "collpase 内容关闭、开启后触发"
+        },
+        {
+          "name": "before-panel-collpase"
+        },
+        {
+          "name": "panel-collpase"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "header 头部分发区"
+        }
+      ]
+    },
+    {
+      "name": "p-pop",
+      "path": "./elements\\p-pop.ts",
+      "attributes": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipContent",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipTitle",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "trigger",
+          "type": "string",
+          "default": "\"click\""
+        },
+        {
+          "name": "accomplish",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipContent",
+          "attribute": "tipContent",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipTitle",
+          "attribute": "tipTitle",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "okText",
+          "attribute": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "cancelText",
+          "attribute": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "trigger",
+          "attribute": "trigger",
+          "type": "string",
+          "default": "\"click\""
+        },
+        {
+          "name": "accomplish",
+          "attribute": "accomplish",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "popContent",
+          "type": "PPopContent"
+        }
+      ]
+    },
+    {
+      "name": "p-pop-content",
+      "path": "./elements\\p-pop.ts",
+      "attributes": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "thinBar",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "hiddenClose",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tip-title",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tip-title-icon",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "thinBar",
+          "attribute": "thinBar",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "hiddenClose",
+          "attribute": "hiddenClose",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipTitle",
+          "attribute": "tip-title",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "tipTitleIcon",
+          "attribute": "tip-title-icon",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "okText",
+          "attribute": "okText",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "cancelText",
+          "attribute": "cancelText",
+          "type": "string",
+          "default": "\"undefined\""
+        }
+      ],
+      "events": [
+        {
+          "name": "close"
+        },
+        {
+          "name": "cancel"
+        },
+        {
+          "name": "submit"
+        },
+        {
+          "name": "open"
+        }
+      ]
+    },
+    {
+      "name": "p-radio",
+      "path": "./elements\\p-radio.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "checked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "group",
+          "type": "Element | null"
+        },
+        {
+          "name": "radio",
+          "type": "HTMLInputElement"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        }
+      ],
+      "events": [
+        {
+          "name": "tab-change",
+          "description": "end 页签改变完成事件"
+        },
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-radio-group",
+      "path": "./elements\\p-radio.ts",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "novalidate",
+          "attribute": "novalidate",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "validity",
+          "type": "boolean"
+        },
+        {
+          "name": "elements",
+          "type": "NodeListOf<PRadio>"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        },
+        {
+          "name": "tip",
+          "type": "PTips"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-rate",
+      "path": "./elements\\p-rate.ts",
+      "attributes": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "default": "\"star-fill\""
+        },
+        {
+          "name": "onColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "offColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "hoverable",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "number",
+          "type": "number",
+          "default": "5"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "tipStrings",
+          "type": "string[]",
+          "default": "\"undefined\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string",
+          "default": "\"star-fill\""
+        },
+        {
+          "name": "onColor",
+          "attribute": "onColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "offColor",
+          "attribute": "offColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "hoverable",
+          "attribute": "hoverable",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "number",
+          "attribute": "number",
+          "type": "number",
+          "default": "5"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "tipStrings",
+          "attribute": "tipStrings",
+          "type": "string[]",
+          "default": "\"undefined\""
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-router-slot",
+      "path": "./elements\\p-routslot.ts",
+      "attributes": [
+        {
+          "name": "route",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "route",
+          "attribute": "route",
+          "type": "string"
+        },
+        {
+          "name": "slotElement",
+          "type": "HTMLElement | null"
+        }
+      ]
+    },
+    {
+      "name": "p-scroll",
+      "path": "./elements\\p-scroll.ts",
+      "description": "滚动容器",
+      "attributes": [
+        {
+          "name": "overflow-x",
+          "description": "hidden,则水平滚动条是否隐藏，",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "overflow-y",
+          "description": "hidden,则竖直滚动条是否隐藏，",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "keyEnable",
+          "description": "是否允许 键盘 上下左右按键滚动",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "scroll-bar-width",
+          "description": "滚动条大小",
+          "type": "number",
+          "default": "8"
+        },
+        {
+          "name": "scroll-bar-out-width",
+          "description": "滚动条 容器宽度",
+          "type": "number",
+          "default": "12"
+        }
+      ],
+      "properties": [
+        {
+          "name": "overflowX",
+          "attribute": "overflow-x",
+          "description": "hidden,则水平滚动条是否隐藏，",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "overflowY",
+          "attribute": "overflow-y",
+          "description": "hidden,则竖直滚动条是否隐藏，",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "keyEnable",
+          "attribute": "keyEnable",
+          "description": "是否允许 键盘 上下左右按键滚动",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "scrollBarWidth",
+          "attribute": "scroll-bar-width",
+          "description": "滚动条大小",
+          "type": "number",
+          "default": "8"
+        },
+        {
+          "name": "scrollBarOutWidth",
+          "attribute": "scroll-bar-out-width",
+          "description": "滚动条 容器宽度",
+          "type": "number",
+          "default": "12"
+        },
+        {
+          "name": "minScrollheight",
+          "type": "number",
+          "default": "8"
+        },
+        {
+          "name": "wheelScrollChange",
+          "type": "number",
+          "default": "120"
+        },
+        {
+          "name": "rightBottom",
+          "type": "HTMLElement"
+        },
+        {
+          "name": "contentDIV",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "containerDIV",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "partYScroll",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "partYHandler",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "partXScroll",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "partXHandler",
+          "type": "HTMLDivElement"
+        },
+        {
+          "name": "caculateYBarHeight",
+          "type": "number"
+        },
+        {
+          "name": "caculateXBarWidth",
+          "type": "number"
+        },
+        {
+          "name": "throttTime",
+          "description": "事件节流时间",
+          "type": "number",
+          "default": "20"
+        }
+      ],
+      "events": [
+        {
+          "name": "resize",
+          "description": "resize事件，当容器或者子孩子放生变化，此时触发"
+        },
+        {
+          "name": "scroll-change",
+          "description": "滚动事件，detail scrollTop,detail scrollLeft 说明内容滚动位置,"
+        },
+        {
+          "name": "scroll-y-end",
+          "description": "竖直滚动到底部时触发，\r\ndetail.value,内容滚动高度"
+        },
+        {
+          "name": "scroll-y",
+          "description": "竖直滚动的时触发\r\ndetail.value,内容滚动高度 detail.oldvalue,原来内容滚动高度"
+        },
+        {
+          "name": "scroll-x-end",
+          "description": "水平滚动到最右侧触发\r\ndetail.value 内容水平滚动大小"
+        },
+        {
+          "name": "scroll-x",
+          "description": "水平滚动时触发\r\ndetail.value 内容区水平滚动大小\r\ndetail.oldValue 原始内容区水平滚动大小"
+        }
+      ],
+      "slots": [
+        {
+          "name": "内容slot"
+        }
+      ]
+    },
+    {
+      "name": "p-option-group",
+      "path": "./elements\\p-select.ts",
+      "attributes": [
+        {
+          "name": "label",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "p-option",
+      "path": "./elements\\p-select.ts",
+      "attributes": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "selected",
+          "type": "boolean"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string"
+        },
+        {
+          "name": "key",
+          "attribute": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string"
+        },
+        {
+          "name": "selected",
+          "attribute": "selected",
+          "type": "boolean"
+        },
+        {
+          "name": "hidden",
+          "attribute": "hidden",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "option",
+          "type": "HTMLElement"
+        }
+      ]
+    },
+    {
+      "name": "p-select",
+      "path": "./elements\\p-select.ts",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "type": "buttonTypeValue"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "\"请选址\""
+        },
+        {
+          "name": "search",
+          "type": "boolean"
+        },
+        {
+          "name": "required",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "buttonTypeValue"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string",
+          "default": "\"请选址\""
+        },
+        {
+          "name": "search",
+          "attribute": "search",
+          "type": "boolean"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "optionCotent",
+          "type": "PPopContent"
+        },
+        {
+          "name": "pop",
+          "type": "Ppop"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "select"
+        }
+      ]
+    },
+    {
+      "name": "p-slider",
+      "path": "./elements\\p-slider.ts",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "vertical",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "alwaysTip",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "showtips",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "suffix",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "prefix",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "lineSize",
+          "type": "lineSize",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "lineColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "default": "1"
+        }
+      ],
+      "properties": [
+        {
+          "name": "input",
+          "type": "unknown"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "vertical",
+          "attribute": "vertical",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "alwaysTip",
+          "attribute": "alwaysTip",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "showtips",
+          "attribute": "showtips",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "suffix",
+          "attribute": "suffix",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "prefix",
+          "attribute": "prefix",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "lineSize",
+          "attribute": "lineSize",
+          "type": "lineSize",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "lineColor",
+          "attribute": "lineColor",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "min",
+          "attribute": "min",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "step",
+          "attribute": "step",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "slider",
+          "type": "HTMLInputElement"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement"
+        },
+        {
+          "name": "tipContent",
+          "type": "string"
+        },
+        {
+          "name": "percent",
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "input"
+        }
+      ]
+    },
+    {
+      "name": "p-steps",
+      "path": "./elements\\p-step.ts",
+      "attributes": [
+        {
+          "name": "current",
+          "description": "当前步骤，默认从0",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "vertical",
+          "description": "是否为竖直",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "startIndex",
+          "description": "起始节点显示 序号，默认为1",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "size",
+          "description": "进度点 圆圈大小",
+          "type": "sizeType"
+        }
+      ],
+      "properties": [
+        {
+          "name": "current",
+          "attribute": "current",
+          "description": "当前步骤，默认从0",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "vertical",
+          "attribute": "vertical",
+          "description": "是否为竖直",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "startIndex",
+          "attribute": "startIndex",
+          "description": "起始节点显示 序号，默认为1",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "description": "进度点 圆圈大小",
+          "type": "sizeType"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n       :host{\\r\\n            display:block;\\r\\n            box-sizing:border-box;\\r\\n        }\\r\\n       :host([vertical]) div[part='container']{\\r\\n           flex-direction:column;\\r\\n           display:block;\\r\\n       }\\r\\n       div[part='container']{\\r\\n           display:flex;\\r\\n       }\\r\\n\\r\\n    `\""
+        },
+        {
+          "name": "childStep",
+          "type": "PStep[]"
+        }
+      ]
+    },
+    {
+      "name": "p-step",
+      "path": "./elements\\p-step.ts",
+      "attributes": [
+        {
+          "name": "icon",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "default": "0"
+        }
+      ],
+      "properties": [
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "description",
+          "attribute": "description",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "attribute": "title",
+          "type": "string"
+        },
+        {
+          "name": "index",
+          "attribute": "index",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            position: relative;\\r\\n            display: inline-block;\\r\\n            flex: 1;\\r\\n            overflow: hidden;\\r\\n        }\\r\\n\\r\\n        :host([finished]){\\r\\n            --step-background-color: #fff;\\r\\n            --step-border-color: #42b983 ;\\r\\n            --step-icon-color:#42b983 ;\\r\\n            --step-line-color:#42b983 ;\\r\\n\\r\\n        }\\r\\n        :host([current]){\\r\\n            --step-background-color: #42b983;\\r\\n            --step-border-color: #42b983;\\r\\n            --step-icon-color:#FFF;\\r\\n            -step-line-color:#f0f0f0;\\r\\n        }\\r\\n\\r\\n        :host([last]){\\r\\n            flex: 0 0 auto;\\r\\n        }\\r\\n        :host([direction=vertical]){\\r\\n            display: block;\\r\\n        }\\r\\n       div[part=step-container]{\\r\\n           box-sizing:border-box;\\r\\n           display: flex;\\r\\n           overflow:hidden;\\r\\n       }\\r\\n       :host([direction=vertical])  div[part=step-container]{\\r\\n           position:relative;\\r\\n           display:flex;\\r\\n       }\\r\\n       div[part=icon-part]{\\r\\n            display:inline-block;\\r\\n            position: relative;\\r\\n            background-color: var(--step-background-color,#fff);\\r\\n            flex:0 0 auto ;\\r\\n            width: 32px;\\r\\n            height: 32px;\\r\\n            margin: 0 8px 0 0;\\r\\n            font-size: 16px;\\r\\n            line-height: 32px;\\r\\n            text-align: center;\\r\\n            border: 1px solid var(--step-border-color,rgba(0,0,0,.25));\\r\\n            border-radius: 32px;\\r\\n            transition: background-color .3s,border-color .3s;\\r\\n            color:var(--step-icon-color,inherit);\\r\\n       }\\r\\n\\r\\n       .icon-span{\\r\\n            display: inline-block;\\r\\n            color: inherit;\\r\\n            text-align: center;\\r\\n\\r\\n       }\\r\\n        div[part=step-content]{\\r\\n            display:inline-block;\\r\\n        }\\r\\n        :host([direction=vertical]) .div[part=step-content]{\\r\\n            min-height:48px;\\r\\n        }\\r\\n\\r\\n        div[part=step-title]{\\r\\n            color: rgba(0,0,0,.85);\\r\\n            font-weight: 400;\\r\\n            display: inline-block;\\r\\n            position: relative;\\r\\n        }\\r\\n       :host(:not([direction=vertical]):not([last]) )   div[part=step-title]::after{\\r\\n            position: absolute;\\r\\n            top: 16px;\\r\\n            left: 100%;\\r\\n            margin-left:10px;\\r\\n            display: block;\\r\\n            width: 9999px;\\r\\n            height: 1px;\\r\\n            background:var(--step-line-color,#f0f0f0);\\r\\n            content: \\\"\\\";\\r\\n        }\\r\\n        div[part=step-description]{\\r\\n            color: rgba(0,0,0,.85);\\r\\n            white-space: normal;\\r\\n            max-width:400px;\\r\\n            box-sizing:border-box;\\r\\n        }\\r\\n        :host([direction=vertical]) div[part=step-description]\\r\\n        {\\r\\n            max-width:none;\\r\\n        }\\r\\n        .tail{\\r\\n          display:none;\\r\\n        }\\r\\n        :host([direction=vertical]) .tail{\\r\\n            position: absolute;\\r\\n            display:block;\\r\\n            left:16px;\\r\\n            width:1px;\\r\\n            height:100%;\\r\\n          }\\r\\n          :host([direction=vertical]) div[part=icon-part]{\\r\\n            margin-right: 16px;\\r\\n            float:left;\\r\\n          }\\r\\n          :host([direction=vertical]:not([last])) .tail::after{\\r\\n            display: inline-block;\\r\\n            width: 100%;\\r\\n            height: 100%;\\r\\n            background: #f0f0f0;\\r\\n            border-radius: 1px;\\r\\n            transition: background-color .3s;\\r\\n            background-color:var(--step-border-color,rgba(0,0,0,.25));\\r\\n            content:\\\"\\\";\\r\\n          }\\r\\n          :host([direction=vertical]) div[part=step-content]{\\r\\n                display: block;\\r\\n                min-height:46px;\\r\\n          }\\r\\n    `\""
+        },
+        {
+          "name": "parentSteps",
+          "type": "PSteps"
+        }
+      ]
+    },
+    {
+      "name": "p-switch",
+      "path": "./elements\\p-switch.ts",
+      "attributes": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "\"\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "checked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n        :host{\\r\\n            display:inline-block;\\r\\n            width:2.4em;\\r\\n            height:1.2em;\\r\\n        }\\r\\n        label{\\r\\n            background-color:#eee;\\r\\n            display:inline-block;\\r\\n            height:100%;width:100%;\\r\\n            padding:.125em;\\r\\n            vertical-align: middle;\\r\\n            border-radius:1.2em;\\r\\n            transition:.3s width,.3s height,.3s background-color;\\r\\n            text-align:left;\\r\\n            cursor:pointer;\\r\\n        }\\r\\n        label[data-disabled=true]{\\r\\n            pointer-events: all;\\r\\n            cursor:not-allowed;\\r\\n            opacity:0.4;\\r\\n        }\\r\\n        label[checked]{\\r\\n            background-color:var(--themeBackground,var(--themeColor,#42b983));\\r\\n            text-align:right;\\r\\n        }\\r\\n        label::after{\\r\\n            content:'';\\r\\n            display:inline-block;\\r\\n            width:.4em;\\r\\n            height:.4em;\\r\\n            border-radius:1.2em;\\r\\n            border:.4em solid #fff;\\r\\n            background:#fff;\\r\\n            transition:.3s background-color,.3s padding,.3s width,.3s height,.3s border-radius,.3s border;\\r\\n            box-shadow: 0 2px 4px 0 rgba(0,35,11,0.2);\\r\\n        }\\r\\n        label:active{\\r\\n            box-shadow: #eee 0 0 1px 2px;\\r\\n        } \\r\\n        \\r\\n    `\""
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        }
+      ]
+    },
+    {
+      "name": "p-tab",
+      "path": "./elements\\p-tab.ts",
+      "attributes": [
+        {
+          "name": "tabPosition",
+          "type": "tabPosition",
+          "default": "\"top\""
+        },
+        {
+          "name": "activeKey",
+          "type": "string"
+        },
+        {
+          "name": "tabAgile",
+          "type": "tabAgile"
+        }
+      ],
+      "properties": [
+        {
+          "name": "tabPosition",
+          "attribute": "tabPosition",
+          "type": "tabPosition",
+          "default": "\"top\""
+        },
+        {
+          "name": "activeKey",
+          "attribute": "activeKey",
+          "type": "string"
+        },
+        {
+          "name": "tabAgile",
+          "attribute": "tabAgile",
+          "type": "tabAgile"
+        },
+        {
+          "name": "childTabPanel",
+          "type": "PTabContent[]"
+        },
+        {
+          "name": "activeTab",
+          "type": "PTabContent"
+        },
+        {
+          "name": "activeTabByIndex",
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "name": "beforeChange"
+        },
+        {
+          "name": "tab-change"
+        },
+        {
+          "name": "tab-change-end"
+        }
+      ]
+    },
+    {
+      "name": "p-tab-content",
+      "path": "./elements\\p-tab.ts",
+      "attributes": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string"
+        },
+        {
+          "name": "key",
+          "attribute": "key",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "tab",
+          "type": "PTab"
+        }
+      ]
+    },
+    {
+      "name": "p-text",
+      "path": "./elements\\p-text.ts",
+      "attributes": [
+        {
+          "name": "rows",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "draggable",
+          "type": "false"
+        },
+        {
+          "name": "mark",
+          "type": "false"
+        },
+        {
+          "name": "code",
+          "type": "false"
+        },
+        {
+          "name": "type",
+          "type": "typeString"
+        }
+      ],
+      "properties": [
+        {
+          "name": "rows",
+          "attribute": "rows",
+          "type": "number",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "draggable",
+          "attribute": "draggable",
+          "type": "false"
+        },
+        {
+          "name": "mark",
+          "attribute": "mark",
+          "type": "false"
+        },
+        {
+          "name": "code",
+          "attribute": "code",
+          "type": "false"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "typeString"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\r\\n       :host{\\r\\n            font-size:inherit;\\r\\n            display:inline-block;\\r\\n            transition:.3s;\\r\\n        }\\r\\n        :host([type=\\\"warning\\\"]){\\r\\n            color:var(--waringColor,#faad14);\\r\\n        }\\r\\n        :host([type=\\\"error\\\"]){\\r\\n            color:var(--errorColor,#f4615c);\\r\\n        }\\r\\n        :host([type=\\\"success\\\"]){\\r\\n            color:var(--successColor,#52c41a);\\r\\n        }\\r\\n        :host([mark]){\\r\\n            background:var(--waringColor,#faad14);\\r\\n        }\\r\\n        :host([code]){\\r\\n            font-family: 'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;\\r\\n            margin: 0 .2em;\\r\\n            padding: .2em .3em;\\r\\n            font-size: 85%;\\r\\n            border-radius: .2em;\\r\\n            background-color: #f8f8f8;\\r\\n            color: #e96900;\\r\\n        }\\r\\n        :host([rows]){\\r\\n            display:block;\\r\\n        }\\r\\n        :host([draggable]){\\r\\n            cursor:default;\\r\\n        }\\r\\n        :host([rows]) span{\\r\\n            display: -webkit-box;\\r\\n            -webkit-box-orient: vertical;\\r\\n            -webkit-line-clamp: var(--rows,1);\\r\\n            overflow: hidden;\\r\\n        }\\r\\n    `\""
+        },
+        {
+          "name": "truncated",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "p-tips",
+      "path": "./elements\\p-tips.ts",
+      "attributes": [
+        {
+          "name": "show",
+          "type": "showType"
+        },
+        {
+          "name": "tips",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "type": "typeType"
+        },
+        {
+          "name": "dir",
+          "type": "dirType",
+          "default": "\"auto\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "show",
+          "attribute": "show",
+          "type": "showType"
+        },
+        {
+          "name": "tips",
+          "attribute": "tips",
+          "type": "string"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "typeType"
+        },
+        {
+          "name": "dir",
+          "attribute": "dir",
+          "type": "dirType",
+          "default": "\"auto\""
+        }
+      ]
+    },
+    {
+      "name": "p-tree-node",
+      "path": "./elements\\tree\\PTree.ts",
+      "attributes": [
+        {
+          "name": "nodeRender",
+          "type": "TreeNodeRender"
+        },
+        {
+          "name": "data",
+          "type": "TreeNodeData"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "type": "string"
+        },
+        {
+          "name": "close",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "closeable",
+          "type": "boolean",
+          "default": "true"
+        }
+      ],
+      "properties": [
+        {
+          "name": "nodeRender",
+          "attribute": "nodeRender",
+          "type": "TreeNodeRender"
+        },
+        {
+          "name": "data",
+          "attribute": "data",
+          "type": "TreeNodeData"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "attribute": "icon",
+          "type": "string"
+        },
+        {
+          "name": "close",
+          "attribute": "close",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "closeable",
+          "attribute": "closeable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "subNodeSize",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "p-tree",
+      "path": "./elements\\tree\\PTree.ts",
+      "attributes": [
+        {
+          "name": "startKey",
+          "type": "string | number"
+        },
+        {
+          "name": "includeStartNode",
+          "type": "boolean"
+        },
+        {
+          "name": "rootCloseable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "filter-string",
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "type": "TreeNodeData"
+        },
+        {
+          "name": "filterFn",
+          "type": "TreeFilter"
+        },
+        {
+          "name": "nodeRender",
+          "type": "TreeNodeRender"
+        }
+      ],
+      "properties": [
+        {
+          "name": "startKey",
+          "attribute": "startKey",
+          "type": "string | number"
+        },
+        {
+          "name": "includeStartNode",
+          "attribute": "includeStartNode",
+          "type": "boolean"
+        },
+        {
+          "name": "rootCloseable",
+          "attribute": "rootCloseable",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "filterString",
+          "attribute": "filter-string",
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "attribute": "data",
+          "type": "TreeNodeData"
+        },
+        {
+          "name": "filterFn",
+          "attribute": "filterFn",
+          "type": "TreeFilter"
+        },
+        {
+          "name": "nodeRender",
+          "attribute": "nodeRender",
+          "type": "TreeNodeRender"
+        },
+        {
+          "name": "filterData",
+          "type": "TreeNodeData"
+        },
+        {
+          "name": "allTreeNode",
+          "type": "PTreeNode[]"
+        },
+        {
+          "name": "startNode",
+          "type": "TreeNodeData"
+        }
+      ]
+    }
+  ]
+}
