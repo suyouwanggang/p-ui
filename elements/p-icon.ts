@@ -1,5 +1,5 @@
 
-import { LitElement, svg, html, customElement, property, css } from 'lit-element'
+import { LitElement, svg, html, customElement, property, css } from 'lit-element';
 @customElement('p-icon')
 export class PICon extends LitElement {
     @property({ type: Number, reflect: false }) view: number = 1024;
@@ -8,7 +8,7 @@ export class PICon extends LitElement {
     @property({ type: String, reflect: false }) path: string = '';
     @property({ type: Number, reflect: false }) size: number = -1;
     @property({ type: String, reflect: false }) color: string = '';
-    @property({ type: Boolean, reflect: false }) spin: boolean = false;//旋转
+    @property({ type: Boolean, reflect: false }) spin: boolean = false; //旋转
     static styles = css`
        :host{
             font-size:inherit;
@@ -48,7 +48,7 @@ export class PICon extends LitElement {
         if (this.color) {
             styleValue += `color:${this.color}`;
         }
-        const icon=`${this.iconPath}#icon-${this.name}`;
+        const icon = `${this.iconPath}#icon-${this.name}`;
         return svg`
              <svg xmlns="http://www.w3.org/2000/svg" class="svgclass" style='${styleValue}'   aria-hidden="true" viewBox="0 0 ${this.view} ${this.view}">
                 ${this.path ? svg`<path d=${this.path} id="path"></path>` : svg`<use id="use" xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"  href="${icon}" ></use>`}

@@ -8,18 +8,18 @@ import {ifDefined} from 'lit-html/directives/if-defined';
     /**
      * 定义是 static 还是动态触发位置的mneu
      */
-    @property({type:Boolean,reflect: true})
-    overlay:boolean=false;
+    @property({type: Boolean, reflect: true})
+    overlay: boolean = false;
     /**
      * 如果是动态触发的，触发元素选择器
      */
-    @property({type:String,reflect: true})
-    trigger:string=undefined;
+    @property({type: String, reflect: true})
+    trigger: string = undefined;
     /**
      * 如果是动态触发的，
      */
-    @property({type:String,reflect: true,attribute:'trigger-event'})
-    triggerEvent:string=undefined;
+    @property({type: String, reflect: true, attribute: 'trigger-event'})
+    triggerEvent: string = undefined;
     static get styles() {
         return css`
         :host{
@@ -42,13 +42,13 @@ import {ifDefined} from 'lit-html/directives/if-defined';
         }
         `;
     }
-    render(){
+    render() {
         return html`<div part="conatiner"><slot></slot></div>`;
     }
     // get subMenu(){
     //     return this.querySelectorAll('p-submenu');
     // }
-    updated(_changedProperties: Map<string | number | symbol, unknown>){
+    updated(_changedProperties: Map<string | number | symbol, unknown>) {
         super.updated(_changedProperties);
     }
 }
@@ -121,31 +121,31 @@ import {ifDefined} from 'lit-html/directives/if-defined';
     /**
      * 如果是动态触发的，触发元素选择器
      */
-    @property({type:String,reflect: true})
-    label:string=undefined;
+    @property({type: String, reflect: true})
+    label: string = undefined;
 
     /**
      * 是否 禁用
      */
-    @property({type:Boolean,reflect: true})
-    disable:Boolean=false;
+    @property({type: Boolean, reflect: true})
+    disable: Boolean = false;
      /**
      * 点击事件 传值
      */
-    @property({type:String,reflect: true})
-    value:string=undefined;
+    @property({type: String, reflect: true})
+    value: string = undefined;
 
      /**
      * 菜单图标
      */
-    @property({type:String,reflect: true})
-    icon:string=undefined;
+    @property({type: String, reflect: true})
+    icon: string = undefined;
 
      /**
-     * 点击url 
+     * 点击url
      */
-    @property({type:String,reflect: true})
-    href:string=undefined;
+    @property({type: String, reflect: true})
+    href: string = undefined;
     static get styles() {
         return css`
         :host{
@@ -161,7 +161,7 @@ import {ifDefined} from 'lit-html/directives/if-defined';
         }
         :host(:not([disable]):hover){
              background-color: var(--menu-hover-back-color,#198AD4);
-             color:var(--menu-hover-font-color,#FFF); 
+             color:var(--menu-hover-font-color,#FFF);
              transition:background-color 0.3s ease;
         }
         :host([disable]){
@@ -179,11 +179,11 @@ import {ifDefined} from 'lit-html/directives/if-defined';
         span[part=title]{
             vertical-align: middle;
         }
-        `
+        `;
     }
     render() {
         return html`<a href=${ifDefined(this.href)}  >
-            <span part='icon'>${this.icon? html`<p-icon name=${this.icon}></p-icon> `: ''}</span>
+            <span part='icon'>${this.icon ? html`<p-icon name=${this.icon}></p-icon> ` : ''}</span>
             <span part='label'><slot>${this.label}</slot></span>
     </a>`;
     }

@@ -1,12 +1,13 @@
 import { css, customElement, eventOptions, html, LitElement, property } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
+import { throttle } from './utils/eventHelper';
 const getStyleProperty = function (oE: HTMLElement, sPr: string) {
   sPr = sPr.replace(/([A-Z])/g, '-$1').toLowerCase();
-  let d = document.defaultView.getComputedStyle(oE);
+  const d = document.defaultView.getComputedStyle(oE);
   return d.getPropertyValue(sPr);
-}
-interface scrollBack{
-  (x:number,y:number):void;
+};
+interface ScrollBack {
+  (x: number, y: number): void;
 }
 type overflowType = '' | 'hidden';
 @customElement('p-scroll')
@@ -15,6 +16,7 @@ export class PScroll extends LitElement {
   @property({ type: String, reflect: true, attribute: 'overflow-y' }) overflowY: string = '';
   @property({ type: Boolean, reflect: true }) keyEnable: boolean = true;
   @property({ type: Number, reflect: true, attribute: 'scroll-bar-width' }) scrollBarWidth: number = 8;
+  @property({ type: Number, reflect: true, attribute: 'scroll-bar-out-width' }) scrollBarOutWidth: number = 12;
   static minScrollheight = 8;
   static get styles() {
     return css`
@@ -33,7 +35,7 @@ export class PScroll extends LitElement {
           top: 0;
           right: 0;
           display:none;
-          width: var(--scroll-bar-width,8px);
+          width: var(--scroll-bar-out-width,12px);
           bottom:0;
           cursor: default;
           user-select: none;
@@ -42,20 +44,18 @@ export class PScroll extends LitElement {
           display:block;
         }
         .showXScroll div[part=scroll-y]{
-          bottom:var(--scroll-bar-width,8px);
+          bottom:var(--scroll-bar-out-width,8px);
         }
-        
         div[part=right-bottom]{
           display:none;
           position:absolute;
           right:0;
           bottom:0;
-          
         }
         .showYScroll.showXScroll div[part=right-bottom]
         {
-          width: var(--scroll-bar-width,8px);
-          height: var(--scroll-bar-width,8px);
+          width: var(--scroll-bar-out-width,12px);
+          height: var(--scroll-bar-out-width,12px);
           display:block;
         }
         div[part=scroll-y-handler],div[part=scroll-x-handler]{
@@ -65,8 +65,9 @@ export class PScroll extends LitElement {
         div[part=scroll-y-handler]{
             position:absolute;
             top:0;
+            left:calc( (var(--scroll-bar-out-width) - var(--scroll-bar-width))/2  );
             bottom:auto;
-            width:100%;
+            width:var(--scroll-bar-width);
         }
         div[part=scroll-y-handler]:hover,
         div[part=scroll-x-handler]:hover{
@@ -78,7 +79,7 @@ export class PScroll extends LitElement {
           left:0;
           display:none;
           right:0;
-          height: var(--scroll-bar-width,8px);
+          height: var(--scroll-bar-out-width,8px);
           cursor: default;
           user-select: none;
         }
@@ -91,8 +92,9 @@ export class PScroll extends LitElement {
         div[part=scroll-x-handler]{
             position:absolute;
             left:0;
+            top:calc( (var(--scroll-bar-out-width) - var(--scroll-bar-width))/2  );
             right:auto;
-            height:100%;
+            height:var(--scroll-bar-width);
         }
 
         div[part=content]{
@@ -105,10 +107,10 @@ export class PScroll extends LitElement {
           /*scroll-behavior:smooth;*/
         }
         .showYScroll div[part=content]{
-          right:var(--scroll-bar-width,8px);
+          right:var(--scroll-bar-out-width,12px);
         }
         .showXScroll   div[part=content]{
-          bottom:var(--scroll-bar-width,8px);
+          bottom:var(--scroll-bar-out-width,12px);
         }
       `;
   }
@@ -126,13 +128,13 @@ export class PScroll extends LitElement {
     e.preventDefault();
     window.clearTimeout(this._wheelTimeoutID);
     this._wheelTimeoutID = window.setTimeout(() => {
-      if (changeYValue != undefined) {
+      if (changeYValue !== undefined) {
         scrollObj.changeYScroll((changeYValue > 0 ? 1 : -1) * this.wheelScrollChange);
       }
-      if (changeXValue != undefined) {
+      if (changeXValue !== undefined) {
         this.changeXScroll((changeXValue > 0 ? 1 : -1) * this.wheelScrollChange);
-      }else{
-        scrollObj.changeYScroll(e.detail* this.wheelScrollChange);
+      } else {
+        scrollObj.changeYScroll(e.detail * this.wheelScrollChange);
         // if(e.detail%2==0){
         //   scrollObj.changeXScroll(0-e.detail* this.wheelScrollChange);
         // }
@@ -142,7 +144,7 @@ export class PScroll extends LitElement {
   }
   updated(_changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(_changedProperties);
-    if (_changedProperties.has('overflowX') || _changedProperties.has('overflowY') || _changedProperties.has('scrollBarWidth')) {
+    if (_changedProperties.has('overflowX') || _changedProperties.has('overflowY') || _changedProperties.has('scrollBarWidth') || _changedProperties.has('scrollBarOutWidth')) {
       this.resize();
     }
   }
@@ -165,16 +167,16 @@ export class PScroll extends LitElement {
   }
 
   render() {
-    return html`<div  part="container" id="container" style='--scroll-bar-width:${this.scrollBarWidth}px'>
-        <div part='content' id="content" @DOMMouseScroll="${this._wheelHander}" @mousewheel=${this._wheelHander} @touchmove=${this._touchMoveHanlder} 
+    return html`<div  part="container" id="container" style='--scroll-bar-width:${this.scrollBarWidth}px ; --scroll-bar-out-width:${this.scrollBarOutWidth}px'>
+        <div part='content' id="content" @DOMMouseScroll="${this._wheelHander}" @mousewheel=${this._wheelHander} @touchmove=${this._touchMoveHanlder}
          @touchstart=${this._touchStartHanlder} ><slot id='contentSlot'></slot></div>
         <div part="scroll-y" id="scroll-y"><div part="scroll-y-handler" ></div></div>
         <div part="scroll-x" id="scroll-x"><div part="scroll-x-handler"></div></div>
         <div part="right-bottom" id="right-bottom"></div>
-    </div>`
+    </div>`;
   }
   get rightBottom(): HTMLElement {
-    return this.renderRoot.querySelector("#right-bottom");
+    return this.renderRoot.querySelector('#right-bottom');
   }
   get contentDIV(): HTMLDivElement {
     return this.renderRoot.querySelector('#content');
@@ -205,7 +207,6 @@ export class PScroll extends LitElement {
     this.removeEventListener('mouseover', this._MouseOnEventHandler);
     this.removeEventListener('mouseout', this._MouseOutEventHandler);
     document.removeEventListener('keydown', this._docEventHandler);
-    
   }
 
 
@@ -216,14 +217,15 @@ export class PScroll extends LitElement {
     const scrollDiv = this;
     this._intiKeyEvent();
     this._initScrollBarEvent();
-    this.contentDIV.scrollTop=0;
-    this.contentDIV.scrollLeft=0;
+    this.contentDIV.scrollTop = 0;
+    this.contentDIV.scrollLeft = 0;
     this._obersver = new ResizeObserver((entries: ResizeObserverEntry[], observer: ResizeObserver) => {
       this.resize();
     });
     this._mutationObserver = new MutationObserver((mutation: MutationRecord[]) => {
       this.resize();
     });
+    this._mutationObserver.observe(this, { childList: true, subtree: true, characterData: true });
     this._obersver.observe(this);
     this._obersver.observe(this.rightBottom);
     this.renderRoot.querySelector('#contentSlot').addEventListener('slotchange', () => {
@@ -237,54 +239,54 @@ export class PScroll extends LitElement {
   private _docEventHandler: EventListener = null;
   private _initScrollBarEvent() {
     const scrollObj = this;
-    const dragFun =(scrollDiv: HTMLElement, callBackFun:scrollBack)=> {
+    const dragFun = (scrollDiv: HTMLElement, callBackFun: ScrollBack) => {
       let isDown = false;
       let x = 0;
       let y = 0;
-      const handerDown=(event: MouseEvent) => {
+      const handerDown = (event: MouseEvent) => {
         event.preventDefault();
         isDown = true;
         x = event.clientX;
         y = event.clientY;
-       //console.log('mousedown');
-        document.addEventListener('mousemove',handerMove);
-        document.addEventListener('mouseup',handerUp);
+        //console.log('mousedown');
+        document.addEventListener('mousemove', handerMove);
+        document.addEventListener('mouseup', handerUp);
       };
-      const handerUp=(event: MouseEvent) => {
+      const handerUp = (event: MouseEvent) => {
         event.preventDefault();
         isDown = false;
         x = y = 0;
-        document.removeEventListener('mousemove',handerMove);
-        document.removeEventListener('mouseup',handerUp);
+        document.removeEventListener('mousemove', handerMove);
+        document.removeEventListener('mouseup', handerUp);
         // console.log('mouseup');
       };
       const handerMove = (event: MouseEvent) => {
         event.preventDefault();
-        let nX=event.clientX;
-        let nY=event.clientY;
+        const nX = event.clientX;
+        const nY = event.clientY;
         if (isDown) {
-          callBackFun(event.clientX - x, event.clientY-y );
-          x=nX;
-          y=nY;
+          callBackFun(event.clientX - x, event.clientY - y);
+          x = nX;
+          y = nY;
         }
       };
       scrollDiv.addEventListener('mousedown', handerDown);
-    }
-      dragFun(scrollObj.partYHandler,(x:number,y:number)=>{
-          scrollObj.changeYBarPosition(y);
-      });
-      dragFun(scrollObj.partXHandler,(x:number,y:number)=>{
-          scrollObj.changeXBarPosition(x);
-      });
+    };
+    dragFun(scrollObj.partYHandler, (x: number, y: number) => {
+      scrollObj.changeYBarPosition(y);
+    });
+    dragFun(scrollObj.partXHandler, (x: number, y: number) => {
+      scrollObj.changeXBarPosition(x);
+    });
 
   }
   private _intiKeyEvent() {
     this._MouseOnEventHandler = (event: Event) => {
       this._isMouseOn = true;
-    }
+    };
     this._MouseOutEventHandler = (event: Event) => {
       this._isMouseOn = false;
-    }
+    };
     this._docEventHandler = (event: KeyboardEvent) => {
       if (this._isMouseOn && this.keyEnable) {
         const key = event.key;
@@ -305,14 +307,14 @@ export class PScroll extends LitElement {
           default:
             break;
         }
-        if (y != 0) {
+        if (y !== 0) {
           this.changeYScroll(y);
         }
-        if (x != 0) {
+        if (x !== 0) {
           this.changeXScroll(x);
         }
       }
-    }
+    };
     this.addEventListener('mouseover', this._MouseOnEventHandler);
     this.addEventListener('mouseout', this._MouseOutEventHandler);
     document.addEventListener('keydown', this._docEventHandler);
@@ -322,12 +324,12 @@ export class PScroll extends LitElement {
   resize() {
     const container = this.containerDIV;
     const div = this.contentDIV;
-    if (this.overflowY != 'hidden') {
+    if (this.overflowY !== 'hidden') {
       container.classList.add('showYScroll');
     } else {
       container.classList.remove('showYScroll');
     }
-    if (this.overflowX != 'hidden') {
+    if (this.overflowX !== 'hidden') {
       container.classList.add('showXScroll');
     } else {
       container.classList.remove('showXScroll');
@@ -344,8 +346,8 @@ export class PScroll extends LitElement {
     } else {
       container.classList.remove('showXScroll');
     }
-
   }
+
   get caculateYBarHeight() {
     let result = 0;
     const contentDIV = this.contentDIV;
@@ -407,7 +409,28 @@ export class PScroll extends LitElement {
       return topWidth;
     }
   }
+
+  private _yDispatchMethod: (oldValue: number, newValue: number) => void;
+  private _xDispatchMethod: (oldValue: number, newValue: number) => void;
+  private _scrollDispatchMethod: () => void;
+  private _scrollEvent() {
+    const elRoot = this;
+    if (this._scrollDispatchMethod == null) {
+      const d = () => {
+        elRoot.dispatchEvent(new CustomEvent('scroll', {
+          bubbles: true,
+          detail: {
+            scrollTop: elRoot.contentDIV.scrollTop,
+            scrollLeft: elRoot.contentDIV.scrollLeft
+          }
+        }));
+      };
+      this._scrollDispatchMethod = throttle(d, 20);
+    }
+    this._scrollDispatchMethod();
+  }
   changeYScroll(scrollValue: number = 0) {
+    const root = this;
     const contentDIV = this.contentDIV;
     const height = contentDIV.offsetHeight;
     const scrollHeight = contentDIV.scrollHeight;
@@ -426,8 +449,32 @@ export class PScroll extends LitElement {
     }
     contentDIV.scrollTop = scrollTop;
     this.caculateYBarPosition();
+    if (oldScrollTop !== scrollTop) {
+      if (scrollTop === maxScroll) {
+        this.dispatchEvent(new CustomEvent('scroll-y-end', {
+          bubbles: true
+        }));
+      }
+      if (this._yDispatchMethod == null) {
+        const d = (oldValue: number, newValue: number) => {
+          root.dispatchEvent(new CustomEvent('scroll-y', {
+            bubbles: true,
+            detail: {
+              value: newValue,
+              oldValue: oldValue
+            }
+          }));
+        };
+        this._yDispatchMethod = throttle(d, 20);
+      }
+      this._yDispatchMethod(oldScrollTop, scrollTop);
+      this._scrollEvent();
+
+    }
+
   }
   changeXScroll(scrollValue: number = 0) {
+    const root = this;
     const contentDIV = this.contentDIV;
     const width = contentDIV.offsetWidth;
     const scrollWidth = contentDIV.scrollWidth;
@@ -446,6 +493,29 @@ export class PScroll extends LitElement {
     }
     contentDIV.scrollLeft = scrollLeft;
     this.caculateXBarPosition();
+
+
+    if (oldScrollLeft !== scrollLeft) {
+      if (scrollLeft === maxScroll) {
+        this.dispatchEvent(new CustomEvent('scroll-x-end', {
+          bubbles: true
+        }));
+      }
+      if (this._xDispatchMethod == null) {
+        const d = (oldValue: number, newValue: number) => {
+          root.dispatchEvent(new CustomEvent('scroll-x', {
+            bubbles: true,
+            detail: {
+              value: newValue,
+              oldValue: oldValue
+            }
+          }));
+        };
+        this._xDispatchMethod = throttle(d, 20);
+      }
+      this._xDispatchMethod(oldScrollLeft, scrollLeft);
+      this._scrollEvent();
+    }
   }
 
   changeYBarPosition(changeValue: number = 0) {
@@ -463,13 +533,12 @@ export class PScroll extends LitElement {
       scrollTop = 0;
     }
     this.partYHandler.style.top = scrollTop + 'px';
-    let contentScrollTopValue = 0;
     if (contentScrollHeight > 0) {
       const canScrollDIVHeight = this.partYScroll.offsetHeight - barHeight;
-      contentScrollTopValue = scrollTop * (contentDIV.scrollHeight - offsetheight) / canScrollDIVHeight;
-      contentDIV.scrollTop = contentScrollTopValue;
+      const contentScrollTopValue = scrollTop * (contentDIV.scrollHeight - offsetheight) / canScrollDIVHeight;
+      this.scrollYToValue(contentScrollTopValue);
     } else {
-      contentDIV.scrollTop = 0;
+      this.scrollYToValue(0);
     }
   }
   changeXBarPosition(changeValue: number = 0) {
@@ -487,38 +556,36 @@ export class PScroll extends LitElement {
       scrollLeft = 0;
     }
     this.partXHandler.style.left = scrollLeft + 'px';
-    let contentScrollTopValue = 0;
     if (contentScrollWidth > 0) {
       const canScrollDIVWidth = offsetWidth - barWidth;
-      contentScrollTopValue = scrollLeft * (contentDIV.scrollWidth - offsetWidth) / canScrollDIVWidth;
-      contentDIV.scrollLeft = contentScrollTopValue;
+      const contentScrollValue = scrollLeft * (contentDIV.scrollWidth - offsetWidth) / canScrollDIVWidth;
+      this.scrollXToValue(contentScrollValue);
     } else {
-      contentDIV.scrollLeft = 0;
+      this.scrollXToValue(0);
     }
-
   }
 
   scrollYToEnd() {
-    const offsetHeight = this.contentDIV.offsetHeight;
-    const maxScrollTop = this.contentDIV.scrollHeight - offsetHeight;
-    this.changeYScroll(maxScrollTop);
+    const contentDIV = this.contentDIV;
+    const offsetHeight = contentDIV.offsetHeight;
+    const maxScrollTop = contentDIV.scrollHeight - offsetHeight;
+    this.changeYScroll(maxScrollTop - contentDIV.scrollTop);
   }
   scrollYToValue(scrollTop: number = 0) {
     const currentTop = this.contentDIV.scrollTop;
     this.changeYScroll(scrollTop - currentTop);
-
   }
 
   scrollXToEnd() {
-    const offsetWidth = this.contentDIV.offsetWidth;
-    const maxScrollTop = this.contentDIV.scrollWidth - offsetWidth;
-    this.changeXScroll(maxScrollTop);
+    const contentDIV = this.contentDIV;
+    const offsetWidth = contentDIV.offsetWidth;
+    const maxScrollTop = contentDIV.scrollWidth - offsetWidth;
+    this.changeXScroll(maxScrollTop - contentDIV.scrollLeft);
   }
   scrollXToValue(scrollLeft: number = 0) {
     const currentLeft = this.contentDIV.scrollLeft;
     this.changeXScroll(scrollLeft - currentLeft);
   }
-
 }
 
 

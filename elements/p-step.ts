@@ -10,7 +10,7 @@ type sizeType = 'small' | 'mid' | 'large';
 @customElement('p-steps')
 export class PSteps extends LitElement {
     /**
-     * 当前步骤，默认从0 
+     * 当前步骤，默认从0
      */
     @property({ type: Number, reflect: true }) current: number = 0;
     /**
@@ -83,7 +83,7 @@ export class PSteps extends LitElement {
         super.updated(_changedProperties);
         if (_changedProperties.has('vertical') || _changedProperties.has('current')) {
             this._setChildStepCss();
-        };
+        }
 
     }
     get childStep(): Array<PStep> {
@@ -144,7 +144,7 @@ export class PStep extends LitElement {
        div[part=icon-part]{
             display:inline-block;
             position: relative;
-            background-color: var(--step-background-color,#fff); 
+            background-color: var(--step-background-color,#fff);
             flex:0 0 auto ;
             width: 32px;
             height: 32px;
@@ -157,7 +157,7 @@ export class PStep extends LitElement {
             transition: background-color .3s,border-color .3s;
             color:var(--step-icon-color,inherit);
        }
-       
+
        .icon-span{
             display: inline-block;
             color: inherit;

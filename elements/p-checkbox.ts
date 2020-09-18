@@ -15,25 +15,25 @@ export class PCheckbox extends LitElement {
     @property({ type: Boolean, reflect: true }) readonly: boolean = false;
     static get styles() {
         return css`
-        :host{ 
+        :host{
             display:inline-block;
             font-size:14px;
             color:var(--fontColor,#333);
             -webkit-tap-highlight-color: transparent;
         }
-        :host([disabled]){ 
-            pointer-events: none; 
-            opacity:.6; 
+        :host([disabled]){
+            pointer-events: none;
+            opacity:.6;
         }
-        :host([disabled]) label{ 
-            pointer-events: all;  
-            cursor: not-allowed; 
+        :host([disabled]) label{
+            pointer-events: all;
+            cursor: not-allowed;
         }
         #checkbox{
             position:absolute;
             clip:rect(0,0,0,0);
         }
-        :host(:focus-within) .cheked,:host(:not([disabled])) label:hover .cheked { 
+        :host(:focus-within) .cheked,:host(:not([disabled])) label:hover .cheked {
             border-color:var(--themeColor,#42b983);
             /*box-shadow: 0 0 10px rgba(0,0,0,0.1);*/
             z-index:1;
@@ -41,7 +41,7 @@ export class PCheckbox extends LitElement {
         :host(:focus-within) #checkbox,:host(:active) #checkbox{
             z-index:2
         }
-        :host([disabled]) .cheked{ 
+        :host([disabled]) .cheked{
             background:rgba(0,0,0,.06);
         }
         label{
@@ -134,7 +134,7 @@ export class PCheckbox extends LitElement {
         });
         this.checkbox.addEventListener('keydown', (ev: KeyboardEvent) => {
             switch (ev.keyCode) {
-                case 13://Enter
+                case 13: //Enter
                     ev.stopPropagation();
                     this.checked = !this.checked;
                     this._dispatchangeEvent();
@@ -228,8 +228,8 @@ export class PCheckboxGroup extends LitElement {
         :host(:focus-within) p-tips,:host(:hover) p-tips{
             z-index:2;
         }
-        :host([disabled]){ 
-            pointer-events: none; 
+        :host([disabled]){
+            pointer-events: none;
         }
         :host([disabled]) p-tips{
             pointer-events: all;
@@ -251,8 +251,8 @@ export class PCheckboxGroup extends LitElement {
 
 
     @property({ type: String, reflect: true }) name: string;
-    @property({ type: Number, attribute:true }) min: number = 0;
-    @property({ type: Number, attribute:true }) max: number = Infinity;
+    @property({ type: Number, attribute: true }) min: number = 0;
+    @property({ type: Number, attribute: true }) max: number = Infinity;
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
     @property({ type: Array, reflect: true }) value: Array<String>;
     @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
@@ -285,7 +285,7 @@ export class PCheckboxGroup extends LitElement {
                 } else {
                     el.checked = false;
                 }
-            })
+            });
         }
     }
     private getChildCheckValue() {
@@ -314,7 +314,7 @@ export class PCheckboxGroup extends LitElement {
         if (this.value && this.value.length > 0) {
             this.value.forEach((item, index) => {
                 this.value[index] = String(item);
-            })
+            });
         }
 
         const slots: HTMLSlotElement = this.shadowRoot.querySelector('#slot');

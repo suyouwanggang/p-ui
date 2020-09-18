@@ -186,8 +186,8 @@ class Ppop extends LitElement {
     @property({ type: String, reflect: true }) type: string = undefined;
     @property({ type: String, reflect: true }) tipContent: string = undefined;
     @property({ type: String, reflect: true }) tipTitle: string = undefined;
-    @property({ type: String, reflect: true }) okText: string =undefined;
-    @property({ type: String, reflect: true }) cancelText: string =undefined;
+    @property({ type: String, reflect: true }) okText: string = undefined;
+    @property({ type: String, reflect: true }) cancelText: string = undefined;
     @property({ type: String, reflect: true }) trigger: string = 'click';
     @property({ type: Boolean, reflect: true }) accomplish: boolean = false;
     render() {
@@ -226,10 +226,10 @@ class Ppop extends LitElement {
             }
             (popContent as any).isAutoCreate = true;
             popContent.tipTitle = this.tipTitle;
-            if(this.okText ){
+            if (this.okText ) {
                 popContent.okText = this.okText;
             }
-            if(this.cancelText ){
+            if (this.cancelText ) {
                 popContent.cancelText = this.cancelText;
             }
             this.appendChild(popContent);
@@ -348,9 +348,6 @@ class PPopContent extends LitElement {
         div[part=popBody]{
             width:max-content;
         }
-        p-button[part="popClose"] {
-           /** closeIcon  */
-        }
         :host([thinBar]) div[part=popBody] {
             flex: 1;
             overflow:auto;
@@ -413,14 +410,14 @@ class PPopContent extends LitElement {
     @property({ type: Boolean, reflect: true }) thinBar: boolean = false;
     @property({ type: Boolean, reflect: true }) hiddenClose: boolean = false;
     @property({ type: String, reflect: true }) type: string = undefined;
-    @property({ type: String, reflect: true,attribute:'tip-title' }) tipTitle: string = undefined;
-    @property({ type: String, reflect: true,attribute:'tip-title-icon' }) tipTitleIcon: string = undefined;
+    @property({ type: String, reflect: true, attribute: 'tip-title' }) tipTitle: string = undefined;
+    @property({ type: String, reflect: true, attribute: 'tip-title-icon' }) tipTitleIcon: string = undefined;
     @property({ type: String, reflect: true }) okText: string = undefined;
     @property({ type: String, reflect: true }) cancelText: string = undefined;
     render() {
         return html`
            <div  part="popTitle" id="title">
-    <div class='title' part="popTitleInner"> <slot name="title"> ${this.tipTitleIcon? html`<p-icon parent='title-icon' name='${this.tipTitleIcon}' ></p-icon>`:''}<span part="title-span"> ${this.tipTitle}</span></slot></div>
+    <div class='title' part="popTitleInner"> <slot name="title"> ${this.tipTitleIcon ? html`<p-icon parent='title-icon' name='${this.tipTitleIcon}' ></p-icon>` : ''}<span part="title-span"> ${this.tipTitle}</span></slot></div>
                 <slot name="title-right"> ${this.hiddenClose ? '' : html`<p-button type="flat" shape='circle' id="btn-close" part="popClose" icon="close" @click='${this._toCloseEvent}'></p-button>`}</slot>
            </div>
             <div part="popBody" >

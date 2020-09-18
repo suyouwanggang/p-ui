@@ -2,10 +2,7 @@
 <html lang="zh">
 <head>
 
- <script  
-    src="build/index.js"
- >
-</script> 
+
   
   
   <meta name="description" content="start-lit-element">
@@ -13,22 +10,120 @@
   <title>start-lit-element</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="module" src="/build/index.js"></script>
   <meta charset="UTF-8">
   <style>
     p-input{
       margin:4px;
 
     }
-    
+    html,body{
+      font-family: 'Microsoft yahei', 'Tahoma', 'Arial', 'Helvetica';
+    }
+    p-menu{
+      display:block;
+      width:350px;
+      margin:20px;
+    }
   </style>
 </head>
 <body>
+  <p-scroll style='height:200px;width:300px;' overflowX='hidden'>
+      <p-menu >
+        <p-menuitem  icon='save' label=保存></p-menuitem>
+        <p-menuitem  icon='delete' label=删除></p-menuitem>
+        <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+        <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+        <p-menuitem    label=打回></p-menuitem>
+        <p-menuitem  label=同意></p-menuitem>
+        <p-menuitem icon='rollback' label=退回></p-menuitem>
+    
+      <p-menuitem icon='delete' label=删除></p-menuitem>
+      <p-menuitem icon='file-excel' label=导出></p-menuitem>
+    </p-menu>
+    <p-menu >
+      <p-menuitem  icon='save' label=保存></p-menuitem>
+      <p-menuitem  icon='delete' label=删除></p-menuitem>
+      <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+      <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+      <p-menuitem    label=打回></p-menuitem>
+      <p-menuitem  label=同意></p-menuitem>
+      <p-menuitem icon='rollback' label=退回></p-menuitem>
+  
+    <p-menuitem icon='delete' label=删除></p-menuitem>
+    <p-menuitem icon='file-excel' label=导出></p-menuitem>
+  </p-menu>
+  <p-menu >
+    <p-menuitem  icon='save' label=保存></p-menuitem>
+    <p-menuitem  icon='delete' label=删除></p-menuitem>
+    <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+    <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+    <p-menuitem    label=打回></p-menuitem>
+    <p-menuitem  label=同意></p-menuitem>
+    <p-menuitem icon='rollback' label=退回></p-menuitem>
+
+  <p-menuitem icon='delete' label=删除></p-menuitem>
+  <p-menuitem icon='file-excel' label=导出></p-menuitem>
+</p-menu>
+<p-menu >
+  <p-menuitem  icon='save' label=保存></p-menuitem>
+  <p-menuitem  icon='delete' label=删除></p-menuitem>
+  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+  <p-menuitem    label=打回></p-menuitem>
+  <p-menuitem  label=同意></p-menuitem>
+  <p-menuitem icon='rollback' label=退回></p-menuitem>
+
+<p-menuitem icon='delete' label=删除></p-menuitem>
+<p-menuitem icon='file-excel' label=导出></p-menuitem>
+</p-menu>
+<p-menu >
+  <p-menuitem  icon='save' label=保存></p-menuitem>
+  <p-menuitem  icon='delete' label=删除></p-menuitem>
+  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+  <p-menuitem    label=打回></p-menuitem>
+  <p-menuitem  label=同意></p-menuitem>
+  <p-menuitem icon='rollback' label=退回></p-menuitem>
+
+<p-menuitem icon='delete' label=删除></p-menuitem>
+<p-menuitem icon='file-excel' label=导出></p-menuitem>
+</p-menu>
+<p-menu >
+  <p-menuitem  icon='save' label=保存></p-menuitem>
+  <p-menuitem  icon='delete' label=删除></p-menuitem>
+  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
+  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
+  <p-menuitem    label=打回></p-menuitem>
+  <p-menuitem  label=同意></p-menuitem>
+  <p-menuitem icon='rollback' label=退回></p-menuitem>
+
+<p-menuitem icon='delete' label=删除></p-menuitem>
+<p-menuitem icon='file-excel' label=导出></p-menuitem>
+</p-menu>
+  </p-scroll>
+  <p style='line-height: 40px; color:#959ca7'>
+    广东深圳<p-icon iconPath='/iconfont/Flyme.svg'   name='comtencentmobileqq' ></p-icon>惠州
+    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='dash' ></p-icon>惠州
+    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='setting' ></p-icon>惠州
+    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='project' ></p-icon>惠州
+    <p-icon   name='delete' ></p-icon>
+    中国
+  </p>  
+  
+    <br/>
+  
+
+
+  
+</p-menu>
+
     <p-pop id='popObj' style='margin-top:100px;margin-left:300px;'  type='confirm'  tipTitle='tips' 
     tipContent='bundles index.ts → build\index.js, docs\build\index.js...
         created build\index.js, docs\build\index.js in 1.4s' >
-        <p-tips dir='topleft' tips='wanggang'><p-icon name='search' ></p-icon></p-tips>
+        <div style='width:200px;height:200px;border:1px solid #b2b2b2;'> <p-tips dir='topleft' tips='wanggang'><p-icon name='search' ></p-icon></p-tips></div>
         
-        <p-pop-content tipTitle='注意' type='confirm'>
+        <p-pop-content tip-title='注意' tip-title-icon='home' type='confirm'>
             <p>bundles index.ts → build\index.js,</p>
             <p>bundles index.ts → build\index.js,</p>
             <p>bundles index.ts → build\index.js,</p>
@@ -39,6 +134,7 @@
             <p>bundles index.ts → build\index.js,</p>
             <p>docs\build\index.js...
                created build\index.js,</p>
+              
         </p-pop-content>
        
     </p-pop>

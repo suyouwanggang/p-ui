@@ -82,9 +82,9 @@ export default class PPageBtn extends LitElement {
         });
         return result;
     }
-    dispatchChange(){
+    dispatchChange() {
         this.dispatchEvent(new CustomEvent('page-change', {
-            bubbles:true,
+            bubbles: true,
             detail: {
                 current: this.value,
                 pagesize: this.pagesize,
@@ -92,55 +92,54 @@ export default class PPageBtn extends LitElement {
             }
         }));
     }
-    _pageBtnHander(ev:Event){
+    _pageBtnHander(ev: Event) {
         const button: PButton = (ev.target as PButton);
         if (button) {
-            let pageNo= Number(button.dataset['pageno']);
-            if(!isNaN(pageNo)){
-                if(this.dispatchEvent(new CustomEvent('before-page-change', {
-                    cancelable:true,
-                    bubbles:true,
+            const pageNo = Number(button.dataset['pageno']);
+            if (!isNaN(pageNo)) {
+                if (this.dispatchEvent(new CustomEvent('before-page-change', {
+                    cancelable: true,
+                    bubbles: true,
                     detail: {
                         current: this.value,
-                        toPage:pageNo,
+                        toPage: pageNo,
                         pagesize: this.pagesize,
                         total: this.total
                     }
-                }))){
-                    this.value =pageNo;
+                }))) {
+                    this.value = pageNo;
                     this.dispatchChange();
                 }
             }
         }
     }
-    changePageNum(addOrDel:number){
-        let toValue=this.value+addOrDel;
-        if(toValue<=0|| toValue>this.pageCount){
+    changePageNum(addOrDel: number) {
+        const toValue = this.value + addOrDel;
+        if (toValue <= 0 || toValue > this.pageCount) {
             return ;
         }
-        if(this.dispatchEvent(new CustomEvent('before-page-change', {
-            cancelable:true,
-            bubbles:true,
+        if (this.dispatchEvent(new CustomEvent('before-page-change', {
+            cancelable: true,
+            bubbles: true,
             detail: {
                 current: this.value,
-                toPage:toValue,
+                toPage: toValue,
                 pagesize: this.pagesize,
                 total: this.total
             }
-        }))){
-            this.value =toValue;
+        }))) {
+            this.value = toValue;
             this.dispatchChange();
         }
 
     }
     firstUpdated() {
-        let toValue=undefined;
         this.addEventListener('keydown', (ev) => {
             switch (ev.keyCode) {
-                case 37://ArrowLeft
+                case 37: //ArrowLeft
                     this.changePageNum(-1);
                     break;
-                case 39://ArrowRight
+                case 39: //ArrowRight
                     this.changePageNum(1);
                     break;
                 default:
@@ -148,16 +147,16 @@ export default class PPageBtn extends LitElement {
             }
         });
     }
-    _pagePreHanlder(){
+    _pagePreHanlder() {
         this.changePageNum(-1);
     }
-    _pageNextHanlder(){
+    _pageNextHanlder() {
         this.changePageNum(1);
     }
     updated(changedProperties: Map<string | number | symbol, unknown>) {
         const currentOld = this.value;
         const current = Math.min(Math.max(1, this.value), this.pageCount);
-        if(this.value!=current){
+        if (this.value !== current) {
             this.value = current;
         }
         const selector = `#page p-button[data-pageNo='${this.value}'] `;

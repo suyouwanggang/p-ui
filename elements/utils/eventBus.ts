@@ -4,7 +4,7 @@ type Listener = {
     scope?: unknown,
     args?: unknown[]
 };
-type ListenerMap={
+type ListenerMap= {
     [Key: string]: Listener[]
 };
 class EventBus {
@@ -20,7 +20,7 @@ class EventBus {
     /**
      * 添加事件监听
      * @param type 事件类型
-     * @param callback  回调函数 
+     * @param callback  回调函数
      * @param scope ：事件回调scope
      * @param args ：事件回调 传递的参数，会添加此参数事件参数的最后面
      */
@@ -36,11 +36,13 @@ class EventBus {
      */
     off(type: string, callback?: (...args: unknown[]) => void, scope?: unknown) {
         const result = this.getTypeListeners(type);
-        let findList:Listener[] = [];
+        const findList: Listener[] = [];
         for (let i = result.length - 1; i >= 0; i--) {
             const l = result[i];
             if ((callback == null || l.callback === callback) && (scope == null || l.scope === scope)) {
-                findList=[...findList, ...result.splice(i,1)];
+                 result.splice(i, 1).forEach( (item) => {
+                     findList.push(item);
+                 });
             }
         }
         return findList;
@@ -54,7 +56,7 @@ class EventBus {
         const result = this.getTypeListeners(type);
         result.forEach((listener: Listener) => {
             const argArray = [...args, ...listener.args];
-            if (listener.scope !== null) {
+            if (listener.scope !== null && listener.scope !== undefined) {
                 listener.callback.apply(listener.scope, argArray);
             } else {
                 listener.callback(argArray);

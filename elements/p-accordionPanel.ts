@@ -3,7 +3,7 @@ import { } from './p-icon';
 /**
  * @event  before-tab-change 改变child panel 之前
  * @event  tab-change 改变 child panel state 之后
- * 
+ *
  */
 
 @customElement('p-ac-panel')
