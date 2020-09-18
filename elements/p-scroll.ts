@@ -20,7 +20,7 @@ type overflowType = '' | 'hidden';
  * @part scroll-x-handler 水平滚动条
  * @part scroll-y 竖直滚动条容器
  * @part scroll-y-handler 竖直滚动条
- * 
+ *
  */
 @customElement('p-scroll')
 export class PScroll extends LitElement {
@@ -152,12 +152,12 @@ export class PScroll extends LitElement {
     //console.log(e);
     //console.log(` detail=${e.detail} wheelDataX=${(e as any).wheelDeltaX} wheelDataY=${(e as any).wheelDeltaY}`);
     e.preventDefault();
-    window.clearTimeout(this._wheelTimeoutID);
-    this._wheelTimeoutID = window.setTimeout(() => {
-      if (changeYValue !== undefined) {
+    // window.clearTimeout(this._wheelTimeoutID);
+    // this._wheelTimeoutID = window.setTimeout(() => {
+      if (changeYValue !== undefined && changeYValue !== 0) {
         scrollObj.changeYScroll((changeYValue > 0 ? 1 : -1) * this.wheelScrollChange);
       }
-      if (changeXValue !== undefined) {
+      if (changeXValue !== undefined && changeXValue !== 0) {
         this.changeXScroll((changeXValue > 0 ? 1 : -1) * this.wheelScrollChange);
       } else {
         scrollObj.changeYScroll(e.detail * this.wheelScrollChange);
@@ -165,7 +165,7 @@ export class PScroll extends LitElement {
         //   scrollObj.changeXScroll(0-e.detail* this.wheelScrollChange);
         // }
       }
-    }, 10);
+    // }, 10);
 
   }
   updated(_changedProperties: Map<string | number | symbol, unknown>) {
@@ -471,7 +471,7 @@ export class PScroll extends LitElement {
     this._scrollDispatchMethod();
   }
   /**
-   * 
+   *
    * @param scrollValue 改变竖直内容滚动位置
    */
   changeYScroll(scrollValue: number = 0) {
@@ -650,7 +650,7 @@ export class PScroll extends LitElement {
   }
   /**
    * 竖直内容滚动到特定位置
-   * @param scrollTop 
+   * @param scrollTop
    */
   scrollYToValue(scrollTop: number = 0) {
     const currentTop = this.contentDIV.scrollTop;
@@ -666,7 +666,7 @@ export class PScroll extends LitElement {
     this.changeXScroll(maxScrollTop - contentDIV.scrollLeft);
   }
   /**
-   * 
+   *
    * @param scrollLeft 水平内容滚动到特定位置
    */
   scrollXToValue(scrollLeft: number = 0) {

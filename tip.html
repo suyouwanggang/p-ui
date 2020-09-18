@@ -25,10 +25,16 @@
       width:350px;
       margin:20px;
     }
+    p-img{
+      width: 200px;
+     height: 150px;
+      margin: 0 10px 10px 0
+     
+    }
   </style>
 </head>
 <body>
-  <p-scroll style='height:200px;width:300px;' overflowX='hidden'>
+  <p-scroll style='height:80vh;width:80%;margin:10px auto;border:1px solid #b1b1b1' id="scrollID">
       <p-menu >
         <p-menuitem  icon='save' label=保存></p-menuitem>
         <p-menuitem  icon='delete' label=删除></p-menuitem>
@@ -41,82 +47,44 @@
       <p-menuitem icon='delete' label=删除></p-menuitem>
       <p-menuitem icon='file-excel' label=导出></p-menuitem>
     </p-menu>
-    <p-menu >
-      <p-menuitem  icon='save' label=保存></p-menuitem>
-      <p-menuitem  icon='delete' label=删除></p-menuitem>
-      <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
-      <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
-      <p-menuitem    label=打回></p-menuitem>
-      <p-menuitem  label=同意></p-menuitem>
-      <p-menuitem icon='rollback' label=退回></p-menuitem>
-  
-    <p-menuitem icon='delete' label=删除></p-menuitem>
-    <p-menuitem icon='file-excel' label=导出></p-menuitem>
-  </p-menu>
-  <p-menu >
-    <p-menuitem  icon='save' label=保存></p-menuitem>
-    <p-menuitem  icon='delete' label=删除></p-menuitem>
-    <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
-    <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
-    <p-menuitem    label=打回></p-menuitem>
-    <p-menuitem  label=同意></p-menuitem>
-    <p-menuitem icon='rollback' label=退回></p-menuitem>
+    
+    </p-scroll>
+    <script>
+      var scroll=document.getElementById('scrollID');
+      scroll.addEventListener('scroll-x', function(event){
+        console.log('scroll-x ' +event.detail.oldValue +' to '+event.detail.value);
+      });
+      scroll.addEventListener('scroll-y', function(event){
+        console.log('scroll-y '+ event.detail.oldValue +' to '+event.detail.value);
+      });
+      scroll.addEventListener('scroll-x-end', function(event){
+        console.log('scroll-x-end' );
+      });
+      scroll.addEventListener('scroll-y-end', function(event){
+        console.log('scroll-y-end' );
+      });
+      scroll.addEventListener('scroll-change', function(event){
+        console.log('scroll-change scrollTop='+event.detail.scrollTop +" scrollLeft= "+event.detail.scrollLeft );
+      });
+      var frag=document.createDocumentFragment();
+      for(var i=0,j=50;i<j;i++){
+        var div =document.createElement('div');
+        div.innerHTML=`<div style='width:${300+Math.random()*500}px;border:1px solid #b2b2b2;margin:20px;'>${i}王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚</div>`;
+        frag.appendChild(div);
+      }
+      var div=document.createElement('div');
+      div.innerHTML=`
+      <br/>
+      <p-img src='http://image.xsc'></p-img>
+      <p-img src="https://images.xxx.jpg" defaultsrc="https://images.pexels.com/photos/374918/pexels-photo-374918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
+      <p-img show-alt src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="image-keyboard"></p-img>
+      <p-img  src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
+      <p-img src="https://images.xxx.jpg" alt="image-keyboard" error-alt='加载错误拉。。。'></p-img>
+      `;
+      frag.appendChild(div);
+      scroll.appendChild(frag);
 
-  <p-menuitem icon='delete' label=删除></p-menuitem>
-  <p-menuitem icon='file-excel' label=导出></p-menuitem>
-</p-menu>
-<p-menu >
-  <p-menuitem  icon='save' label=保存></p-menuitem>
-  <p-menuitem  icon='delete' label=删除></p-menuitem>
-  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
-  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
-  <p-menuitem    label=打回></p-menuitem>
-  <p-menuitem  label=同意></p-menuitem>
-  <p-menuitem icon='rollback' label=退回></p-menuitem>
-
-<p-menuitem icon='delete' label=删除></p-menuitem>
-<p-menuitem icon='file-excel' label=导出></p-menuitem>
-</p-menu>
-<p-menu >
-  <p-menuitem  icon='save' label=保存></p-menuitem>
-  <p-menuitem  icon='delete' label=删除></p-menuitem>
-  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
-  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
-  <p-menuitem    label=打回></p-menuitem>
-  <p-menuitem  label=同意></p-menuitem>
-  <p-menuitem icon='rollback' label=退回></p-menuitem>
-
-<p-menuitem icon='delete' label=删除></p-menuitem>
-<p-menuitem icon='file-excel' label=导出></p-menuitem>
-</p-menu>
-<p-menu >
-  <p-menuitem  icon='save' label=保存></p-menuitem>
-  <p-menuitem  icon='delete' label=删除></p-menuitem>
-  <p-menuitem icon='file-excel' label=导出到Word&Excel></p-menuitem>
-  <div style='border-bottom:1px solid #d1d1d1;margin-top:5px;margin-bottom:5px'></div>
-  <p-menuitem    label=打回></p-menuitem>
-  <p-menuitem  label=同意></p-menuitem>
-  <p-menuitem icon='rollback' label=退回></p-menuitem>
-
-<p-menuitem icon='delete' label=删除></p-menuitem>
-<p-menuitem icon='file-excel' label=导出></p-menuitem>
-</p-menu>
-  </p-scroll>
-  <p style='line-height: 40px; color:#959ca7'>
-    广东深圳<p-icon iconPath='/iconfont/Flyme.svg'   name='comtencentmobileqq' ></p-icon>惠州
-    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='dash' ></p-icon>惠州
-    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='setting' ></p-icon>惠州
-    广东深圳<p-icon iconPath='/iconfont/iconfont.svg'  name='project' ></p-icon>惠州
-    <p-icon   name='delete' ></p-icon>
-    中国
-  </p>  
-  
-    <br/>
-  
-
-
-  
-</p-menu>
+    </script>
 
     <p-pop id='popObj' style='margin-top:100px;margin-left:300px;'  type='confirm'  tipTitle='tips' 
     tipContent='bundles index.ts → build\index.js, docs\build\index.js...
