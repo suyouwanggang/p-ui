@@ -47,13 +47,15 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     chunkFilename: '[name].js',
-    publicPath: '/',
+    // publicPath: './',
   },
   optimization: {
     splitChunks: {
       chunks: 'all',
     },
   },
+  
+  /*
   externals: {
     'lit-element': {
       commonjs: 'lit-element',
@@ -66,7 +68,8 @@ module.exports = {
       commonjs2: 'lit-html',
       amd: 'lit-html'
     },
-  },
+  },*/
+  
   mode: isProd() ? envs.production : envs.development,
   devtool: 'source-map',
 
@@ -97,7 +100,7 @@ module.exports = {
       {
         test: /\.scss$/,
         include: path.join(__dirname, 'components'),
-        use: [{
+         use: [{
           loader: 'lit-scss-loader',
           options: {
             minify: true,

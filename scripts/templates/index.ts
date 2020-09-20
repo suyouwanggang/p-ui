@@ -1,20 +1,10 @@
-import {
-  property,
-  html,
-  customElement,
-  CSSResult,
-  unsafeCSS,
-  TemplateResult,
-  LitElement
-} from 'lit-element';
-
-
-import styles from './style.scss';
+import {  property,  html,  customElement,  CSSResult,  css,  TemplateResult,  LitElement} from 'lit-element';
+import styleObj from './%%%.scss';
 
 @customElement('p-%%%')
 export class P%%% extends LitElement {
 
-  static styles: CSSResult = unsafeCSS(styles);
+  static styles: CSSResult = styleObj;
 
   @property({ type: Boolean })
   active = true;

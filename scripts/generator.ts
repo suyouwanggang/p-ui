@@ -2,27 +2,27 @@
 const fs: any = require('fs-extra');
 
 const param: string = process.argv[2];
-const dir: string = `./src/components/${param}`;
-const files: Array<string> = [
-  'index.ts',
-  'style.scss'
-];
-const templates: Array<string> = [
-  `./scripts/templates/${files[0]}`,
-  `./scripts/templates/${files[1]}`
-];
-
-const story :Array<string> = [
-  `./.storybook/stories/${param}.ts`
-];
-
-const findAll = (search: string): RegExp => new RegExp(search, 'g');
-
 // Check if required parameter is provided
 if(!param) {
   console.error('You must specify new component name!')
   process.exit(1);
 }
+
+
+const dir: string = `./components/${param}`;
+const files: Array<string> = [
+  `${param}.ts`,
+  `${param}.scss`
+];
+const templates: Array<string> = [
+  `./scripts/templates/index.ts`,
+  `./scripts/templates/style.scss`
+];
+
+
+
+const findAll = (search: string): RegExp => new RegExp(search, 'g');
+
 
 // Create folder for component code
 fs.ensureDir(dir)
