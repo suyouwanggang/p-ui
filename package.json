@@ -1,46 +1,65 @@
 {
   "name": "@suyouwanggang/p-ui",
   "version": "1.0.1",
-  "description": "",
   "main": "index.ts",
+  "config": {
+    "themeColor": "#e74e0f"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Web Components implementation by lit-element ",
+  "repository": "git@github.com:suyouwanggang/p-ui.git",
   "dependencies": {
     "element-closest-polyfill": "^1.0.2",
     "lit-element": "^2.4.0",
     "number-precision": "^1.5.0",
-    "rollup-plugin-commonjs": "^10.1.0"
+    "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-decorators": "^7.10.5",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
+    "@babel/runtime": "^7.11.2",
+    "@types/node": "12.0.2",
     "@webcomponents/webcomponentsjs": "^2.4.1",
-    "resize-observer-polyfill": "^1.5.1",
-    "rollup": "^1.32.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-filesize": "^6.2.1",
-    "rollup-plugin-minify-html-literals": "^1.2.5",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "^4.2.4",
-    "rollup-plugin-terser": "^5.3.1",
-    "rollup-plugin-typescript2": "^0.24.3",
-    "serve": "^10.1.1",
-    "tslint": "^5.20.1",
-    "typedoc": "^0.15.8",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^2.1.1",
+    "extract-loader": "^5.1.0",
+    "file-loader": "^6.1.0",
+    "fs-extra": "8.0.1",
+    "gh-pages": "2.0.1",
+    "html-webpack-plugin": "^4.4.1",
+    "jest": "24.8.0",
+    "lit-scss-loader": "^1.0.1",
+    "node-sass": "^4.14.1",
+    "polymer-webpack-loader": "2.0.3",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.1.3",
+    "to-string-loader": "^1.1.5",
+    "ts-jest": "24.0.2",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
     "typescript": "^3.9.7",
-    "web-component-analyzer": "^1.1.6"
+    "typescript-require": "^0.3.0",
+    "web-component-analyzer": "^1.1.6",
+    "webpack": "^4.44.2",
+    "webpack-bundle-analyzer": "^3.9.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c --watch",
-    "analyze": "wca analyze \"elements/**/*.ts\" --outFile custom-elements.json",
-	"analyze2": "wca analyze \"elements/**/*.ts\" --format markdown --outFile custom-elements.md",
-	"vscode": "wca analyze \"elements/**/*.ts\" --format vscode --outFile custom-elements.vscode",
-    "copywc": "cp -r node_modules/@webcomponents/webcomponentsjs/bundles build && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js build",
-    "docs": "docsify serve ./docs",
-    "start": "serve ",
-    "tsc": "tsc"
+    "analyze": "wca analyze \"components/**/*.ts\" --outFile custom-elements.json",
+    "analyze2": "wca analyze \"components/**/*.ts\" --format markdown --outFile custom-elements.md",
+    "vscode": "wca analyze \"components/**/*.ts\" --format vscode --outFile custom-elements.vscode",
+    "copywc": "cp -r node_modules/@webcomponents/webcomponentsjs/bundles dist && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist",
+    "create": "ts-node ./scripts/generator.ts",
+    "dev": "npx webpack --watch",
+    "start": "webpack-dev-server --open",
+    "build": "set NODE_ENV=production && npx webpack",
+    "build:clean": "rm -rf ./dist"
   },
   "author": "suyouwanggang",
   "keywords": [
@@ -64,5 +83,15 @@
     "p-tree",
     "p-tree-node"
   ],
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "esm",
+      "ts-node/register"
+    ]
+  },
   "license": "ISC"
 }
