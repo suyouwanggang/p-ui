@@ -57,8 +57,9 @@
     "copywc": "cp -r node_modules/@webcomponents/webcomponentsjs/bundles dist && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist",
     "create": "ts-node ./scripts/generator.ts",
     "dev": "npx webpack --watch",
-    "start": "webpack-dev-server --open",
-    "build": "set NODE_ENV=production && npx webpack",
+    "start": " webpack-dev-server --open --mode development",
+	"start2": " webpack-dev-server --open --mode production",
+    "build": " npx webpack --mode production ",
     "build:clean": "rm -rf ./dist"
   },
   "author": "suyouwanggang",

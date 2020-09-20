@@ -10,7 +10,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const { isProd, envs } = require('./scripts/envs.js');
-module.exports = {
+//module.exports =
+const config= {
   entry: {
     index: './index.ts',
     /*
@@ -49,6 +50,11 @@ module.exports = {
     chunkFilename: '[name].js',
     // publicPath: './',
   },
+  devServer:{
+	port:5000,
+	open:true,
+	hot:true
+  },
   optimization: {
     splitChunks: {
       chunks: 'all',
@@ -70,22 +76,26 @@ module.exports = {
     },
   },*/
   
-  mode: isProd() ? envs.production : envs.development,
+ // mode: isProd() ? envs.production : envs.development,
   devtool: 'source-map',
 
   plugins: [
-    new BundleAnalyzerPlugin({
+    /*new BundleAnalyzerPlugin({
       analyzerMode: 'static'
-    }),
+    }),*/
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'lit-element',
       template: 'index.html'
+	  
     }),
   ],
 
   resolve: {
-    extensions: ['.mjs', '.ts', '.js', '.scss', '.svg', '.css']
+    extensions: ['.mjs', '.ts', '.js', '.scss', '.svg', '.css'],
+	alias: {
+		'lit-html/lib/shady-render.js': path.resolve(__dirname, './node_modules/lit-html/lit-html.js')
+	}
   },
 
   module: {
@@ -135,4 +145,6 @@ module.exports = {
       }
     ]
   }
-}
+};
+
+module.exports=config;
