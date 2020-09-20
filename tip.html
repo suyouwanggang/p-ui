@@ -10,7 +10,7 @@
   <title>start-lit-element</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script type="module" src="/build/index.js"></script>
+<script src="/vendors~index.js"></script><script src="/index.js"></script></body>
   <meta charset="UTF-8">
   <style>
     p-input{
@@ -34,7 +34,7 @@
   </style>
 </head>
 <body>
-  <p-scroll style='height:80vh;width:80%;margin:10px auto;border:1px solid #b1b1b1' id="scrollID">
+  <p-scroll style='height:200vh;width:80%;margin:10px auto;border:1px solid #b1b1b1' id="scrollID">
       <p-menu >
         <p-menuitem  icon='save' label=保存></p-menuitem>
         <p-menuitem  icon='delete' label=删除></p-menuitem>
@@ -75,11 +75,7 @@
       var div=document.createElement('div');
       div.innerHTML=`
       <br/>
-      <p-img src='http://image.xsc'></p-img>
-      <p-img src="https://images.xxx.jpg" defaultsrc="https://images.pexels.com/photos/374918/pexels-photo-374918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
-      <p-img show-alt src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="image-keyboard"></p-img>
-      <p-img  src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
-      <p-img src="https://images.xxx.jpg" alt="image-keyboard" error-alt='加载错误拉。。。'></p-img>
+    
       `;
       frag.appendChild(div);
       scroll.appendChild(frag);
@@ -107,6 +103,7 @@
        
     </p-pop>
 
+
     <style>
     
       #popObj  p-pop-content::part(popBody){
@@ -125,6 +122,12 @@
                created build\index.js,</p>
         </p-pop-content>
     </p-pop>
+	
+	<p-img lazy src='http://image.xsc'></p-img>
+      <p-img lazy src="https://images.xxx.jpg" defaultsrc="https://images.pexels.com/photos/374918/pexels-photo-374918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
+      <p-img  lazy show-alt src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="image-keyboard"></p-img>
+      <p-img lazy  src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
+      <p-img lazy src="https://images.xxx.jpg" alt="image-keyboard" error-alt='加载错误拉。。。'></p-img>
     <script >
             var pop=document.getElementById('popObj');
 

@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "ES6",
-    "downlevelIteration": true,
-      "lib": [
+    "target": "es6",
+    "lib": [
           "dom",
           "es5",
           "es2015.collection",
@@ -22,16 +20,13 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "outDir": "./",
-    // Only necessary because @types/uglify-js can't find types for source-map
+    "outDir": "./ts",
     "skipLibCheck": true,
     "experimentalDecorators": true
   },
    "compileOnSave": true,
-  "include": [
-    "custom_typings/**/*.ts",
-    "elements/*.ts",
-    "index.ts"
+  "include":[
+	 "index.ts","./components/**/**.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules","node_modules/@types/"]
 }
