@@ -29,13 +29,10 @@ import './scroll/index';
 
 declare global {
     interface Window {
-        
-        PDialog:any,
-        PMessage:any
+        PDialog: typeof PDialog;
+        PMessage:typeof PMessage;
     }
 }
 
 (window['PDialog'] || (window['PDialog'] =PDialog));
 (window['PMessage'] || (window['PMessage'] =PMessage));
-    
-  

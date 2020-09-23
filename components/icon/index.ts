@@ -17,7 +17,6 @@ export class PICon extends LitElement {
     }
 
     render() {
-        // let usePath= svg`${this.path? svg`<path d=${this.path} id="path"></path>` : svg`<use id="use" ></use>`}
         let styleValue = '';
         if (this.size >= 0) {
             styleValue += `font-size:${this.size}px;`;

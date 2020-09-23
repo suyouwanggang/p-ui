@@ -106,7 +106,7 @@ export default class PMessage extends LitElement {
         if (config.duration && config.duration > 0) {
             timer = window.setTimeout(() => {
                 message.show = false;
-                config.onclose && config.onclose;
+                config.onclose && config.onclose(message)  ;
                 message.parentElement.removeChild(message);
             }, config.duration);
         }

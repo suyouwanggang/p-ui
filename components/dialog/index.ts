@@ -17,7 +17,6 @@ export default class PDialog extends LitElement {
     static get styles() {
         return PDialogStyle;
     }
-
     typeMap(type: string) {
         let name = '';
         let color = '';
@@ -54,7 +53,7 @@ export default class PDialog extends LitElement {
         const dialogTypeData = this.typeMap(this.type);
         return html`
             <div class="dialog">
-            <p-icon id="dialog-type" class="dialog-type" name=${dialogTypeData.name} color=${dialogTypeData.color}></p-icon>
+            ${dialogTypeData.name? html`<p-icon id="dialog-type" class="dialog-type" name=${dialogTypeData.name} color=${dialogTypeData.color}></p-icon>`:null}
             <div class="dialog-content">
                 <div class="dialog-title" id="title">${this.title} <slot name='title'></slot></div>
                 ${this.autoclose ? '' : html`<p-button class="btn-close" id="btn-close" icon="close" @click=${this.closeBtnHandler} ></p-button>`}
@@ -266,7 +265,6 @@ export default class PDialog extends LitElement {
             const cancelBtn: PButton = dialog.cancelBtn;
             cancelBtn!.style.visibility = 'visible';
         });
-       
         dialog.removeAble = true;
         dialog.autoclose = false;
         if (typeof arguments[0] === 'object') {

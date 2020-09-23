@@ -1,11 +1,11 @@
-interface ValidateResult {
+interface ValidateItemResult {
     valid: boolean; /**true ,验证通过，否则，验证不通过 */
     type?: string; //错误类型
     validationMessage?: string; //错误说明
 }
-import NP from   'number-precision';
+import NP from 'number-precision';
 interface ValidateItem {
-    method(input: unknown): ValidateResult | undefined;
+    method(input: unknown): ValidateItemResult | undefined;
 }
 
 
@@ -19,11 +19,11 @@ const getTipLabel = function (input: HTMLInputElement) {
 const requiredValidte: ValidateItem = {
     method(input: HTMLInputElement) {
         const value = input.value.trim();
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         };
         if (input.type === 'number') {
-            const n =new Number(value);
+            const n = new Number(value);
             if (Number.isNaN(n)) {
                 result.valid = false;
                 result.type = 'typeMismatch';
@@ -48,7 +48,7 @@ const minValidte: ValidateItem = {
         }
         const value = Number(input.value.trim());
         const min = Number(input.getAttribute('min'));
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         }
         if (input.value !== '-' && isNaN(value)) {
@@ -75,7 +75,7 @@ const maxValidte: ValidateItem = {
         }
         const value = Number(input.value.trim());
         const max = Number(input.getAttribute('max'));
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         }
         if (input.value !== '-' && isNaN(value)) {
@@ -107,7 +107,7 @@ const stepValidte: ValidateItem = {
         }
         const value = Number(input.value.trim());
         const step = Number(input.getAttribute('step'));
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         }
         if (input.value !== '-' && isNaN(value)) {
@@ -120,13 +120,13 @@ const stepValidte: ValidateItem = {
         if (isNaN(min)) {
             min = 0;
         }
-        const aValue = NP.minus( value ,min);
-        const bValue = NP.divide(aValue,step);
-        if (Math.floor(bValue)!==Math.ceil(bValue)) {
+        const aValue = NP.minus(value, min);
+        const bValue = NP.divide(aValue, step);
+        if (Math.floor(bValue) !== Math.ceil(bValue)) {
             result.valid = false;
             result.type = 'stepMismatch';
-            const closeMin = NP.plus(NP.times(Math.floor(bValue) , step) ,min)
-            const  closeMax = NP.plus(NP.times(Math.ceil(bValue) , step) ,min);
+            const closeMin = NP.plus(NP.times(Math.floor(bValue), step), min);
+            const closeMax = NP.plus(NP.times(Math.ceil(bValue), step), min);
             result.validationMessage = `请输入有效值,两个最接近的数值分别是${closeMin}和${closeMax}`;
         }
         return result;
@@ -137,7 +137,7 @@ const tooShortValidte: ValidateItem = {
     method(input: HTMLInputElement) {
         const value = input.value;
         const minlength = Number(input.getAttribute('minlength'));
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         };
         if (!isNaN(minlength) && value.length < minlength) {
@@ -154,7 +154,7 @@ const tooLongValidte: ValidateItem = {
     method(input: HTMLInputElement) {
         const value = input.value;
         const maxlength = Number(input.getAttribute('maxlength'));
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         };
         if (!isNaN(maxlength) && value.length > maxlength) {
@@ -171,7 +171,7 @@ const patternValidte: ValidateItem = {
     method(input: HTMLInputElement) {
         const value = input.value;
         const pattern = input.pattern;
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         };
         if (pattern !== undefined) {
@@ -186,16 +186,16 @@ const patternValidte: ValidateItem = {
         return result;
     }
 
-}
+};
 const customValidate: ValidateItem = {
     method(input: HTMLInputElement) {
         // tslint:disable-next-line: no-any
         const customValidateMethod = (input as any).customValidateMethod;
-        const result: ValidateResult = {
+        const result: ValidateItemResult = {
             valid: true
         };
         if (customValidateMethod) {
-            const validateResult: ValidateResult = customValidateMethod.method(input);
+            const validateResult: ValidateItemResult = customValidateMethod.method(input);
             if (validateResult === null || validateResult === undefined) {
                 return result;
             }
@@ -208,7 +208,7 @@ const customValidate: ValidateItem = {
         }
         return result;
     }
-}
+};
 const getDefaultValidateList = (inputEL: HTMLInputElement | unknown) => {
     const input = inputEL as any;
     const items: ValidateItem[] = [];
@@ -239,11 +239,28 @@ const getDefaultValidateList = (inputEL: HTMLInputElement | unknown) => {
         items.push(customValidate);
     }
     return items;
+};
+type MessageType = {
+    type: string;
+    message: string;
+};
+type valiidityResultType = {
+    badInput: boolean;
+    customError: boolean;
+    patternMismatch: boolean;
+    rangeOverflow: boolean;
+    rangeUnderflow: boolean;
+    stepMismatch: boolean;
+    tooLong: boolean;
+    tooShort: boolean;
+    typeMismatch: boolean;
+    valid: boolean;
+    valueMissing: boolean;
+    message: Array<MessageType>;
 }
-
-const getValidityResult: any = (input: HTMLInputElement | unknown) => {
+const getValidityResult = (input: HTMLInputElement | unknown): valiidityResultType => {
     const items = getDefaultValidateList(input);
-    const result: any = {
+    const result = {
         badInput: false,
         customError: false,
         patternMismatch: false,
@@ -255,7 +272,7 @@ const getValidityResult: any = (input: HTMLInputElement | unknown) => {
         typeMismatch: false,
         valid: true,
         valueMissing: false,
-        message: []
+        message: new Array<MessageType>()
     };
     for (let i = 0, j = items.length; i < j; i++) {
         const item = items[i];
@@ -263,8 +280,9 @@ const getValidityResult: any = (input: HTMLInputElement | unknown) => {
         if (itemResult !== undefined && !itemResult.valid) {
             result.valid = false;
             if (itemResult.type) {
-                result[itemResult.type] = true;
-                const mesage: any = {
+                // tslint:disable-next-line: no-any
+                (result as any)[itemResult.type] = true;
+                const mesage = {
                     type: itemResult.type,
                     message: itemResult.validationMessage
                 };
@@ -274,7 +292,7 @@ const getValidityResult: any = (input: HTMLInputElement | unknown) => {
     }
     return Object.freeze(result);
 };
-export { getValidityResult ,getCountDecimals };
+export { getValidityResult, getCountDecimals ,ValidateItemResult};
 
 
 

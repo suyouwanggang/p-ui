@@ -91,7 +91,7 @@ export default class PColorPanel extends LitElement {
             <p-button class="btn-switch" id="btn-switch" @click=${this._switch_Hander} type="flat">${PColorPanel.COLOR_TYPE[this.typeindex]}</p-button>
         </div>
         <div class="color-sign" id="colors"  @click=${this._colorsPick}>
-            ${Material_colors.map((el: string) => html`<button style="background-color:${el};"  data-color='${el}' ></button>`)}
+            ${Material_colors.map((el: string) => html`<button style="background-color:${el}; "  data-color='${el}' ></button>`)}
         </div>
     </div>`;
     }

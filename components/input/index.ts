@@ -1,11 +1,15 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import { getValidityResult, getCountDecimals } from '../helper/formValidate';
+import { getValidityResult, getCountDecimals, ValidateItemResult } from '../helper/formValidate';
+import { throttle, debounce } from '../utils/eventHelper';
 import NP from 'number-precision';
 import PButton from '../button/index';
 import PTips from '../tips/index';
 import inputStyleObj from './style.scss';
 type inputtype = 'text' | 'password' | 'email' | 'url' | 'number' | 'tel' | 'search';
+type CustomValidateMethode = {
+    method: (input: unknown) => ValidateItemResult
+}
 class MinInputClass extends LitElement {
     public get input(): HTMLInputElement | unknown {
         return this;
@@ -20,11 +24,14 @@ class MinInputClass extends LitElement {
     @property({ type: Number, reflect: true }) minLength?: number = undefined;
     @property({ type: Number, reflect: true }) maxLength?: number = undefined;
     @property({ type: Number, reflect: true }) min?: number = undefined;
-    @property({ type: Number, reflect: true }) max?: number =undefined;
+    @property({ type: Number, reflect: true }) max?: number = undefined;
     @property({ type: Number, reflect: true }) step?: number = 1;
-    @property({ type: Object, attribute: false }) customValidateMethod?: any = undefined;
+    @property({ type: Object, attribute: false }) customValidateMethod?: CustomValidateMethode = undefined;
     get validity(): boolean {
         return getValidityResult(this).valid;
+    }
+    get validityResult() {
+        return getValidityResult(this);
     }
     get validationMessage(): string {
         const result = getValidityResult(this);
@@ -44,18 +51,7 @@ class MinInputClass extends LitElement {
 
 }
 
-function throttleFunction(fn: Function, delay: number, context: any) {
-    let previous = 0;
-    // 使用闭包返回一个函数并且用到闭包函数外面的变量previous
-    return function () {
-        const args = [...arguments];
-        const now: number = + new Date();
-        if (now - previous > delay) {
-            fn.apply(context, args);
-            previous = now;
-        }
-    }
-}
+
 
 @customElement('p-input')
 class PInput extends MinInputClass {
@@ -73,7 +69,7 @@ class PInput extends MinInputClass {
     @property({ type: Number, reflect: true }) debounce?: number = undefined;
     @property({ type: Number, reflect: true }) throttle?: number = undefined;
     @property({ type: Boolean, reflect: true }) showStep?: boolean = false;
-    static get styles() {return inputStyleObj};
+    static get styles() { return inputStyleObj };
     public checkValidity() {
         if (this.novalidate || this.disabled || this.form && this.form.novalidate) {
             return true;
@@ -133,6 +129,7 @@ class PInput extends MinInputClass {
     dispatchChange() {
         this.checkValidity();
         const changeEvent = new CustomEvent('change', {
+            bubbles:true,
             detail: { value: this.input.value }
         });
     }
@@ -143,17 +140,20 @@ class PInput extends MinInputClass {
         this.dispatchEvent(changeEvent);
         this.checkValidity();
     }
+    private __debounceHander: () => void;
+    private __throttHander: () => void;
     _dispatchInput() {
         const inputEvent = new CustomEvent('input', {
+            bubbles:true,
             cancelable: true,
             detail: { value: this.input.value }
         });
         this.dispatchEvent(inputEvent);
     }
     private static NUMBERINPUTARRAY: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-'];
-    private _processInputInvlaide(event: Event) {
-        this.input.setCustomValidity('');
-    }
+    // private _processInputInvlaide(event: Event) {
+    //     this.input.setCustomValidity('');
+    // }
     private _processInput(event: InputEvent) {
         this.input.setCustomValidity('');
         if (this.type === 'number') {
@@ -179,31 +179,35 @@ class PInput extends MinInputClass {
         const inputEl = this;
         event.stopPropagation();
         if (this.debounce && this.debounce > 0) {
-            let timeout: number = (this as any).debounceTimeoutID;
-            timeout && window.clearTimeout(timeout);
-            (this as any).debounceTimeoutID = timeout = window.setTimeout(() => {
-                this._dispatchInput();
-            }, this.debounce);
-        } else if (this.throttle && this.throttle > 0) {
-            let throttleFun = (this as any).throttleFun;
-            if (throttleFun === undefined) {
-                throttleFun = throttleFunction(() => {
+            if (this.__debounceHander === undefined) {
+                this.__throttHander = debounce(() => {
                     inputEl._dispatchInput();
-                }, this.throttle, inputEl);
-                (this as any).throttleFun = throttleFun;
+                }, this.debounce);
             }
-            throttleFun();
+            this.__debounceHander();
+        } else if (this.throttle && this.throttle > 0) {
+            if (this.__throttHander === undefined) {
+                this.__throttHander = throttle(() => {
+                    inputEl._dispatchInput();
+                }, this.throttle);
+            }
         } else {
             this._dispatchInput();
         }
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
+        const inputEl = this;
         super.update(changedProperties);
         if (changedProperties.has('throttle') && this.throttle !== undefined) {
-            (this as any).throttleFun = undefined;
+            this.__throttHander = throttle(() => {
+                inputEl._dispatchInput();
+            }, this.throttle);
         } else if (changedProperties.has('debounce') && this.debounce !== undefined) {
-            window.clearTimeout((this as any).debounceTimeoutID);
-            (this as any).debounceTimeoutID = undefined;
+            if (this.__debounceHander === undefined) {
+                this.__debounceHander = throttle(() => {
+                    inputEl._dispatchInput();
+                }, this.debounce);
+            }
         }
     }
     updated(changedProperties: Map<string | number | symbol, unknown>) {
@@ -256,21 +260,27 @@ class PInput extends MinInputClass {
         return this.type;
     }
     render() {
-        return html`<p-tips  .tips=${this.tips} id="tips"  >
-                ${this.leftIcon ? html`<p-icon  name='${this.leftIcon}'  class='leftIcon' ></p-icon>` : ''}
-                <input id="input"  name="${ifDefined(this.name)}"  placeholder="${ifDefined(this.label?this.label:this.placeholder)}" .value="${this.value}"  @input="${this._processInput}" @change="${this.dispatchChange}"
-                  ?readOnly=${this.readOnly}  .type="${this._innerType()}"    ?disabled=${this.disabled} 
-                  step="${ifDefined(this.step)}"  min="${ifDefined(this.min)}"  max="${ifDefined(this.max)}"   minLength="${ifDefined(this.minLength)}"  maxLength="${ifDefined(this.maxLength)}"
-                  @focus=${this.dispatchFocus} 
-                 />
-                ${this.label ? html`<label class='input-label'>${this.label}</label>` : ''}
-                ${this.rightIcon ? html`<p-icon  name='${this.rightIcon}'   class='rightIcon' ></p-icon>` : ''}
-                ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'  icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
-                ${this.clear ? html`<p-icon  name='close-circle'  class='clearIcon' @click=${this.clearValue} ></p-icon>` : ''}
-                ${this.type === 'search' ? html`<p-button  icon='search'  class='eye-icon' @click=${this.searchValue} type="flat"></p-button>` : ''}
-                ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number"><p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button><p-button id="btn-sub" @click="${this._stepDel}" icon="down" shape="circle" type="flat"></p-button></div>` : ''}
-                <slot></slot>
-            </p-tips>`;
+        return html`<p-tips .tips=${this.tips} id="tips">
+    ${this.leftIcon ? html`<p-icon name='${this.leftIcon}' class='leftIcon'></p-icon>` : ''}
+    <input id="input" name="${ifDefined(this.name)}"
+        placeholder="${ifDefined(this.label ? this.label : this.placeholder)}" .value="${this.value}"
+        @input="${this._processInput}" @change="${this.dispatchChange}" ?readOnly=${this.readOnly}
+        .type="${this._innerType()}" ?disabled=${this.disabled} step="${ifDefined(this.step)}"
+        min="${ifDefined(this.min)}" max="${ifDefined(this.max)}" minLength="${ifDefined(this.minLength)}"
+        maxLength="${ifDefined(this.maxLength)}" @focus=${this.dispatchFocus} />
+    ${this.label ? html`<label class='input-label'>${this.label}</label>` : ''}
+    ${this.rightIcon ? html`<p-icon name='${this.rightIcon}' class='rightIcon'></p-icon>` : ''}
+    ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'
+        icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
+    ${this.clear ? html`<p-icon name='close-circle' class='clearIcon' @click=${this.clearValue}></p-icon>` : ''}
+    ${this.type === 'search' ? html`<p-button icon='search' class='eye-icon' @click=${this.searchValue} type="flat">
+    </p-button>` : ''}
+    ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number">
+        <p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button>
+        <p-button id="btn-sub" @click="${this._stepDel}" icon="down" shape="circle" type="flat"></p-button>
+    </div>` : ''}
+    <slot></slot>
+</p-tips>`;
     }
 }
 export { PInput };
