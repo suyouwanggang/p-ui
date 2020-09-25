@@ -94,7 +94,8 @@ const config= {
   resolve: {
     extensions: ['.mjs', '.ts', '.js', '.scss', '.svg', '.css'],
 	alias: {
-		'lit-html/lib/shady-render.js': path.resolve(__dirname, './node_modules/lit-html/lit-html.js')
+    '@':__dirname
+		//'lit-html/lib/shady-render.js': path.resolve(__dirname, './node_modules/lit-html/lit-html.js')
 	}
   },
 
@@ -106,6 +107,14 @@ const config= {
           'style-loader',
           'css-loader',
         ]
+      },
+      {
+        test: /\.svg$/,
+        loader:'file-loader',
+        options:{
+          outputPath:'iconfont',
+          name:'[name].[ext]'
+        }
       },
       {
         test: /\.scss$/,

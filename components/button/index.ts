@@ -2,7 +2,7 @@
 
 import { LitElement, customElement, html, css, property, TemplateResult } from 'lit-element';
 import { } from '../icon/index';
-import "../loading/index";
+import '../loading/index';
 import styleButton from './style.scss';
 import styleButtoGroup from './styleButtonGroup.scss';
 import { ifDefined } from 'lit-html/directives/if-defined';
@@ -18,7 +18,7 @@ export default class PButton extends LitElement {
     }
     @property({ type: Boolean,reflect:true}) disabled: boolean;
     @property({ type: Boolean, reflect: true }) block: boolean;
-    @property({ type: Boolean }) toggle: boolean;
+    @property({ type: Boolean,reflect:true }) toggle: boolean;
     @property({ type: String, reflect: true }) type: buttonTypeValue;
     @property({ type: String, reflect: true }) shape: shapeType;
     @property({ type: String, reflect: true }) name: string;
@@ -44,8 +44,8 @@ export default class PButton extends LitElement {
             }
         })
         this.btn.addEventListener('keydown', (ev: KeyboardEvent) => {
-            switch (ev.keyCode) {
-                case 13://Enter
+            switch (ev.key) {
+                case 'Enter'://Enter
                     ev.stopPropagation();
                     break;
                 default:

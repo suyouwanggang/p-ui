@@ -23,7 +23,7 @@ const requiredValidte: ValidateItem = {
             valid: true
         };
         if (input.type === 'number') {
-            const n = new Number(value);
+            const n =Number.parseFloat(value);
             if (Number.isNaN(n)) {
                 result.valid = false;
                 result.type = 'typeMismatch';
