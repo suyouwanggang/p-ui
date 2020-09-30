@@ -180,7 +180,7 @@ class PInput extends MinInputClass {
         event.stopPropagation();
         if (this.debounce && this.debounce > 0) {
             if (this.__debounceHander === undefined) {
-                this.__throttHander = debounce(() => {
+                this.__debounceHander = debounce(() => {
                     inputEl._dispatchInput();
                 }, this.debounce);
             }
@@ -204,7 +204,7 @@ class PInput extends MinInputClass {
             }, this.throttle);
         } else if (changedProperties.has('debounce') && this.debounce !== undefined) {
             if (this.__debounceHander === undefined) {
-                this.__debounceHander = throttle(() => {
+                this.__debounceHander = debounce(() => {
                     inputEl._dispatchInput();
                 }, this.debounce);
             }

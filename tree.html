@@ -2,31 +2,12 @@
 <html lang="en">
 
 <head>
-  <!-- Register service worker if supported. -->
-  <!--
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
-    }
-  </script>
-  -->
-
-  <!-- Load polyfills 
-  <script 
-    src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
-    defer>
-  </script> 
-    -->
-
-  <script type="module" src="./build/index.js"> </script>
-  <!-- Load components via WebComponents.waitFor -->
+  
+    <script src="vendors~index.js"></script>
+    <script src="index.js"></script>
+      <!-- Load components via WebComponents.waitFor -->
   <script type="module">
-    window.WebComponents = window.WebComponents || {
-      waitFor(cb) { addEventListener('WebComponentsReady', cb) }
-    }
-    WebComponents.waitFor(async () => {
-      import('./build/index.js');
-    });
+   
   </script>
 
   <!-- Change stuff here for your app -->
@@ -82,24 +63,13 @@
           let arry={"name":'地图',child:[]};
           arry.child=myJson;
           var sum=0;
-          iterateData=function (data){
-            sum++;
-            if(data.child){
-              data.child.forEach( item => 
-              {iterateData(item)}	);
-            }
-          }
-          iterateData(arry);
-
-          console.log('sum='+sum);
           tree.data=arry;
           let node=document.createElement('p-tree-node');
           tree.appendChild(node);
           node.name='wanggang';
           node.icon='lock';
 
-        //tree.treeData.initTreeByObject(arry);
-        //tree.requestUpdate();
+       
         window.tree=tree;
       });
         

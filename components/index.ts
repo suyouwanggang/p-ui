@@ -12,6 +12,7 @@ import './input/index';
 import './slider/index';
 import './switch/index';
 import './tab/index';
+import * as treeHepler from './tree/treeFillter';
 import './tree/index';
 import './pop/index';
 import './color-panel/index';
@@ -31,8 +32,10 @@ declare global {
     interface Window {
         PDialog: typeof PDialog;
         PMessage:typeof PMessage;
+        treeHepler:typeof treeHepler;
     }
 }
 
 (window['PDialog'] || (window['PDialog'] =PDialog));
 (window['PMessage'] || (window['PMessage'] =PMessage));
+(window['treeHepler'] || (window['treeHepler'] =treeHepler));

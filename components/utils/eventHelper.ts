@@ -47,10 +47,10 @@ const debounce = (method: (...arg: unknown[]) => void, wait: number, scope?: unk
         const context = scope != null ? scope : this;
         if (timeout) {
             clearTimeout(timeout);
-            timeout = window.setTimeout(() => {
-                method.apply(context, args);
-            }, wait);
         }
+        timeout = window.setTimeout(() => {
+            method.apply(context, args);
+        }, wait);
     };
 };
 
