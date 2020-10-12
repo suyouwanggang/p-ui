@@ -57,7 +57,6 @@ class PTreeNode extends LitElement {
             this.requestUpdate();
         }
     }
-   
     get directTreeNode(): PTreeNode[] {
         const array: Element[] = Array.from(this.children).filter((item: Element) => {
             return item.tagName.toLowerCase() === 'p-tree-node';
@@ -75,7 +74,7 @@ class PTreeNode extends LitElement {
                     ${this.icon ? html`<p-icon class='node_icon' name=${this.icon}></p-icon>` : ''}
                     <slot name="node_name" @click=${this._clickNode}> ${this.nodeRender == null ? html`<span
                             class='node_span'>${this.name}</span>` :
-                nodeRender(this, html)}</slot>
+                     nodeRender(this, html)}</slot>
                 </div>
                 <div class='node_child' part='node_child'>
                     <slot id="slots"></slot>
@@ -107,14 +106,14 @@ class PTree extends LitElement {
     update(_changedProperties: Map<string | number | symbol, unknown>) {
         super.update(_changedProperties);
         if (_changedProperties.has('data') || _changedProperties.has('filterFn') || _changedProperties.has('filterString') || _changedProperties.has('rootCloseable') || _changedProperties.has('cacheNodeStatus')) {
-            this.cacheFilterData();
+            this.doFilterData();
         }
     }
     @internalProperty()
     private _filterData: TreeNodeData = null;
     @internalProperty()
     private _dataUpdate: number = Math.random();
-    private cacheFilterData() {
+    public doFilterData() {
         this._dataUpdate = Math.random();
         this._filterData = this.data != null ? filterTreeData(this.data, this.filterFn, this.filterString) : null;
         if (this._filterData) {
@@ -123,7 +122,7 @@ class PTree extends LitElement {
     }
     get filterData(): TreeNodeData {
         if (this._filterData == null) {
-            this.cacheFilterData();
+            this.doFilterData();
         }
         return this._filterData;
     }
