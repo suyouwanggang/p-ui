@@ -56,7 +56,7 @@
     "vscode": "wca analyze \"components/**/*.ts\" --format vscode --outFile custom-elements.vscode",
     "copywc": "cp -r iconfont dist && cp -r node_modules/@webcomponents/webcomponentsjs/bundles dist && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist",
     "create": "ts-node ./scripts/generator.ts",
-    "dev": "npx webpack --watch",
+    "dev": "npx webpack --mode development --watch",
     "start": " webpack-dev-server --open --mode development",
     "build": " npx webpack --mode production ",
     "build:clean": "rm -rf ./dist"

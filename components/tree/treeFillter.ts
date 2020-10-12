@@ -1,14 +1,15 @@
-import { ServerHttp2Session } from "http2";
 
 type TreeNodeData = {
-    name?: string;/*节点名称*/
-    key?: string | number;/* ID  */
-    close?: boolean;/* 是否关闭 */
-    seqNo?: number;/*同层序号*/
-    icon?: string;/*节点图标 */
-    child?: TreeNodeData[];/*下级节点 */
-    closeable?: boolean;/*false,表示节点不能折叠起来 */
-    _children?:TreeNodeData[];//内部过滤使用
+    name?: string; /*节点名称*/
+    key?: string | number; /* ID  */
+    close?: boolean; /* 是否关闭 */
+    seqNo?: number; /*同层序号*/
+    icon?: string; /*节点图标 */
+    child?: TreeNodeData[]; /*下级节点 */
+    closeable?: boolean; /*false,表示节点不能折叠起来 */
+    [key:string]:unknown; /*自定义属性 */
+    _children?: TreeNodeData[]; //内部使用属性，过滤使用
+    _parent?: TreeNodeData ; //上级属性，内部使用
 }
 
 
@@ -28,7 +29,7 @@ const defaultFilter: TreeFilter = (data: TreeNodeData, name: string, ...args: un
     return false;
 };
 
-const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterObject: unknown[]):TreeNodeData => {
+const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterObject: unknown[]): TreeNodeData => {
     const map = new Map<TreeNodeData, Array<TreeNodeData>>();
     const setAddNode = new Set<TreeNodeData>();
     //key 为node, value:为下级满足的节点
@@ -37,30 +38,28 @@ const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterOb
     //key 为node, value:为父节点
     const iteratorFun = (node: TreeNodeData, parent: TreeNodeData) => {
         parentMap.set(node, parent);
-        // console.log(node.name);
-        if (node !== root && filter.apply(null, [node, ...filterObject])) {
-            // console.log('match=='+node.name);
+        node._parent = parent; //设置上级
+       // console.log(node.name);
+        if (node !== root && (filter === null || filter.apply(null, [node, ...filterObject]))) {
+            //console.log('match=='+node.name);
             let tempNode = node;
-            let tempParentNode = parentMap.get(tempNode);
-            if(!setAddNode.has(tempParentNode)){
-                setAddNode.add(tempParentNode  );
-                while (tempParentNode) {
-                    //console.log('tempname=='+ temp.name);
-                    let matchSub = map.get(tempParentNode);
-                    if (matchSub === undefined) {
-                        matchSub = [];
-                        map.set(tempParentNode, matchSub);
-                    }
-                    matchSub.push(tempNode);
-                    tempNode = tempParentNode;
-                    tempParentNode = parentMap.get(tempParentNode);
+            while (tempNode&& !setAddNode.has(tempNode)) {
+                setAddNode.add(tempNode  );
+                //console.log('tempname=='+ tempNode.name);
+                let matchSub = map.get(tempNode._parent);
+                if (matchSub === undefined) {
+                    matchSub = [];
+                    map.set(tempNode._parent, matchSub);
                 }
+                matchSub.push(tempNode);
+                tempNode = tempNode._parent;
             }
         }
         if (node.child) {
             node.child.forEach((item) => iteratorFun(item, node));
         }
-    }
+    };
+    root._children=null;
     iteratorFun(root, null);
     const iteratorMap = (node: TreeNodeData) => {
         const sub = map.get(node);
@@ -70,9 +69,9 @@ const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterOb
         } else {
             node._children = [];
         }
-    }
+    };
     iteratorMap(root);
-    return root;
+    return setAddNode.size === 0 ? null : root;
 };
 
 
@@ -84,25 +83,10 @@ const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterOb
  * @param args 
  */
 const filterTreeData = (root: TreeNodeData, filter: TreeFilter, ...args: unknown[]): TreeNodeData => {
-    const cloneRoot: TreeNodeData = JSON.parse(JSON.stringify(root));
     if (filter == null) {
-        return cloneRoot;
+        return root;
     }
-    const iteratorNode = (node: TreeNodeData, node2: TreeNodeData) => {
-        Object.defineProperty(node, '_source', {
-            configurable: false,
-            writable: false,
-            enumerable: false,
-            value: node2
-        });
-        if (node.child) {
-            node.child.forEach((item, index) => {
-                iteratorNode(item, node2.child[index]);
-            })
-        }
-    }
-    iteratorNode(cloneRoot, root);
-    const argArray = [cloneRoot, filter, ...args];
+    const argArray = [root, filter, ...args];
     return filterTreeDataArray.apply(null, argArray);
 }
 
@@ -158,6 +142,17 @@ const findDataByKey = function (data: TreeNodeData, key: string | number): TreeN
     }
     return null;
 };
+// tslint:disable-next-line: no-any
+const toJSONTreeData = (data: TreeNodeData): any => {
 
+    return JSON.stringify(data, (key: string,value:any) => {
+        if (key.startsWith('_')) {
+            return undefined;
+        } else {
+            return value;
+        }
+    });
 
-export { TreeNodeData, TreeFilter, listTreeDataToRoot, filterTreeData, defaultFilter, findDataByKey };
+};
+
+export { TreeNodeData, TreeFilter, listTreeDataToRoot, filterTreeData, defaultFilter, findDataByKey, toJSONTreeData };

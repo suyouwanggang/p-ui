@@ -4,12 +4,9 @@
  .trigger-status {
     display:inline-block;
     position:relative;
-    top:var(--node-trigger-top,-2px);
     padding-right:3px;
-    width:var(--node-unit,0.8em);
-    height:var(--node-unit,0.8em);
     padding-left:3px;
-    font-size:8px;
+    font-size:10px;
     cursor:pointer;
 }
 .trigger-status[empty]{
