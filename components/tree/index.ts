@@ -139,7 +139,7 @@ class PTree extends LitElement {
         }
         this.requestUpdate();
     }
-    public toJSONData(){
+    public toJSONData() {
         return toJSONTreeData(this.data);
     }
     public getNodeData(node: PTreeNode | string): TreeNodeData {
@@ -175,13 +175,14 @@ class PTree extends LitElement {
                 'node': node,
             }
         }));
+        // tslint:disable-next-line: no-any
         const data = <TreeNodeData>(node as any).data;
         if (this.cacheNodeStatus) {
             data.close = node.close;
         }
     }
     private _nodeHandler(event: Event) {
-        const treeNode: PTreeNode = <PTreeNode>event.target;
+        const treeNode = <PTreeNode>event.target;
         this._fireNodeEvent(event.type, event, treeNode);
 
     }

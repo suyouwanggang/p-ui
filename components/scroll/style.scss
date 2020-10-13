@@ -83,6 +83,11 @@ div[part=scroll-y] {
    bottom:0;
    /*scroll-behavior:smooth;*/
  }
+ div[part=content-wrap]{
+   overflow: visible;
+   height: auto;
+   display: block;
+ }
  .showYScroll div[part=content]{
    right:var(--scroll-bar-out-width,12px);
  }

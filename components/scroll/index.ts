@@ -1,4 +1,4 @@
-import { css, customElement, eventOptions, html, LitElement, property } from 'lit-element';
+import { css, customElement, eventOptions, html, LitElement, property, query } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
 import { throttle } from '../utils/eventHelper';
 import ScrollStyleObj from './style.scss';
@@ -7,6 +7,9 @@ const getStyleProperty = function (oE: HTMLElement, sPr: string) {
   const d = document.defaultView.getComputedStyle(oE);
   return d.getPropertyValue(sPr);
 };
+/**
+ * (x: number, y: number): void;
+ */
 interface ScrollBack {
   (x: number, y: number): void;
 }
@@ -50,7 +53,6 @@ export class PScroll extends LitElement {
     return ScrollStyleObj;
   }
   wheelScrollChange = 120;
-  private _wheelTimeoutID: number = null;
   @eventOptions({
     passive: false
   })
@@ -68,12 +70,6 @@ export class PScroll extends LitElement {
         scrollObj.changeYScroll(e.detail * this.wheelScrollChange);
       }
 
-  }
-  updated(_changedProperties: Map<string | number | symbol, unknown>) {
-    super.updated(_changedProperties);
-    if (_changedProperties.has('overflowX') || _changedProperties.has('overflowY') || _changedProperties.has('scrollBarWidth') || _changedProperties.has('scrollBarOutWidth')) {
-      this.resize();
-    }
   }
   private _touchStartX = 0;
   private _touchStartY = 0;
@@ -96,40 +92,44 @@ export class PScroll extends LitElement {
   render() {
     return html`<div  part="container" id="container" style='--scroll-bar-width:${this.scrollBarWidth}px ; --scroll-bar-out-width:${this.scrollBarOutWidth}px'>
         <div part='content' id="content" @DOMMouseScroll="${this._wheelHander}" @mousewheel=${this._wheelHander} @touchmove=${this._touchMoveHanlder}
-         @touchstart=${this._touchStartHanlder} ><slot id='contentSlot'></slot></div>
+         @touchstart=${this._touchStartHanlder} >
+         <div id="content-wrap" part='content-wrap'>
+           <slot id='contentSlot'></slot>
+          </div>
+        </div>
         <div part="scroll-y" id="scroll-y"><div part="scroll-y-handler" ></div></div>
         <div part="scroll-x" id="scroll-x"><div part="scroll-x-handler"></div></div>
         <div part="right-bottom" id="right-bottom"></div>
     </div>`;
   }
-  get rightBottom(): HTMLElement {
-    return this.renderRoot.querySelector('#right-bottom');
-  }
-  get contentDIV(): HTMLDivElement {
-    return this.renderRoot.querySelector('#content');
-  }
-  get containerDIV(): HTMLDivElement {
-    return this.renderRoot.querySelector('#container');
-  }
-  get partYScroll(): HTMLDivElement {
-    return this.renderRoot.querySelector('div[part=scroll-y]');
-  }
-  get partYHandler(): HTMLDivElement {
-    return this.renderRoot.querySelector('div[part=scroll-y-handler]');
-  }
-  get partXScroll(): HTMLDivElement {
-    return this.renderRoot.querySelector('div[part=scroll-x]');
-  }
-  get partXHandler(): HTMLDivElement {
-    return this.renderRoot.querySelector('div[part=scroll-x-handler]');
-  }
+  @query('#right-bottom', true)
+  public rightBottom: HTMLElement;
+
+  @query('#content', true)
+  public contentDIV: HTMLDivElement;
+
+  @query('#content-wrap', true)
+  public content_wrap_DIV: HTMLDivElement;
+
+  @query('#container', true)
+  public containerDIV: HTMLDivElement;
+
+  @query('div[part=scroll-y]', true)
+  public partYScroll: HTMLDivElement;
+
+  @query('div[part=scroll-y-handler]', true)
+  public partYHandler: HTMLDivElement;
+
+  @query('div[part=scroll-x]', true)
+  public partXScroll: HTMLDivElement;
+
+  @query('div[part=scroll-x-handler]', true)
+  public partXHandler: HTMLDivElement;
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this._obersver.unobserve(this.content_wrap_DIV);
     this._obersver.unobserve(this);
-    this._obersver.unobserve(this.rightBottom);
-    this._mutationObserver.disconnect();
-    this._mutationObserver = null;
     this._obersver = null;
     this.removeEventListener('mouseover', this._MouseOnEventHandler);
     this.removeEventListener('mouseout', this._MouseOutEventHandler);
@@ -138,10 +138,8 @@ export class PScroll extends LitElement {
 
 
   private _obersver: ResizeObserver;
-  private _mutationObserver: MutationObserver;
   firstUpdated(_changedProperties: Map<string | number | symbol, unknown>) {
     super.firstUpdated(_changedProperties);
-    const scrollDiv = this;
     this._intiKeyEvent();
     this._initScrollBarEvent();
     this.contentDIV.scrollTop = 0;
@@ -149,12 +147,8 @@ export class PScroll extends LitElement {
     this._obersver = new ResizeObserver((entries: ResizeObserverEntry[], observer: ResizeObserver) => {
       this.resize();
     });
-    this._mutationObserver = new MutationObserver((mutation: MutationRecord[]) => {
-      this.resize();
-    });
-    this._mutationObserver.observe(this, { childList: true, subtree: true, characterData: true });
     this._obersver.observe(this);
-    this._obersver.observe(this.rightBottom);
+    this._obersver.observe(this.content_wrap_DIV);
     this.renderRoot.querySelector('#contentSlot').addEventListener('slotchange', () => {
       this.resize();
     });
@@ -349,34 +343,78 @@ export class PScroll extends LitElement {
     }
   }
 
-  private _yDispatchMethod: (oldValue: number, newValue: number) => void;
-  private _xDispatchMethod: (oldValue: number, newValue: number) => void;
-  private _scrollDispatchMethod: () => void;
-  private _scrollEvent() {
-    const elRoot = this;
-    if (this._scrollDispatchMethod == null) {
+  private _yDispatchMethod: (oldValue: number, newValue: number) => void = undefined;
+  private _xDispatchMethod: (oldValue: number, newValue: number) => void = undefined;
+
+  protected get xDispatchMethod() {
+    const compoent = this;
+    if (this._xDispatchMethod === undefined) {
+      const d = (oldValue: number, newValue: number) => {
+        /**
+       * 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小
+       */
+        compoent.dispatchEvent(new CustomEvent('scroll-x', {
+          bubbles: true,
+          detail: {
+            value: newValue,
+            oldValue: oldValue
+          }
+        }));
+      };
+      this._xDispatchMethod = throttle(d, this.throttTime);
+    }
+    return this._xDispatchMethod;
+  }
+
+  protected get yDispatchMethod() {
+    const compoent = this;
+    if (this._yDispatchMethod === undefined) {
+      const d = (oldValue: number, newValue: number) => {
+        /**
+       * 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小
+       */
+        compoent.dispatchEvent(new CustomEvent('scroll-y', {
+          bubbles: true,
+          detail: {
+            value: newValue,
+            oldValue: oldValue
+          }
+        }));
+      };
+      this._yDispatchMethod = throttle(d, this.throttTime);
+    }
+    return this._yDispatchMethod;
+  }
+
+  private _scrollDispatchMethod: () => void = undefined;
+  protected get scrollDispatchMethod() {
+    const component = this;
+    if (this._scrollDispatchMethod === undefined) {
+
       const d = () => {
         /**
          *  滚动事件，detail scrollTop,detail scrollLeft 说明内容滚动位置,
          */
-        elRoot.dispatchEvent(new CustomEvent('scroll-change', {
+        component.dispatchEvent(new CustomEvent('scroll-change', {
           bubbles: true,
           detail: {
-            scrollTop: elRoot.contentDIV.scrollTop,
-            scrollLeft: elRoot.contentDIV.scrollLeft
+            scrollTop: component.contentDIV.scrollTop,
+            scrollLeft: component.contentDIV.scrollLeft
           }
         }));
       };
       this._scrollDispatchMethod = throttle(d, this.throttTime);
     }
-    this._scrollDispatchMethod();
+    return this._scrollDispatchMethod;
+  }
+  private _scrollEvent() {
+    this.scrollDispatchMethod();
   }
   /**
    *
    * @param scrollValue 改变竖直内容滚动位置
    */
   changeYScroll(scrollValue: number = 0) {
-    const root = this;
     const contentDIV = this.contentDIV;
     const height = contentDIV.offsetHeight;
     const scrollHeight = contentDIV.scrollHeight;
@@ -407,22 +445,7 @@ export class PScroll extends LitElement {
           }
         }));
       }
-      if (this._yDispatchMethod == null) {
-        const d = (oldValue: number, newValue: number) => {
-        /**
-         * 竖直滚动的时触发, detail.value,内容滚动高度 detail.oldvalue,原来内容滚动高度
-         */
-          root.dispatchEvent(new CustomEvent('scroll-y', {
-            bubbles: true,
-            detail: {
-              value: newValue,
-              oldValue: oldValue
-            }
-          }));
-        };
-        this._yDispatchMethod = throttle(d, this.throttTime);
-      }
-      this._yDispatchMethod(oldScrollTop, scrollTop);
+      this.yDispatchMethod(oldScrollTop, scrollTop);
       this._scrollEvent();
 
     }
@@ -430,7 +453,8 @@ export class PScroll extends LitElement {
   /**
    * 事件节流时间
    */
-  throttTime = 20;
+  @property({type:Number})
+  public throttTime:number = 20;
   /**
    * 改变水平内容滚动位置
    * @param scrollValue 改变多少
@@ -467,22 +491,7 @@ export class PScroll extends LitElement {
           }
         }));
       }
-      if (this._xDispatchMethod == null) {
-        const d = (oldValue: number, newValue: number) => {
-          /**
-         * 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小
-         */
-          root.dispatchEvent(new CustomEvent('scroll-x', {
-            bubbles: true,
-            detail: {
-              value: newValue,
-              oldValue: oldValue
-            }
-          }));
-        };
-        this._xDispatchMethod = throttle(d, this.throttTime);
-      }
-      this._xDispatchMethod(oldScrollLeft, scrollLeft);
+      this.xDispatchMethod(oldScrollLeft, scrollLeft);
       this._scrollEvent();
     }
   }
@@ -573,5 +582,19 @@ export class PScroll extends LitElement {
   scrollXToValue(scrollLeft: number = 0) {
     const currentLeft = this.contentDIV.scrollLeft;
     this.changeXScroll(scrollLeft - currentLeft);
+  }
+  update( changedProperties: Map<string | number | symbol, unknown>){
+    if (changedProperties.has('throttTime')) {
+      this._xDispatchMethod = undefined;
+      this._yDispatchMethod = undefined;
+      this._scrollDispatchMethod = undefined;
+    }
+    super.update(changedProperties);
+  }
+  updated(_changedProperties: Map<string | number | symbol, unknown>) {
+    super.updated(_changedProperties);
+    if (_changedProperties.has('overflowX') || _changedProperties.has('overflowY') || _changedProperties.has('scrollBarWidth') || _changedProperties.has('scrollBarOutWidth')) {
+      this.resize();
+    }
   }
 }
