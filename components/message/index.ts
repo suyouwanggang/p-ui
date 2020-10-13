@@ -41,16 +41,16 @@ export default class PMessage extends LitElement {
     }
     static zIndex = 1000;
     static DEFAULTPOSTION: positionType = 'topcenter';
-    static postionMap = {
+    static readonly postionMap = {
         topcenter: 'top:11px;left:11px;right:11px;',
         topleft: 'top:11px;left:11px;',
         topright: 'top:11px;right:11px;',
         bottomcenter: 'bottom:11px;left:11px;right:11px;',
         bottomleft: 'bottom:11px;left:11px;',
         bottomright: 'bottom:11px;right:11px;'
-    }
+    };
 
-    static _getMessagePositionDIV = (position: positionType) => {
+    static readonly _getMessagePositionDIV = (position: positionType) => {
         const divID = `PMessage___messagePositionDIV__${position}DIV`;
         let div: HTMLElement = document.getElementById(divID);
         if (div === null) {

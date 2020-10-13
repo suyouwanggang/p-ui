@@ -1,8 +1,11 @@
 import { hsvToHsl, hsvToRgb, hsvToCmyk, hsvToHex } from './color';
 
 /**
+ * (array: Number[]): string
+ * 
  * Simple class which holds the properties
  * of the color represention model hsla (hue saturation lightness alpha)
+ * 
  */
 interface NextCovertor {
     (array: Number[]): string;

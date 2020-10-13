@@ -1,11 +1,12 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
-import "../pop/index";
+import '../pop/index';
 import PColorPanel from '../color-panel/index';
 import ColorStyleObj from './style.scss';
 @customElement('p-color')
 export default class PColor extends LitElement {
     static get styles() {return ColorStyleObj; };
     @property({ type: Boolean, reflect: true }) disabled: boolean = false;
+    @property({ type: Boolean, reflect: true }) block: boolean = false;
     @property({ type: String, reflect: true }) value: string = '#ff0000';
     @property({ type: String, reflect: true }) dir: string = 'bottomleft';
     render() {
@@ -22,6 +23,7 @@ export default class PColor extends LitElement {
 
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(changedProperties);
+       
         const popcon: HTMLElement = this.renderRoot.querySelector('#popcon');
         const colorBtn = this.renderRoot.querySelector('#color-btn');
         const btnSubmit: HTMLElement = this.renderRoot.querySelector('#btn-submit');
@@ -37,13 +39,16 @@ export default class PColor extends LitElement {
             this.dispatchChangeEvent();
         });
         popcon.addEventListener('close', (event: Event) => {
-            this.colorPane.value = this.value;
+            if(this.colorPane){
+                this.colorPane.value = this.value;
+            }
         });
     }
    private colorPane: PColorPanel = undefined;
 
     dispatchChangeEvent() {
         this.dispatchEvent(new CustomEvent('change', {
+            bubbles:true,
             detail: {
                 value: this.value
             }

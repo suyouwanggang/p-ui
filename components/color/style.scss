@@ -27,9 +27,15 @@
             background-clip: content-box;
             background-color:var(--themeColor,#42b983);
         }
-        p-pop-content{
-            min-width:100%;
-        }
+        // :host([block] [dir='bottomleft']) p-pop-content{
+        //     min-width: 100%;
+        // }
+        // :host([block][dir='bottomleft']) p-pop-content::part(popBody){
+        //     width:auto;
+        // }
+        // :host([block][dir='bottomleft']) p-pop-content p-color-panel{
+        //     width:auto;
+        // }
         .pop-footer{
             display:flex;
             justify-content:flex-end;

@@ -30,7 +30,7 @@ div[part=popTitle] >div[part=popTitleInner]{
     cursor: default;
 }
 div[part=popBody]{
-    width:max-content;
+    /*width:max-content;*/
 }
 :host([thinBar]) div[part=popBody] {
     flex: 1;

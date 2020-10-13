@@ -1,14 +1,16 @@
 import { css, customElement, html, LitElement, property, query } from 'lit-element';
-import { ifDefined } from 'lit-html/directives/if-defined';
 import '../button/index.ts';
 import { rgbToHsv, hslToHsv, parseToHSVA } from '../utils/color';
+import PMessage from '../message/index';
 import { HSVaColor } from '../utils/hsvacolor';
 import colorPanelStyle from './style.scss';
-const Material_colors = ['#f44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B', 'rgba(0,0,0,.65)', 'transparent']
+const Material_colors = ['#f44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B', 'rgba(0,0,0,.65)', 'transparent'];
 @customElement('p-color-panel')
 export default class PColorPanel extends LitElement {
     @property({ type: String, reflect: true }) value: string = '#ff0000';
     @property({ type: Number, reflect: true }) typeindex: number = 0;
+    @property({ type: Boolean, reflect: true }) canChangeType: boolean=true;
+
     static COLOR_TYPE: string[] = ['HEXA', 'RGBA', 'HSLA'];
     static get styles() {return colorPanelStyle;}
 
@@ -26,7 +28,7 @@ export default class PColorPanel extends LitElement {
             }
         }));
     }
-    @query('#color-palette')
+    @query('#color-palette',true)
     palette: HTMLElement;
     private _colorSelectStart = false;
     private _moveColorPanel(ev: MouseEvent) {
@@ -34,9 +36,9 @@ export default class PColorPanel extends LitElement {
         const value = [...this.$value];
         const _x = Math.min(Math.max(0, (ev.clientX - x) / w * 100), 100);
         const _y = Math.min(Math.max(0, (ev.clientY - y) / h * 100), 100);
-        value[1] = _x;
-        value[2] = 100 - _y;
-        this.value = `hsva(${value[0]}, ${value[1]}%, ${value[2]}%, ${value[3]})`;
+        value[1] = _x.toFixed(0);
+        value[2] = (100 - _y).toFixed(0);
+        this.value = `hsva(${value[0].toFixed(0)}, ${value[1]}%, ${value[2]}%, ${value[3]===undefined?1:value[3]})`;
     }
     private _colorChoose(ev: MouseEvent) {
         if (ev.type === 'mousedown') {
@@ -59,11 +61,11 @@ export default class PColorPanel extends LitElement {
         <div class="color-pane" id="color-pane" >
         <div class="color-palette" id="color-palette" @mousedown=${this._colorChoose} @mousemove=${this._colorChoose}  @mouseup=${this._colorChoose}  ></div> 
         <div class="color-chooser">
-            <a class="color-show" id="copy-btn">
+            <a class="color-show" id="copy-btn" @click=${this.copyColorHandler}>
                 <svg class="icon-file" viewBox="0 0 1024 1024">
                   <path d="M832 64H296c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h496v688c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V96c0-17.7-14.3-32-32-32z"></path>
                   <path d="M704 192H192c-17.7 0-32 14.3-32 32v530.7c0 8.5 3.4 16.6 9.4 22.6l173.3 173.3c2.2 2.2 4.7 4 7.4 5.5v1.9h4.2c3.5 1.3 7.2 2 11 2H704c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32zM350 856.2L263.9 770H350v86.2zM664 888H414V746c0-22.1-17.9-40-40-40H232V264h432v624z"></path>
-                </svg><input type="text" id="copyOnInfo">
+                </svg><input type="text" id="copyOnInfo" value="${this.value}">
             </a>
             <div class="color-range">
                 <input class="color-hue" value="0" min="0" max="360" type="range" id="range-hue" @input=${this._range_hueHander}>
@@ -76,30 +78,38 @@ export default class PColorPanel extends LitElement {
                     <input spellcheck="false"  @change=${this._hexaChangeHander}  @mouseleave=${this._hexaChangeHander} id='color_hexa_input' /> 
                 </div>
                 <div class="color-label" id="color-rgba" @change=${this._rgbaChangeHander} >
-                    <input type="number" min="0" max="255"  spellcheck="false" />
-                    <input type="number" min="0" max="255" spellcheck="false" />
-                    <input type="number" min="0" max="255" spellcheck="false" />
-                    <input type="number" min="0" max="1" step="0.01" spellcheck="false" />
+                    <input type="number" min="0" max="255" step=1 maxlength='3' spellcheck="false" />
+                    <input type="number" min="0" max="255" step=1 maxlength='3' spellcheck="false" />
+                    <input type="number" min="0" max="255" step=1 maxlength='3' spellcheck="false" />
+                    <input type="number" min="0" max="1" step="0.01" maxlength='3' spellcheck="false" />
                 </div>
                 <div class="color-label" id="color-hlsa" @change=${this._hlsaChangeHander} >
-                    <input type="number" min="0" max="360" maxlength='3' spellcheck="false" />
-                    <input type="number" min="0" max="100" maxlength=3 spellcheck="false" />
-                    <input type="number" min="0" max="100" maxlength=3 spellcheck="false" />
-                    <input type="number" min="0" max="1" step="0.01" spellcheck="false" />
+                    <input type="number" min="0" max="360" step=1 maxlength='3' spellcheck="false" />
+                    <input type="number" min="0" max="100" step=1 maxlength=3 spellcheck="false" />
+                    <input type="number" min="0" max="100" step=1 maxlength='3' spellcheck="false" />
+                    <input type="number" min="0" max="1" step="0.01" maxlength='3' spellcheck="false" />
                 </div>
             </div>
-            <p-button class="btn-switch" id="btn-switch" @click=${this._switch_Hander} type="flat">${PColorPanel.COLOR_TYPE[this.typeindex]}</p-button>
+            ${this.canChangeType?html`<p-button class="btn-switch" id="btn-switch" @click=${this._switch_Hander} type="flat">${PColorPanel.COLOR_TYPE[this.typeindex]}</p-button>`:html``}
         </div>
         <div class="color-sign" id="colors"  @click=${this._colorsPick}>
-            ${Material_colors.map((el: string) => html`<button style="background-color:${el}; "  data-color='${el}' ></button>`)}
+            ${Material_colors.map((el: string) => html`<button style='background-color:${el};'  data-color='${el}' ></button>`)}
         </div>
     </div>`;
+    }
+    protected copyColorHandler() {
+        this.copyInfoInput.select();
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+            PMessage.success(this.value);
+        }
     }
     private _rangeOpacityHander(ev: InputEvent) {
         const rangeOpcity: HTMLInputElement = ev.target as HTMLInputElement;
         const value = [...this.$value];
         value[3] = Number(rangeOpcity.value);
         this.value = `hsva(${value[0]}, ${value[1]}%, ${value[2]}%, ${value[3]})`;
+
     }
     private _range_hueHander(ev: InputEvent) {
         const rangeHue: HTMLInputElement = ev.target as HTMLInputElement;
@@ -110,6 +120,7 @@ export default class PColorPanel extends LitElement {
     private _switch_Hander(ev: Event) {
         this.typeindex++;
         this.typeindex %= 3;
+        this.value=this.copyValue;
     }
     get copyValue() {
         const color = this.color;
@@ -131,15 +142,20 @@ export default class PColorPanel extends LitElement {
         const input = event.target as HTMLInputElement;
         const index = [...rgbaDIV.children as any].indexOf(input);
         const value = HSVaColor(...this.$value).toRGBA();
+        if(Number(input.value)>Number(input.max)){
+            input.value=input.max;
+        }
         value[index] = Number(input.value);
         this.value = `rgba(${value[0]}, ${value[1]}, ${value[2]}, ${value[3]})`;
-
     }
     private _hlsaChangeHander(event: Event) {
         const hlsaDIV = this.renderRoot.querySelector('#color-hlsa');
         const input = event.target as HTMLInputElement;
         const index = [...hlsaDIV.children as any].indexOf(input);
         const value = HSVaColor(...this.$value).toHSLA();
+        if(Number(input.value)>Number(input.max)){
+            input.value=input.max;
+        }
         value[index] = Number(input.value);
         this.value = `hsla(${value[0]}, ${value[1]}%, ${value[2]}%, ${value[3]})`;
     }
@@ -156,17 +172,19 @@ export default class PColorPanel extends LitElement {
     get hlsaInputs(): HTMLInputElement[] {
         return [...this.renderRoot.querySelectorAll('#color-hlsa input') as any];
     }
-    @query('#range-hue')
+    @query('#range-hue',true)
     private rangeHueEL: HTMLInputElement;
-    @query('#range-opacity')
+    @query('#range-opacity',true)
     private rangeOpcity: HTMLInputElement;
-    @query('#copyOnInfo')
+    @query('#copyOnInfo',true)
     private copyInfoInput: HTMLInputElement;
-    @query('#color_hexa_input')
+    @query('#color_hexa_input',true)
     private color_hexa_input: HTMLInputElement;
     private $value: any[];
     private _setValueAsyn() {
-        this.$value = parseToHSVA(this.value).values;
+        if(this.$value===undefined){
+            this.$value = parseToHSVA(this.value).values;
+        }
         const [h, s, v, a = 1] = this.$value;
         const pane = this.shadowRoot!.getElementById('color-pane');
         if (pane) {
@@ -196,20 +214,23 @@ export default class PColorPanel extends LitElement {
             hlsaInputs[3].value = hlsa[3].toFixed(2);
         }
     }
-
-    update(_changedProperties: Map<string | number | symbol, unknown>) {
-        super.update(_changedProperties);
-        if (_changedProperties.has('value') && this.isConnected) {
-            const result = parseToHSVA(this.value);
-            if (result.values == null) {
-                this.value = _changedProperties.get('value') as string;
-            } else {
-                this._setValueAsyn();
-            }
+    private setValuesChange(){
+        const result = parseToHSVA(this.value);
+        if(result.values){
+            this.$value = result.values;
+            this._setValueAsyn();
+            this.value=this.copyValue;
         }
+    }
+    update(_changedProperties: Map<string | number | symbol, unknown>) {
+        if (_changedProperties.has('value') ) {
+            this.setValuesChange();
+        }
+        super.update(_changedProperties);
     }
     firstUpdated(_changedProperties: Map<string | number | symbol, unknown>) {
         super.firstUpdated(_changedProperties);
+        this.setValuesChange();
     }
 }
 
