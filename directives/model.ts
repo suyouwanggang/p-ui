@@ -12,6 +12,7 @@ const model = directive((modelObject: Object, fieldValue: string, eventName: str
     defindeRective(modelObject);
     previouseEventSet.add(part);
     Dependence.target = part;
+    (part as any).fieldValue=fieldValue;
     const result = getDataFieldValue(modelObject, fieldValue);
     let element: Element = null;
     if (part instanceof AttributePart || part instanceof PropertyPart) {

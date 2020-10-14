@@ -75,9 +75,6 @@ const defindeRective = (data: any) => {
     Object.keys(data).forEach((key: string) => {
         const dep = new Dependence();
         let oldValue = data[key];
-        if(isObject(oldValue)){
-            defindeRective(oldValue);
-        }
         Reflect.defineProperty(data, key, {
             get() {
                 dep.push();
@@ -86,7 +83,7 @@ const defindeRective = (data: any) => {
             set(value: unknown) {
                 if (value !== oldValue) {
                     oldValue = value;
-                    dep.notify(value);
+                    dep.notify(value,key);
                 }
             }
         });
