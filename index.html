@@ -20,26 +20,9 @@
 <body>
 
 <form>
-  <p-for id="items" value="value"  index="index">
-      <template>
-          <div >index:${index} ${value.name[0]}  
-            <p-switch .item=${value}  @click=${value.handler} > ${value.label}</p-switch>
-        </div>
-        </template>
-  </p-for>
+  <p-test-one></p-test-one>
   <script>
-   var forItem= document.getElementById("items");
-    const data=[];
-    for(let i=0,j=15;i<j;i++){
-      data.push({
-          name:['text'+i],
-          handler:function(event){
-            console.log(event.target.item +" this"+this) ;
-          },
-          label:'label'+i
-        });
-    };
-    forItem.items=data;
+    var temp1=document.querySelector('p-test-one');
   </script>
   <p-color-panel></p-color-panel>
   <p-switch id="switch" checked value="1"></p-switch>

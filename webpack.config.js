@@ -14,6 +14,7 @@ const { isProd, envs } = require('./scripts/envs.js');
 const config= {
   entry: {
     index: './index.ts',
+    test: './test.ts',
     /*
     'tips': './components/tips/index',
     'icon': './components/icon/index',
