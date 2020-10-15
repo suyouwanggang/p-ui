@@ -63,12 +63,13 @@ const setDataFieldValue = (data: any, field: string, value: any) => {
 };
 
 const previousValueMap = new WeakMap<Part, unknown>();
-
+const oldListenerSymbol = Symbol();
+const oldEventTypeSymbol = Symbol();
 /**
  * 实现类似v-model 功能。
- * @param modelObject 对象object
- * @param fieldValue 对象属性，支持按照.分隔。
- * @param eventName 如果绑定属性，或者property ,则通过 eventName 更新model 值，默认为input 事件。
+ * @param modelObject 需要被跟踪的对象object
+ * @param fieldValue 对象属性，支持按照“.” 分隔。
+ * @param eventName 如果绑定Atrtribute，或者property ,则通过 eventName 更新model 值，默认为input 事件。
  */
 const model = directive((modelObject: Object, fieldValue: string, eventName: string = 'input') => (part: Part) => {
     addDependsToCache(modelObject, fieldValue, part);
@@ -81,10 +82,10 @@ const model = directive((modelObject: Object, fieldValue: string, eventName: str
     }
     if (element != null) {
         // tslint:disable-next-line: no-any
-        let oldListener = (element as any).__oldListener;
+        let oldListener = (element as any)[oldListenerSymbol];
         // tslint:disable-next-line: no-any
-        const oldEventType: string = (element as any).__oldListener_TYPE;
         if (oldListener != null) {
+            const oldEventType: string = (element as any)[oldEventTypeSymbol];
             element.removeEventListener(oldEventType, oldListener);
         }
         oldListener = (event: Event) => {
@@ -98,9 +99,9 @@ const model = directive((modelObject: Object, fieldValue: string, eventName: str
         };
         element.addEventListener(eventName, oldListener);
         // tslint:disable-next-line: no-any
-        (element as any).__oldListener = oldListener;
+        (element as any).oldListenerSymbol = oldListener;
         // tslint:disable-next-line: no-any
-        (element as any).__oldListener_TYPE = eventName;
+        (element as any).oldEventTypeSymbol = eventName;
     }
     const preivious = previousValueMap.get(part);
     if (preivious === undefined || preivious !== result) {

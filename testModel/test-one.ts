@@ -31,31 +31,32 @@ export default class TestOne extends LitElement {
                     displayName: '王刚' + i,
                 },
                 color: 'red'
-            }
+            };
             this.array.push(p);
         }
     }
     renderArray(){
-    return this.array.map( (tempPerson:Person2) =>
+    return this.array.map( (tempPerson: Person2) =>
             html`
                 <div>
-                    <span>${model(tempPerson, 'color')}</span>
+                    <span style='background-color:${model(tempPerson, 'color')};width:100px;display:inline-block'>${model(tempPerson, 'color')} ${model(tempPerson, 'color')}</span>
                     <p-color .value=${model(tempPerson, 'color', 'change')}></p-color>
                     <span>${model(tempPerson, 'user.userName')}</span>
-                    <input type='text' placeholder='userName' .value=${model(tempPerson, 'user.userName')} />
                     <span>${model(tempPerson, 'user.displayName')}</span>
+                    <p-input type='text' placeholder='userName' .value=${model(tempPerson, 'user.userName')} ></p-input>
+                    <input type='text' placeholder='userName' .value=${model(tempPerson, 'user.userName')} />
                     <input type='text' name='displayname' placeholder='displayName' .value=${model(tempPerson, 'user.displayName')} />
                 </div>
             `
         );
     }
-    firstUpdated( _changedProperties: Map<string | number | symbol, unknown>  ){
+    firstUpdated( _changedProperties: Map<string | number | symbol, unknown> ){
         super.firstUpdated(_changedProperties);
     }
     render() {
         return html`<div>
-             <span>${model(this.person, 'color')}</span>
-                 <p-color .value=${model(this.person, 'color', 'change')}></p-color>
+             <span>${model(this, 'person.color')}</span>
+                 <p-color .value=${model(this, 'person.color', 'change')}></p-color>
                 <span>${model(this.person, 'userName')}</span>
                 <input type='text' placeholder='userName' .value=${model(this.person, 'userName')} />
                 <span>${model(this.person, 'displayName')}</span>

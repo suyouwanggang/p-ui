@@ -59,6 +59,7 @@
     "dev": "npx webpack --mode development --watch",
     "start": " webpack-dev-server --open --mode development",
     "build": " npx webpack --mode production ",
+	"build:start": "cd dist && http-server -o -g -d ",
     "build:clean": "rm -rf ./dist"
   },
   "author": "suyouwanggang",

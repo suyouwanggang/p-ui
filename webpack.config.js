@@ -3,7 +3,7 @@ require('typescript-require')({
   nodeLib: true,
   targetES5: false
 });
-
+var webpack = require('webpack');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -90,6 +90,7 @@ const config= {
       template: 'index.html'
 	  
     }),
+    new webpack.HotModuleReplacementPlugin() 
   ],
 
   resolve: {
