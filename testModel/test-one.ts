@@ -1,5 +1,7 @@
 import { LitElement, html, css, customElement, property } from 'lit-element';
 import model from '../directives/model';
+import watch from '../decorators/watch';
+import watchProperty from '../decorators/watchProperty';
 type Person = {
     userName: string;
     displayName: string;
@@ -14,6 +16,12 @@ type Person2 = {
 };
 @customElement('p-test-one')
 export default class TestOne extends LitElement {
+    @watchProperty('changeTestManage')
+    testName:string='test';
+    changeTestManage(value:string, oldValue:string,name:PropertyKey,isFirstChange:boolean){
+        console.log(`value=${value}  oldvalue=${oldValue} name=${String(name)} isFirstChange=${isFirstChange}`);
+    }
+
     @property({ attribute: false })
     person: Person = {
         userName: 'wanggang',
@@ -24,6 +32,7 @@ export default class TestOne extends LitElement {
     array: Person2[]=[];
     constructor(){
         super();
+       
         for (let i = 0; i < 10; i++) {
             let p = {
                 user:{
@@ -35,6 +44,7 @@ export default class TestOne extends LitElement {
             this.array.push(p);
         }
     }
+    
     renderArray(){
     return this.array.map( (tempPerson: Person2) =>
             html`
@@ -52,9 +62,23 @@ export default class TestOne extends LitElement {
     }
     firstUpdated( _changedProperties: Map<string | number | symbol, unknown> ){
         super.firstUpdated(_changedProperties);
+        this.testName='test.73054465e6890de20c7e.hot-update.js.map';
+    }
+    update(changedProperties: Map<string | number | symbol, unknown>){
+        console.log(' ----update ---');
+        super.update(changedProperties);
+    }
+
+    updated(changedProperties: Map<string | number | symbol, unknown>){
+        console.log(' ----updatedupdatedupdated ---');
+        super.update(changedProperties);
+    }
+    renderTestName(){
+        return html`<div><input type='text' .value=${this.testName} @change=${(event:Event) =>{this.testName=(event.target as any).value;}} /></div>`;
     }
     render() {
         return html`<div>
+            ${this.renderTestName()}
              <span>${model(this, 'person.color')}</span>
                  <p-color .value=${model(this, 'person.color', 'change')}></p-color>
                 <span>${model(this.person, 'userName')}</span>
