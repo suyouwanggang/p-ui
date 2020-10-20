@@ -72,7 +72,6 @@ chokidar.watch(dir,{
         writeCssToFile(path);
     }
 }).on('unlink', (filepath) => {
-   console.log('delete',filepath);
    fs.unlink(filepath+'.ts',(error)=>{
      if(!error){
       console.log('delete file  success ');
