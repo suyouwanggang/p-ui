@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-          "dom",
-          "es5",
-          "es2015.collection",
-          "es2015.iterable"
-      ],
-    "module": "esnext", 
+    "target": "es2018",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
     "moduleResolution": "node",
     "allowJs": true,
     "declaration": true,
@@ -21,7 +16,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "outDir": "./ts",
+    "outDir": "ts",
     "skipLibCheck": true,
     "experimentalDecorators": true
   },

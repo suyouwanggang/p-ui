@@ -34,7 +34,7 @@ export default class TestOne extends LitElement {
     array: Person2[] = [];
     constructor() {
         super();
-        for (let i = 0; i < 10000; i++) {
+        for (let i = 0; i < 4000; i++) {
             let p = {
                 user: {
                     userName: 'wanggang' + i,
@@ -93,12 +93,15 @@ export default class TestOne extends LitElement {
     render() {
         return html`<div>
     ${this.renderTestName()}
+    <div style='width:2000px;'>[./node_modules/_webpack-dev-server@3.11.0@webpack-dev-server/client/index.js?http://localhost:5000] ./node_modules/_webpack-dev-server@3.11.0@webpack-dev-server/client?http://localhost:5000 4.29 KiB {vendors~index~test} [built]</div>
     <span>${model(this, 'person.color')}</span>
     <p-color .value=${model(this, 'person.color' , 'change' )}></p-color>
     <span>${model(this.person, (a: Person) => JSON.stringify(a))}</span>
     <input type='text' placeholder='userName' .value=${model(this.person, 'userName' )} />
     <span>${model(this.person, 'displayName')}</span>
     <input type='text' name='displayname' placeholder='displayName' .value=${model(this.person, 'displayName' )} />
-</div> ${this.renderIterator()}`;
+    <div>${this.renderArray()}  </div>
+    <div>${this.renderIterator()}  </div>
+</div> `;
     }
 }

@@ -1,5 +1,5 @@
 :host {
-    display:inline-block;
+    display:inline-block ;
 }
 :host(:focus-within) p-tips,:host(:hover) p-tips{
     z-index:2;

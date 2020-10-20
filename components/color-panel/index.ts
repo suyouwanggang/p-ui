@@ -1,6 +1,7 @@
 import { css, customElement, html, LitElement, property, query } from 'lit-element';
 import '../button/index.ts';
 import { rgbToHsv, hslToHsv, parseToHSVA } from '../utils/color';
+import watchProperty from '../../decorators/watchProperty';
 import PMessage from '../message/index';
 import { HSVaColor } from '../utils/hsvacolor';
 import colorPanelStyle from './style.scss';

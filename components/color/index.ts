@@ -2,6 +2,7 @@ import { customElement, html, LitElement, property } from 'lit-element';
 import '../pop/index';
 import PColorPanel from '../color-panel/index';
 import ColorStyleObj from './style.scss';
+import  '../button/index';
 @customElement('p-color')
 export default class PColor extends LitElement {
     static get styles() { return ColorStyleObj; }

@@ -14,7 +14,7 @@ const addDependsToCache = (modeValue: Object, fieldPath: string | ((modelValue: 
         set = new Set<Part>();
         node.set(fieldPath, set);
     }
-    set.add(part);
+    set.add(part); 
 };
 // tslint:disable-next-line: no-any
 const getDataFieldValue = (data: any, field: string | ((modelValue: any) => any) | undefined) => {

@@ -118,6 +118,7 @@ const config= {
           name:'[name].[ext]'
         }
       },
+      /*
       {
         test: /\.scss$/,
         include: path.join(__dirname, 'components'),
@@ -127,7 +128,7 @@ const config= {
             minify: true,
           },
         }, 'extract-loader', 'css-loader', 'sass-loader'],
-      },
+      },*/
 
       /* {
          test: /\.js?$/,

@@ -2,12 +2,11 @@ import { css, customElement, html, LitElement, property, TemplateResult } from '
 import { } from '../icon/index';
 import PanelStyle from './style.scss';
 import PanelStyle2 from './stylepanel.scss';
-/**
+/**panel 
  * @event  before-tab-change 改变child panel 之前
  * @event  tab-change 改变 child panel state 之后
  *
  */
-
 @customElement('p-ac-panel')
 export default class PAccordionPanel extends LitElement {
     @property({ type: Boolean, reflect: true }) multi: boolean = false;

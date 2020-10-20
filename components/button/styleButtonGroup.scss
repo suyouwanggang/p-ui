@@ -1,5 +1,5 @@
 :host {
-    display:inline-flex;
+    display:inline-flex; 
 }
 ::slotted(p-button:not(:first-of-type):not(:last-of-type)){
     border-radius:0;

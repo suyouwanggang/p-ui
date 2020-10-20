@@ -12,10 +12,7 @@ export default class PIterator<T> extends LitElement {
         `;
     }
     // tslint:disable-next-line: no-any
-    @property({ attribute: false,
-            hasChanged:(value:T,oldValue:T)=>{
-                return true;
-    } }) value: Object | Map<T, any> | Set<T> | Array<T>;
+    @property({ attribute: false}) value: Object | Map<T, any> | Set<T> | Array<T>;
     // tslint:disable-next-line: no-any
     @property({ attribute: false }) template: (item: any, key?: any) => TemplateResult;
 

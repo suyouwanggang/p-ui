@@ -253,7 +253,7 @@ class PTab extends LitElement {
         return panels;
     }
     findTab(key: string): PTabContent {
-       return this.childTabPanel.find((item) =>{
+       return this.childTabPanel.find((item:PTabContent) =>{
            return item.key===key;
        });
     }

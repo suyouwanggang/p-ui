@@ -84,6 +84,10 @@ export default class PImage extends LitElement {
         return this.getAttribute('error') !== null;
     }
 
+    connectedCallback(){
+        super.connectedCallback();
+        this._observer.disconnect();
+    }
     private isLoader= false;
 
      load(src: string, hasload: boolean = false) {

@@ -1,5 +1,5 @@
 :host{
-    display:inline-block;
+    display:inline-block; 
     font-size:14px;
     color:var(--fontColor,#333);
     -webkit-tap-highlight-color: transparent;
@@ -9,7 +9,7 @@
     opacity:.6;
 }
 :host([disabled]) label{
-    pointer-events: all;
+    pointer-events: all; 
     cursor: not-allowed;
 }
 #checkbox{
