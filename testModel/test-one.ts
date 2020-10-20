@@ -34,7 +34,7 @@ export default class TestOne extends LitElement {
     array: Person2[] = [];
     constructor() {
         super();
-        for (let i = 0; i < 4000; i++) {
+        for (let i = 0; i < 300; i++) {
             let p = {
                 user: {
                     userName: 'wanggang' + i,
@@ -78,7 +78,7 @@ export default class TestOne extends LitElement {
         super.firstUpdated(_changedProperties);
     }
     update(changedProperties: Map<string | number | symbol, unknown>) {
-        console.log(' ----update ---');
+       // console.log(' ----update ---');
         super.update(changedProperties);
     }
 
@@ -93,7 +93,7 @@ export default class TestOne extends LitElement {
     render() {
         return html`<div>
     ${this.renderTestName()}
-    <div style='width:2000px;'>[./node_modules/_webpack-dev-server@3.11.0@webpack-dev-server/client/index.js?http://localhost:5000] ./node_modules/_webpack-dev-server@3.11.0@webpack-dev-server/client?http://localhost:5000 4.29 KiB {vendors~index~test} [built]</div>
+    <div style='width:2000px;'></div>
     <span>${model(this, 'person.color')}</span>
     <p-color .value=${model(this, 'person.color' , 'change' )}></p-color>
     <span>${model(this.person, (a: Person) => JSON.stringify(a))}</span>
