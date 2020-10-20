@@ -36,7 +36,7 @@ function getCssFiles(jsonPath) {
   const writeCssToFile=(filePath) =>{
     setTimeout(function(){
       let result= sass.renderSync({
-        file:filePath
+         file:filePath
       });
       result=uglifycss.processString(result.css.toString());
       var oldData=cache.get(filePath);
@@ -44,15 +44,13 @@ function getCssFiles(jsonPath) {
       if(oldData==undefined||oldData!=d){
         fs.writeFile(filePath+'.ts',d, function(err){
           if(!err){
-            //file written on disk
-          }else{
             console.log(`write css to ${filePath+'.ts'} success `);
+          }else{
+            console.warn(`write css to ${filePath+'.ts'} fail `)
           }
-
         });
       }
-    },20);
-
+    },10);
 
   };
 

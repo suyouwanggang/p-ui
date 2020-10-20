@@ -22,7 +22,7 @@
   },
    "compileOnSave": true,
   "include":[
-	 "index.ts","./components/**/**.ts"
+	 "index.ts","./components/**/**.ts","./test**/**.ts"
   ],
-  "exclude": ["node_modules","node_modules/@types/"]
+  "exclude": ["node_modules","node_modules/@types/","ts"]
 }
