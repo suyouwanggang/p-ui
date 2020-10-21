@@ -27,6 +27,7 @@ import './fieldset/index';
 import './accordionPanel/index';
 import './step';
 import './scroll/index';
+import './table/index';
 
 declare global {
     interface Window {

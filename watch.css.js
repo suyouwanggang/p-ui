@@ -35,22 +35,26 @@ function getCssFiles(jsonPath) {
 
   const writeCssToFile=(filePath) =>{
     setTimeout(function(){
-      let result= sass.renderSync({
-         file:filePath
-      });
-      result=uglifycss.processString(result.css.toString());
-      var oldData=cache.get(filePath);
-      const d=`import {css} from 'lit-element';\nexport default css\`${result}\`; `;
-      if(oldData==undefined||oldData!=d){
-        fs.writeFile(filePath+'.ts',d, function(err){
-          if(!err){
-            console.log(`write css to ${filePath+'.ts'} success `);
-          }else{
-            console.warn(`write css to ${filePath+'.ts'} fail `)
-          }
-        });
+      try{
+        let result= sass.renderSync({
+          file:filePath
+       });
+       result=uglifycss.processString(result.css.toString());
+       var oldData=cache.get(filePath);
+       const d=`import {css} from 'lit-element';\nexport default css\`${result}\`; `;
+       if(oldData==undefined||oldData!=d){
+         fs.writeFile(filePath+'.ts',d, function(err){
+           if(!err){
+             console.log(`write css to ${filePath+'.ts'} success `);
+           }else{
+             console.warn(`write css to ${filePath+'.ts'} fail `)
+           }
+         });
+       }
+      }catch(ex){
+        console.error(ex);
       }
-    },10);
+    },100);
 
   };
 

@@ -20,9 +20,15 @@
 <body>
 
 <form>
-  <p-test-one></p-test-one>
+  <p-test-table></p-test-table>
+  <div style='height: 300px;overflow: auto;'>
+      <p-test-one></p-test-one>
+</div>
+
   <script>
     var temp1=document.querySelector('p-test-one');
+    var temp2=document.querySelector('p-test-table');
+    
   </script>
   <p-color-panel></p-color-panel>
   <p-switch id="switch" checked value="1"></p-switch>

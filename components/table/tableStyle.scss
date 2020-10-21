@@ -1,36 +1,37 @@
 :host{
-    display: block;
-
+    display: flex;
+    min-height: 300px;
     --table-font-size: 12px;
-   
+    font-size:var(--table-font-size);
     --table-border: 1px solid #e8e8e8;
     --table-border-high: 1px solid #ccc;
     --table-border-active: 1px solid #aacbe1;
-   
-    
     --table-row: #fff;
     --table-row-odd:#fafafa;
-    background-color:var(--table-bg,#fff);
-
+    --table-head-bg-color:#f2f2f2;
 }
+
 div[part=root-div]{
-    height: 100%;
+    flex:1;
+    font-size:inherit;
+    position: relative;
+    display: block;
+    background-color: transparent;
 }
 
 div[part=scroll-div]{
-    
     overflow: auto;
-    position: relative;
-}
-
-
-div[part=scroll-div] ::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar{
+        width:14px;
+    }
+    &::-webkit-scrollbar-thumb {
         border-radius: 5px;
         background-color: #e1e1e1;
-        width: 6px;
         min-height: 50px;
         border: 2px solid transparent;
         background-clip: content-box;
+      
+    }
 }
 
 div[part=table-header-none]{
@@ -38,14 +39,54 @@ div[part=table-header-none]{
     position: absolute;
     top: 0;
     left: 0;
-    background: #FFF;
+    border-bottom:var(--table-border);
+    background-color: var(--table-head-bg-color);
 }
-table[part=table] {
-    table-layout: fixed;
+
+
+table {
+    /*table-layout: fixed;*/
     word-wrap: break-word;
     text-align: center;
-    width: 100%;
+    /*width: 100%;*/
+    border:var(--table-border);
+    border-right:none;
     border-spacing: 0;
+    box-sizing: border-box;
+    &[part=fixd-thead-table]{
+        position:absolute;
+        top:0px;
+        left:0px;
+    }
+    
+    thead{
+        background-color: var(--table-head-bg-color);
+    }
+     thead tr:first th{
+        border-top:none;
+     }
+     td:last-child,th:last-child{
+         border-right:none;
+     }
+     thead tr th{
+         border-top:var(--table-border);
+         border-right:var(--table-border);
+         margin:0;
+         padding:0;
+
+         div.thWrap{
+            line-height: 18px;
+            font-weight: normal;
+            padding:6px ;
+            box-sizing: border-box;
+            .thWrap-text{
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+         }
+
+     }
 }
 
 

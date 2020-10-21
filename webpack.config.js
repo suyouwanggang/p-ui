@@ -15,34 +15,7 @@ const config= {
   entry: {
     index: './index.ts',
     test: './test.ts',
-    /*
-    'tips': './components/tips/index',
-    'icon': './components/icon/index',
-    'img': './components/img/index',
-    "loading": './components/loading/index',
-    'checkbox': './components/checkbox/index',
-    'radio': './components/radio/index',
-    'button': './components/button/index',
-    'text': './components/text/index',
-    'rate': './components/rate/index',
-    'input': './components/input/index',
-    'slider': './components/slider/index',
-    'switch': './components/switch/index',
-    'tab': './components/tab/index',
-    'tree': './components/tree/index',
-    'pop': './components/pop/index',
-    'color-panel': './components/color-panel/index',
-    'color': './components/color/index',
-    'select': './components/select/index',
-    'dialog': './components/dialog/index',
-    'message': './components/message/index',
-    'date-picker': './components/date-picker/index',
-    'layout': './components/layout/index',
-    'panel': './components/panel/index',
-    'fieldset': './components/fieldset/index',
-    'acpanel': './components/accordionPanel/index',
-    'step': './components/step',
-    'scroll': './components/scroll/index',*/
+   
   },
 
   output: {
@@ -118,7 +91,7 @@ const config= {
           name:'[name].[ext]'
         }
       },
-      /*
+      
       {
         test: /\.scss$/,
         include: path.join(__dirname, 'components'),
@@ -128,9 +101,9 @@ const config= {
             minify: true,
           },
         }, 'extract-loader', 'css-loader', 'sass-loader'],
-      },*/
+      },
 
-      /* {
+      {
          test: /\.js?$/,
          exclude: /(node_modules|bower_components)/,
          include: /(\/node_modules\/lit-html)|(\/node_modules\/lit-element)/,
@@ -146,7 +119,7 @@ const config= {
              ]
            }
          }]
-       },*/
+       },
       {
         test: /\.ts?$/,
         use: [{

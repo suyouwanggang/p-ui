@@ -57,7 +57,7 @@
 </div>
 <div style='clear:both'></div>
 </div>
-<p-scroll style='height:200vh;width:80%;margin:10px auto;border:1px solid #b1b1b1' id="scrollID">
+<p-scroll style='height:400px;width:80%;margin:10px auto;border:1px solid #b1b1b1' id="scrollID">
   <p-menu >
     <p-menuitem  icon='save' label=保存></p-menuitem>
     <p-menuitem  icon='delete' label=删除></p-menuitem>
@@ -90,7 +90,7 @@
     console.log('scroll-change scrollTop='+event.detail.scrollTop +" scrollLeft= "+event.detail.scrollLeft );
   });
   var frag=document.createDocumentFragment();
-  for(var i=0,j=200;i<j;i++){
+  for(var i=0,j=40;i<j;i++){
     var div =document.createElement('div');
     div.innerHTML=`<div style='width:${300+Math.random()*500}px;border:1px solid #b2b2b2;margin:20px;'>${i}王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚</div>`;
     frag.appendChild(div);
