@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from 'lit-element';
+import { css, customElement, html, internalProperty, LitElement, property } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import { getValidityResult, getCountDecimals, ValidateItemResult } from '../helper/formValidate';
 import { throttle, debounce } from '../utils/eventHelper';
@@ -228,6 +228,7 @@ class PInput extends MinInputClass {
     get pTipCon(): PTips {
         return this.renderRoot.querySelector('#tips');
     }
+    
     private firstTypePassword: boolean = false;
     firstUpdated() {
         if (this.type === 'password') {
@@ -262,23 +263,22 @@ class PInput extends MinInputClass {
     render() {
         return html`<p-tips .tips=${this.tips} id="tips">
     ${this.leftIcon ? html`<p-icon name='${this.leftIcon}' class='leftIcon'></p-icon>` : ''}
-    <input id="input" name="${ifDefined(this.name)}"
+    <input id="input" part="input" name="${ifDefined(this.name)}"
         placeholder="${ifDefined(this.label ? this.label : this.placeholder)}" .value="${this.value}"
         @input="${this._processInput}" @change="${this.dispatchChange}" ?readOnly=${this.readOnly}
         .type="${this._innerType()}" ?disabled=${this.disabled} step="${ifDefined(this.step)}"
         min="${ifDefined(this.min)}" max="${ifDefined(this.max)}" minLength="${ifDefined(this.minLength)}"
         maxLength="${ifDefined(this.maxLength)}" @focus=${this.dispatchFocus} />
     ${this.label ? html`<label class='input-label'>${this.label}</label>` : ''}
-    ${this.rightIcon ? html`<p-icon name='${this.rightIcon}' class='rightIcon'></p-icon>` : ''}
-    ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' @click='${this.typePassword}'
+    ${this.firstTypePassword ? html`<p-button class='eye-icon' id='eye-icon' part="show-password-icon" @click='${this.typePassword}'
         icon="eye-close" type="flat" shape="circle"></p-button>` : ''}
-    ${this.clear ? html`<p-icon name='close-circle' class='clearIcon' @click=${this.clearValue}></p-icon>` : ''}
-    ${this.type === 'search' ? html`<p-button icon='search' class='eye-icon' @click=${this.searchValue} type="flat">
-    </p-button>` : ''}
+    ${this.clear ? html`<p-button icon='close-circle' class='clearIcon' part="clear-icon" type='flat' @click=${this.clearValue}></p-button>` : ''}
+    ${this.type === 'search' ? html`<p-button icon='search' class='eye-icon' part="search-icon" @click=${this.searchValue} type="flat"></p-button>` : ''}
     ${this.type === 'number' && this.showStep ? html`<div class="btn-right btn-number">
-        <p-button id="btn-add" icon="up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button>
-        <p-button id="btn-sub" @click="${this._stepDel}" icon="down" shape="circle" type="flat"></p-button>
+        <p-button id="btn-add" icon="up" part="number-up" @click="${this._stepAdd}" type="flat" shape="circle"></p-button>
+        <p-button id="btn-sub" @click="${this._stepDel}" part="number-down" icon="down" shape="circle" type="flat"></p-button>
     </div>` : ''}
+    ${this.rightIcon ? html`<p-icon name='${this.rightIcon}' class='rightIcon'></p-icon>` : ''}
     <slot></slot>
 </p-tips>`;
     }

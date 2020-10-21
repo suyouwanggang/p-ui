@@ -1,5 +1,5 @@
 import { css, customElement, html, LitElement, property, query } from 'lit-element';
-import '../button/index.ts';
+import '../button/index';
 import { rgbToHsv, hslToHsv, parseToHSVA } from '../utils/color';
 import watchProperty from '../../decorators/watchProperty';
 import PMessage from '../message/index';

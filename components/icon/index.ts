@@ -5,7 +5,7 @@ import styleOne from './style.scss';
 export class PICon extends LitElement {
     @property({ type: Number, reflect: false }) view: number = 1024;
     @property({ type: String, reflect: true }) name: string =undefined;
-    @property({ type: String, reflect: false }) iconPath: string = './iconfont/icon.svg';
+    @property({ type: String, reflect: false }) iconPath: string = '/iconfont/icon.svg';
     @property({ type: String, reflect: false }) path: string = undefined;
     @property({ type: Number, reflect: false }) size: number = -1;
     @property({ type: String, reflect: false }) color: string = undefined;
