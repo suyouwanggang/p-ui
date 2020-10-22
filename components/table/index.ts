@@ -28,7 +28,7 @@ export default class PTable extends LitElement {
      * 滚动容器高度，默认是100%, 支持类似 css calc "100% - 40px" 或者“ 100vh - 30px ”
      */
     @property({type:String})
-    scroll_heightStyle="100%"; //支持css calc ( 支持的内容 )
+    scroll_heightStyle:string; //支持css calc ( 支持的内容 )
 
 
      /**
@@ -202,7 +202,7 @@ export default class PTable extends LitElement {
     render() {
         return html`<div part="root-div" style='${this._rectHead_height!=undefined?`padding-top:${this._rectHead_height}px;`:''}'>
             <div part='table-header-none'  style='${this._rectHead_height!=undefined?`height:${this._rectHead_height}px;`:''}'><!-- --></div>
-            <div part='scroll-div' style="height:calc( ${this.scroll_heightStyle} )">
+            <div part='scroll-div' style='${this.scroll_heightStyle!=undefined?`height: calc ( ${this.scroll_heightStyle} )`:'' };--table-header-height:${this._rectHead_height}px;' >
                 <table part="table" id="table"  style='${this._rectHead_height!=undefined?`margin-top:${0-this._rectHead_height}px;`:''}'>
                     ${this.renderTHead(false)}
                     ${this.renderTBodyData()}

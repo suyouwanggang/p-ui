@@ -10,8 +10,11 @@
     --table-row-odd:#fafafa;
     --table-head-bg-color:#f2f2f2;
 }
-
+:host-context([border]) div[part=root-div]{
+    border:var(--table-border);
+}
 div[part=root-div]{
+    border:none;
     flex:1;
     font-size:inherit;
     position: relative;
@@ -21,6 +24,7 @@ div[part=root-div]{
 
 div[part=scroll-div]{
     overflow: auto;
+    height: 100%;
     &::-webkit-scrollbar{
         width:14px;
     }
@@ -30,7 +34,6 @@ div[part=scroll-div]{
         min-height: 50px;
         border: 2px solid transparent;
         background-clip: content-box;
-      
     }
 }
 
@@ -49,8 +52,7 @@ table {
     word-wrap: break-word;
     text-align: center;
     /*width: 100%;*/
-    border:var(--table-border);
-    border-right:none;
+    border:none;
     border-spacing: 0;
     box-sizing: border-box;
     &[part=fixd-thead-table]{
@@ -61,32 +63,52 @@ table {
     
     thead{
         background-color: var(--table-head-bg-color);
-    }
-     thead tr:first th{
-        border-top:none;
-     }
-     td:last-child,th:last-child{
-         border-right:none;
-     }
-     thead tr th{
-         border-top:var(--table-border);
-         border-right:var(--table-border);
-         margin:0;
-         padding:0;
+        &::after{
+            content: " ";
+            width: 1px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--table-head-bg-color);
+            height: var(--table-header-height);
+        }
 
-         div.thWrap{
-            line-height: 18px;
-            font-weight: normal;
-            padding:6px ;
-            box-sizing: border-box;
-            .thWrap-text{
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+        tr th,th td {
+            border-top:var(--table-border);
+            border-right:var(--table-border);
+            margin:0;
+            padding:0;
+   
+            div.thWrap{
+               line-height: 18px;
+               font-weight: normal;
+               padding:6px ;
+               box-sizing: border-box;
+               .thWrap-text{
+                   white-space: nowrap;
+                   overflow: hidden;
+                   text-overflow: ellipsis;
+               }
             }
-         }
+   
+        }
+   
+         tr:first-child  th,  tr:first-child  td{
+           border-top:none;
+        }
+    }
+     tbody{
+        tr td {
+            
+            border-bottom:var(--table-border);
+        }
+        tr:last-child td {
+            border-bottom:none;
+        }
 
      }
+    
+     
 }
 
 

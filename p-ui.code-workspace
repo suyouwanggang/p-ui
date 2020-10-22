@@ -11,7 +11,10 @@
 			"**/.project": true,
 			"**/.settings": true,
 			"**/.factorypath": true
-		}
+		},
+		"svn.delete.ignoredRulesForDeletedFiles": [
+			"dist"
+		]
 	},
 	"launch": {
 		"configurations": [
