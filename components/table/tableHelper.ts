@@ -38,10 +38,7 @@ export type ColumnData={
      */
     tdAgile?:TdAgile;
    
-    /**
-     * 表头列宽
-     */
-    width?:string;//列宽
+   
     /**
      * 表头是否支持排序
      */
@@ -55,6 +52,19 @@ export type ColumnData={
      * 排序值
      */
     sorting?:Sorting;//升序，降序
+
+    /**
+     * 宽度
+     */
+    width?:string;
+    /**
+     * 最小宽度
+     */
+    minWidth?:string;
+    /**
+     * 最大宽度
+     */
+    maxWidth?:string;
     
     /**
      * 子 表头
@@ -75,7 +85,7 @@ export type RowHeader=Array<Array<ColumnData>>;
  * @param columns 表头
  * @returns {   
  *   rows: 有多少个 TR 
-    tdRenderColumnData:叶子TH， 用于渲染tbody
+     tdRenderColumnData:叶子TH， 用于渲染tbody
  * }
  */
 const  caculateColumnData=(columns:ColumnData[])=>{
@@ -139,7 +149,7 @@ const  caculateColumnData=(columns:ColumnData[])=>{
         iteratorColumnForRow(col);
     });
 
-    console.log(columns);
+   
     return {
         rows:rows,//有多少行
         tdRenderColumnData:renderThArray,//叶子单元格
@@ -150,4 +160,4 @@ const  caculateColumnData=(columns:ColumnData[])=>{
 
 export default caculateColumnData;
 
- 
+
