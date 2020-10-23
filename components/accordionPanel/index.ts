@@ -1,5 +1,6 @@
+
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
-import { } from '../icon/index';
+import   '../icon/index';
 import PanelStyle from './style.scss';
 import PanelStyle2 from './stylepanel.scss';
 /**panel 
@@ -34,6 +35,7 @@ export default class PAccordionPanel extends LitElement {
         });
     }
     getTabIndex(tab: PACTab) {
+        
         const children = this.childTabPanel;
         return children.indexOf(tab);
     }

@@ -1,28 +1,29 @@
-{
+  {
   "compilerOptions": {
     "target": "es2018",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
     "moduleResolution": "node",
-    "allowJs": true,
-    "declaration": true,
-    "declarationMap": true,
+    "noEmitOnError": true,
+    "lib": ["es2017", "dom"],
+    "strict": false,
+	 "allowJs": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "outDir": "dist",
     "sourceMap": true,
     "inlineSources": true,
-    "strict": false,
-    "noUnusedLocals": false,
+    "rootDir": "./",
+	"noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
+	"skipLibCheck": true,
     "noImplicitThis": true,
-    "outDir": "ts",
-    "skipLibCheck": true,
-    "experimentalDecorators": true
+    "declaration": true
   },
-   "compileOnSave": true,
-  "include":[
-	 "./**.ts","./components/**/**.ts","./test**/**.ts"
-  ],
-  "exclude": ["node_modules","node_modules/@types/","ts"]
+  
+  "exclude": ["node_modules/@types/","scripts","ts","dist"]
 }

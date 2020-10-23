@@ -2,7 +2,7 @@
 import { LitElement, svg,  customElement, property } from 'lit-element';
 import styleOne from './style.scss';
 @customElement('p-icon')
-export class PICon extends LitElement {
+export default class PICon extends LitElement {
     @property({ type: Number, reflect: false }) view: number = 1024;
     @property({ type: String, reflect: true }) name: string =undefined;
     @property({ type: String, reflect: false }) iconPath: string = '/iconfont/icon.svg';

@@ -1,73 +1,66 @@
 {
-  "name": "@suyouwanggang/p-ui",
-  "version": "1.0.1",
-  "main": "index.ts",
-  "config": {
-    "themeColor": "#e74e0f"
-  },
+  "name": "p-ui",
+  "version": "0.0.0",
+  "description": "Webcomponent p-ui following open-wc recommendations",
+  "repository": "git@github.com:suyouwanggang/p-ui.git",
+  "author": "p-ui",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "description": "Web Components implementation by lit-element ",
-  "repository": "git@github.com:suyouwanggang/p-ui.git",
-  "dependencies": {
-    "element-closest-polyfill": "^1.0.2",
-    "lit-element": "^2.4.0",
-    "number-precision": "^1.5.0",
-    "resize-observer-polyfill": "^1.5.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-transform-runtime": "^7.11.5",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/runtime": "^7.11.2",
-    "@types/node": "12.0.2",
-    "@webcomponents/webcomponentsjs": "^2.4.1",
-    "babel-loader": "^8.0.6",
-    "babel-polyfill": "^6.26.0",
-    "chokidar": "^3.4.3",
-    "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^2.1.1",
-    "extract-loader": "^5.1.0",
-    "file-loader": "^6.1.0",
-    "fs-extra": "8.0.1",
-    "gh-pages": "2.0.1",
-    "html-webpack-plugin": "^4.4.1",
-    "jest": "24.8.0",
-    "lit-scss-loader": "^1.0.1",
-    "node-sass": "^4.14.1",
-    "polymer-webpack-loader": "2.0.3",
-    "sass-loader": "^8.0.2",
-    "style-loader": "^1.1.3",
-    "to-string-loader": "^1.1.5",
-    "ts-jest": "24.0.2",
-    "ts-loader": "^6.2.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.9.7",
-    "typescript-require": "^0.3.0",
-    "uglifycss": "^0.0.29",
-    "web-component-analyzer": "^1.1.6",
-    "webpack": "^4.44.2",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "analyze": "wca analyze \"components/**/*.ts\" --outFile custom-elements.json",
-    "analyze2": "wca analyze \"components/**/*.ts\" --format markdown --outFile custom-elements.md",
-    "vscode": "wca analyze \"components/**/*.ts\" --format vscode --outFile custom-elements.vscode",
-    "copywc": "cp -r iconfont dist && cp -r node_modules/@webcomponents/webcomponentsjs/bundles dist && cp node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist",
-    "create": "ts-node ./scripts/generator.ts",
-    "tsc":"tsc",
-    "tsc:watch":"tsc --watch",
-    "css:watch":"node watch.css.js",
-    "dev": "npx webpack --mode development --watch",
-    "start": " webpack-dev-server --open --mode development",
-    "build": " npx webpack --mode production ",
-    "build:start": "cd dist && http-server -o -g -d ",
-    "build:clean": "rm -rf ./dist"
+    "analyzeMd": "wca analyze \"components/**/*.ts\" --outFile custom-elements.md",
+    "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
+    "tsc:watch": "tsc --watch",
+    "css:watch": "node watch.css.js",
+    "lint:eslint": "eslint --ext .ts,.html . --ignore-path .gitignore ./dist",
+    "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore ./dist",
+    "lint:prettier": "prettier \"**/*.js\" \"**/*.ts\" --check --ignore-path .gitignore",
+    "format:prettier": "prettier \"**/*.js\" \"**/*.ts\" --write --ignore-path .gitignore",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "format": "npm run format:eslint && npm run format:prettier",
+    "test": "tsc && web-test-runner --coverage",
+    "test:watch": "web-test-runner --watch",
+    "storybook": "concurrently --kill-others --names tsc,storybook \"npm run tsc:watch\" \"start-storybook --node-resolve --watch --open\"",
+    "storybook:build": "build-storybook",
+    "build": "rm -rf dist && tsc && rollup -c rollup.config.js",
+    "start:build": "web-dev-server --root-dir ./ --app-index index.html --node-resolve --open  --watch",
+    "prepublish": "tsc"
   },
-  "author": "suyouwanggang",
+  "dependencies": {
+    "lit-element": "^2.2.1",
+    "lit-html": "^1.1.2",
+    "number-precision": "^1.5.0"
+  },
+  "devDependencies": {
+    "@open-wc/building-rollup": "^1.0.0",
+    "@open-wc/demoing-storybook": "^2.0.0",
+    "@open-wc/eslint-config": "^2.0.0",
+    "@open-wc/testing": "^2.0.0",
+    "@types/node": "13.11.1",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "@web/dev-server": "^0.0.12",
+    "@web/test-runner": "^0.7.41",
+    "concurrently": "^5.1.0",
+    "deepmerge": "^4.2.2",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "husky": "^1.0.0",
+    "lint-staged": "^10.0.0",
+    "node-sass": "^4.14.1",
+    "prettier": "^2.0.4",
+    "rimraf": "^2.6.3",
+    "rollup": "^2.3.4",
+    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "tslib": "^1.11.0",
+    "typescript": "~4.0.3",
+    "uglifycss": "^0.0.29"
+  },
   "keywords": [
     "web components",
     "custom elements",
@@ -89,15 +82,26 @@
     "p-tree",
     "p-tree-node"
   ],
-  "ava": {
-    "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "esm",
-      "ts-node/register"
+  "eslintConfig": {
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
     ]
   },
-  "license": "ISC"
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
 }

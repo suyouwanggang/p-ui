@@ -119,10 +119,9 @@ export default class PTable extends LitElement {
             colspan=${colData.colspan==undefined?1:colData.colspan}
             >
             <div class='thWrap' part='colThDIV' >
-                ${fixed? html`
                <div part='colThWrap'> ${colData.renderHeader? colData.renderHeader(colData):html`<div class='thWrap-text'>${colData.text}</div>`}</div>
                 ${this.renderThSorting(colData)}
-                ${this.renderThDrag(colData)}`:html``}
+                ${this.renderThDrag(colData)}
             </div>
         </th>`;
     }

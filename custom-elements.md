@@ -1,15 +1,6 @@
-# simple-greeting
-
-## Properties
-
-| Property   | Attribute  | Type     | Default |
-|------------|------------|----------|---------|
-| `itemSize` | `itemSize` | `number` | 10      |
-| `name`     | `name`     | `string` | "中国 "   |
-| `size`     | `size`     | `number` | 14      |
-
-
 # p-ac-panel
+
+panel
 
 ## Properties
 
@@ -180,16 +171,17 @@
 
 ## Properties
 
-| Property     | Attribute   | Modifiers | Type                                             | Default   |
-|--------------|-------------|-----------|--------------------------------------------------|-----------|
-| `color`      |             | readonly  | `{ h: number; s: number; v: number; a: number; toHSVA(): number[]; toHSLA(): number[]; toRGBA(): number[]; toCMYK(): number[]; toHEXA(): string[]; clone: () => ...; }` |           |
-| `copyValue`  |             | readonly  | `string`                                         |           |
-| `hlsaInputs` |             | readonly  | `HTMLInputElement[]`                             |           |
-| `palette`    |             |           | `HTMLElement`                                    |           |
-| `rgbColor`   |             | readonly  | `string`                                         |           |
-| `rgbaInputs` |             | readonly  | `HTMLInputElement[]`                             |           |
-| `typeindex`  | `typeindex` |           | `number`                                         | 0         |
-| `value`      | `value`     |           | `string`                                         | "#ff0000" |
+| Property        | Attribute       | Modifiers | Type                                             | Default   |
+|-----------------|-----------------|-----------|--------------------------------------------------|-----------|
+| `canChangeType` | `canChangeType` |           | `boolean`                                        | true      |
+| `color`         |                 | readonly  | `{ h: number; s: number; v: number; a: number; toHSVA(): number[]; toHSLA(): number[]; toRGBA(): number[]; toCMYK(): number[]; toHEXA(): string[]; clone: () => ...; }` |           |
+| `copyValue`     |                 | readonly  | `string`                                         |           |
+| `hlsaInputs`    |                 | readonly  | `HTMLInputElement[]`                             |           |
+| `palette`       |                 |           | `HTMLElement`                                    |           |
+| `rgbColor`      |                 | readonly  | `string`                                         |           |
+| `rgbaInputs`    |                 | readonly  | `HTMLInputElement[]`                             |           |
+| `typeindex`     | `typeindex`     |           | `number`                                         | 0         |
+| `value`         | `value`         |           | `string`                                         | "#ff0000" |
 
 ## Methods
 
@@ -210,6 +202,7 @@
 
 | Property   | Attribute  | Type      | Default      |
 |------------|------------|-----------|--------------|
+| `block`    | `block`    | `boolean` | false        |
 | `dir`      | `dir`      | `string`  | "bottomleft" |
 | `disabled` | `disabled` | `boolean` | false        |
 | `value`    | `value`    | `string`  | "#ff0000"    |
@@ -321,77 +314,86 @@ panel 容器
 |      | header header 分发区 |
 
 
-# p-for
-
-## Properties
-
-| Property       | Attribute | Modifiers | Type       | Default     |
-|----------------|-----------|-----------|------------|-------------|
-| `index`        | `index`   |           | `string`   | "index"     |
-| `items`        |           |           | `Object[]` | "undefined" |
-| `templateHTML` |           | readonly  | `string`   |             |
-| `value`        | `value`   |           | `string`   | "value"     |
-
-## Methods
-
-| Method          | Type       |
-|-----------------|------------|
-| `renderSubItem` | `(): void` |
-
-
 # p-icon
 
 ## Properties
 
 | Property   | Attribute  | Type      | Default               |
 |------------|------------|-----------|-----------------------|
-| `color`    | `color`    | `string`  | ""                    |
+| `color`    | `color`    | `string`  | "undefined"           |
 | `iconPath` | `iconPath` | `string`  | "./iconfont/icon.svg" |
-| `name`     | `name`     | `string`  | ""                    |
-| `path`     | `path`     | `string`  | ""                    |
+| `name`     | `name`     | `string`  | "undefined"           |
+| `path`     | `path`     | `string`  | "undefined"           |
 | `size`     | `size`     | `number`  | -1                    |
 | `spin`     | `spin`     | `boolean` | false                 |
 | `view`     | `view`     | `number`  | 1024                  |
+
+
+# p-img
+
+## Properties
+
+| Property     | Attribute    | Modifiers | Type               | Default     | Description                                  |
+|--------------|--------------|-----------|--------------------|-------------|----------------------------------------------|
+| `alt`        | `alt`        |           | `string`           | "undefined" | 描述                                           |
+| `defaultsrc` | `defaultsrc` |           | `string`           |             | 如果图片加载失败，则加载默认图片                             |
+| `error`      |              |           | `boolean`          |             |                                              |
+| `errorAlt`   | `error-alt`  |           | `string`           | "error"     |                                              |
+| `fit`        | `fit`        |           | `string`           | "cover"     | 自适应  同原生object-fit，可取值cover（默认）、fill、contain |
+| `gallery`    | `gallery`    |           | `string`           |             | 画廊 组名称                                       |
+| `img`        |              | readonly  | `HTMLImageElement` |             |                                              |
+| `lazy`       | `lazy`       |           | `boolean`          |             | 是否懒加载（滚动可见此时才加载）                             |
+| `ratio`      | `ratio`      |           | `string`           |             | 图片比例 例如'16/9'                                |
+| `showAlt`    | `show-alt`   |           | `boolean`          |             | 是否一直显示描述                                     |
+| `src`        | `src`        |           | `string`           |             |                                              |
+
+## Methods
+
+| Method  | Type                                     |
+|---------|------------------------------------------|
+| `focus` | `(): void`                               |
+| `load`  | `(src: string, hasload?: boolean): void` |
 
 
 # p-input
 
 ## Properties
 
-| Property               | Attribute      | Modifiers | Type                   | Default     |
-|------------------------|----------------|-----------|------------------------|-------------|
-| `block`                | `block`        |           | `boolean \| undefined` | false       |
-| `clear`                | `clear`        |           | `boolean \| undefined` | false       |
-| `customValidateMethod` |                |           |                        | "undefined" |
-| `debounce`             | `debounce`     |           | `number \| undefined`  | "undefined" |
-| `disabled`             | `disabled`     |           | `boolean \| undefined` | false       |
-| `errorMessage`         | `errorMessage` |           | `string \| undefined`  | "undefined" |
-| `errortips`            | `errortips`    |           | `string \| undefined`  |             |
-| `form`                 |                | readonly  | `HTMLFormElement`      |             |
-| `input`                |                | readonly  | `HTMLInputElement`     |             |
-| `invalid`              | `invalid`      |           | `boolean \| undefined` | false       |
-| `label`                | `label`        |           | `string \| undefined`  |             |
-| `leftIcon`             | `leftIcon`     |           | `string \| undefined`  |             |
-| `max`                  | `max`          |           | `number \| undefined`  | "undefined" |
-| `maxLength`            | `maxLength`    |           | `number \| undefined`  | "undefined" |
-| `min`                  | `min`          |           | `number \| undefined`  | "undefined" |
-| `minLength`            | `minLength`    |           | `number \| undefined`  | "undefined" |
-| `name`                 | `name`         |           | `string \| undefined`  |             |
-| `novalidate`           | `novalidate`   |           | `boolean \| undefined` | false       |
-| `pTipCon`              |                | readonly  | `PTips`                |             |
-| `pattern`              | `pattern`      |           | `string \| undefined`  | "undefined" |
-| `placeholder`          | `placeholder`  |           | `string`               |             |
-| `readOnly`             | `readOnly`     |           | `boolean \| undefined` | false       |
-| `required`             | `required`     |           | `boolean \| undefined` | false       |
-| `rightIcon`            | `rightIcon`    |           | `string \| undefined`  |             |
-| `showStep`             | `showStep`     |           | `boolean \| undefined` | false       |
-| `step`                 | `step`         |           | `number \| undefined`  | 1           |
-| `throttle`             | `throttle`     |           | `number \| undefined`  | "undefined" |
-| `tips`                 | `tips`         |           | `string`               |             |
-| `type`                 | `type`         |           | `inputtype`            | "text"      |
-| `validationMessage`    |                | readonly  | `string`               |             |
-| `validity`             |                | readonly  | `boolean`              |             |
-| `value`                | `value`        |           | `string \| undefined`  | ""          |
+| Property               | Attribute      | Modifiers | Type                                 | Default     |
+|------------------------|----------------|-----------|--------------------------------------|-------------|
+| `block`                | `block`        |           | `boolean \| undefined`               | false       |
+| `clear`                | `clear`        |           | `boolean \| undefined`               | false       |
+| `customValidateMethod` |                |           | `CustomValidateMethode \| undefined` | "undefined" |
+| `debounce`             | `debounce`     |           | `number \| undefined`                | "undefined" |
+| `disabled`             | `disabled`     |           | `boolean \| undefined`               | false       |
+| `errorMessage`         | `errorMessage` |           | `string \| undefined`                | "undefined" |
+| `errortips`            | `errortips`    |           | `string \| undefined`                |             |
+| `form`                 |                | readonly  | `HTMLFormElement`                    |             |
+| `input`                |                | readonly  | `HTMLInputElement`                   |             |
+| `invalid`              | `invalid`      |           | `boolean \| undefined`               | false       |
+| `label`                | `label`        |           | `string \| undefined`                |             |
+| `leftIcon`             | `leftIcon`     |           | `string \| undefined`                |             |
+| `max`                  | `max`          |           | `number \| undefined`                | "undefined" |
+| `maxLength`            | `maxLength`    |           | `number \| undefined`                | "undefined" |
+| `min`                  | `min`          |           | `number \| undefined`                | "undefined" |
+| `minLength`            | `minLength`    |           | `number \| undefined`                | "undefined" |
+| `name`                 | `name`         |           | `string \| undefined`                |             |
+| `novalidate`           | `novalidate`   |           | `boolean \| undefined`               | false       |
+| `pTipCon`              |                | readonly  | `PTips`                              |             |
+| `pattern`              | `pattern`      |           | `string \| undefined`                | "undefined" |
+| `placeholder`          | `placeholder`  |           | `string`                             |             |
+| `readOnly`             | `readOnly`     |           | `boolean \| undefined`               | false       |
+| `required`             | `required`     |           | `boolean \| undefined`               | false       |
+| `rightIcon`            | `rightIcon`    |           | `string \| undefined`                |             |
+| `showStep`             | `showStep`     |           | `boolean \| undefined`               | false       |
+| `step`                 | `step`         |           | `number \| undefined`                | 1           |
+| `throttle`             | `throttle`     |           | `number \| undefined`                | "undefined" |
+| `tips`                 | `tips`         |           | `string`                             |             |
+| `type`                 | `type`         |           | `inputtype`                          | "text"      |
+| `validationMessage`    |                | readonly  | `string`                             |             |
+| `validity`             |                | readonly  | `boolean`                            |             |
+| `validityResult`       |                | readonly  | `valiidityResultType`                |             |
+| `value`                | `value`        |           | `string \| undefined`                | ""          |
 
 ## Methods
 
@@ -413,6 +415,22 @@ panel 容器
 | `focus`  | `CustomEvent<{ value: string; }>`              |
 | `input`  | `CustomEvent<{ value: string; }>`              |
 | `submit` | `CustomEvent<{ value: string \| undefined; }>` |
+
+
+# p-iterator
+
+## Properties
+
+| Property   | Type                                       |
+|------------|--------------------------------------------|
+| `template` | `(item: any, key?: any) => TemplateResult` |
+| `value`    | `Object \| Map<T, any> \| Set<T> \| T[]`   |
+
+## Methods
+
+| Method             | Type       |
+|--------------------|------------|
+| `createRenderRoot` | `(): this` |
 
 
 # p-row
@@ -447,6 +465,15 @@ panel 容器
 | `row`        | `row`        | `boolean`      |
 
 
+# p-lazy
+
+## Properties
+
+| Property | Type      | Default |
+|----------|-----------|---------|
+| `loaded` | `boolean` | false   |
+
+
 # p-loading
 
 ## Properties
@@ -456,30 +483,6 @@ panel 容器
 | `color`     | `color`   |           | `string`              |
 | `loadingEl` |           | readonly  | `HTMLElement \| null` |
 | `size`      | `size`    |           | `string`              |
-
-
-# p-menu
-
-## Properties
-
-| Property       | Attribute       | Type      | Default     | Description              |
-|----------------|-----------------|-----------|-------------|--------------------------|
-| `overlay`      | `overlay`       | `boolean` | false       | 定义是 static 还是动态触发位置的mneu |
-| `trigger`      | `trigger`       | `string`  | "undefined" | 如果是动态触发的，触发元素选择器         |
-| `triggerEvent` | `trigger-event` | `string`  | "undefined" | 如果是动态触发的，                |
-
-
-# p-menuitem
-
-## Properties
-
-| Property  | Attribute | Type      | Default     | Description      |
-|-----------|-----------|-----------|-------------|------------------|
-| `disable` | `disable` | `Boolean` | false       | 是否 禁用            |
-| `href`    | `href`    | `string`  | "undefined" | 点击url            |
-| `icon`    | `icon`    | `string`  | "undefined" | 菜单图标             |
-| `label`   | `label`   | `string`  | "undefined" | 如果是动态触发的，触发元素选择器 |
-| `value`   | `value`   | `string`  | "undefined" | 点击事件 传值          |
 
 
 # p-message
@@ -492,35 +495,8 @@ panel 容器
 | `color`   | `color`            | `string`  |                                                  |
 | `hAgile`  | `horizontal-agile` | `string`  |                                                  |
 | `icon`    | `icon`             | `string`  |                                                  |
-| `loading` | `loading`          | `boolean` | "(text?: string \| MessageType, duration: number = -1, onclose?: Function) => {\r\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: -1, loading: true };\r\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\r\n    }" |
-| `show`    | `show`             | `boolean` | "(config: MessageType) => {\r\n        if (config.position === undefined) {\r\n            config.position = PMessage.DEFAULTPOSTION;\r\n        }\r\n        const div = PMessage._getMessagePositionDIV(config.position);\r\n        const message: PMessage = new PMessage();\r\n        if (config.icon) {\r\n            message.icon = config.icon;\r\n        }\r\n        if (config.color) {\r\n            message.color = config.color;\r\n        }\r\n        if (config.loading !== undefined) {\r\n            message.loading = config.loading;\r\n        }\r\n        if (config.position.indexOf('left') >= 0) {\r\n            message.hAgile = 'left';\r\n        } else if (config.position.indexOf('right') >= 0) {\r\n            message.hAgile = 'right';\r\n        } else {\r\n            message.hAgile = 'center';\r\n        }\r\n        div.appendChild(message);\r\n        message.textContent = config.text;\r\n        message.show = true;\r\n        let timer: number = undefined;\r\n        if (config.duration && config.duration > 0) {\r\n            timer = window.setTimeout(() => {\r\n                message.show = false;\r\n                config.onclose && config.onclose;\r\n                message.parentElement.removeChild(message);\r\n            }, config.duration);\r\n        }\r\n        return message;\r\n    }" |
-
-
-# p-page-btn
-
-## Properties
-
-| Property    | Attribute  | Modifiers | Type      | Default     |
-|-------------|------------|-----------|-----------|-------------|
-| `pageCount` |            | readonly  | `number`  |             |
-| `pagesize`  | `pagesize` |           | `number`  | 20          |
-| `simple`    | `simple`   |           | `boolean` | false       |
-| `total`     | `total`    |           | `number`  | "undefined" |
-| `value`     | `value`    |           | `number`  | 1           |
-
-## Methods
-
-| Method           | Type                       |
-|------------------|----------------------------|
-| `changePageNum`  | `(addOrDel: number): void` |
-| `dispatchChange` | `(): void`                 |
-
-## Events
-
-| Event                | Type                                             |
-|----------------------|--------------------------------------------------|
-| `before-page-change` | `CustomEvent<{ current: number; toPage: number; pagesize: number; total: number; }>` |
-| `page-change`        | `CustomEvent<{ current: number; pagesize: number; total: number; }>` |
+| `loading` | `loading`          | `boolean` | "(text?: string \| MessageType, duration: number = -1, onclose?: Function) => {\n        const defaultInfoConfig: MessageType = { position: PMessage.DEFAULTPOSTION, duration: -1, loading: true };\n        return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);\n    }" |
+| `show`    | `show`             | `boolean` | "(config: MessageType) => {\n        if (config.position === undefined) {\n            config.position = PMessage.DEFAULTPOSTION;\n        }\n        const div = PMessage._getMessagePositionDIV(config.position);\n        const message: PMessage = new PMessage();\n        if (config.icon) {\n            message.icon = config.icon;\n        }\n        if (config.color) {\n            message.color = config.color;\n        }\n        if (config.loading !== undefined) {\n            message.loading = config.loading;\n        }\n        if (config.position.indexOf('left') >= 0) {\n            message.hAgile = 'left';\n        } else if (config.position.indexOf('right') >= 0) {\n            message.hAgile = 'right';\n        } else {\n            message.hAgile = 'center';\n        }\n        div.appendChild(message);\n        message.textContent = config.text;\n        message.show = true;\n        let timer: number = undefined;\n        if (config.duration && config.duration > 0) {\n            timer = window.setTimeout(() => {\n                message.show = false;\n                config.onclose && config.onclose(message)  ;\n                message.parentElement.removeChild(message);\n            }, config.duration);\n        }\n        return message;\n    }" |
 
 
 # p-panel
@@ -678,16 +654,6 @@ panel 容器
 | `change` | `CustomEvent<{ old: number; value: number; }>` |
 
 
-# p-router-slot
-
-## Properties
-
-| Property      | Attribute | Modifiers | Type                  |
-|---------------|-----------|-----------|-----------------------|
-| `route`       | `route`   |           | `string`              |
-| `slotElement` |           | readonly  | `HTMLElement \| null` |
-
-
 # p-scroll
 
 滚动容器
@@ -698,19 +664,20 @@ panel 容器
 |----------------------|------------------------|-----------|------------------|---------|--------------------------------|
 | `caculateXBarWidth`  |                        | readonly  | `number`         |         |                                |
 | `caculateYBarHeight` |                        | readonly  | `number`         |         |                                |
-| `containerDIV`       |                        | readonly  | `HTMLDivElement` |         |                                |
-| `contentDIV`         |                        | readonly  | `HTMLDivElement` |         |                                |
+| `containerDIV`       |                        |           | `HTMLDivElement` |         |                                |
+| `contentDIV`         |                        |           | `HTMLDivElement` |         |                                |
+| `content_wrap_DIV`   |                        |           | `HTMLDivElement` |         |                                |
 | `keyEnable`          | `keyEnable`            |           | `boolean`        | true    | 是否允许 键盘 上下左右按键滚动               |
 | `overflowX`          | `overflow-x`           |           | `string`         | ""      | hidden,则水平滚动条永远隐藏，否则根据内容自动显示隐藏 |
 | `overflowY`          | `overflow-y`           |           | `string`         | ""      | hidden,则竖直滚动条隐藏，，否则根据内容自动显示隐藏  |
-| `partXHandler`       |                        | readonly  | `HTMLDivElement` |         |                                |
-| `partXScroll`        |                        | readonly  | `HTMLDivElement` |         |                                |
-| `partYHandler`       |                        | readonly  | `HTMLDivElement` |         |                                |
-| `partYScroll`        |                        | readonly  | `HTMLDivElement` |         |                                |
-| `rightBottom`        |                        | readonly  | `HTMLElement`    |         |                                |
+| `partXHandler`       |                        |           | `HTMLDivElement` |         |                                |
+| `partXScroll`        |                        |           | `HTMLDivElement` |         |                                |
+| `partYHandler`       |                        |           | `HTMLDivElement` |         |                                |
+| `partYScroll`        |                        |           | `HTMLDivElement` |         |                                |
+| `rightBottom`        |                        |           | `HTMLElement`    |         |                                |
 | `scrollBarOutWidth`  | `scroll-bar-out-width` |           | `number`         | 12      | 滚动条 容器宽度，必须大与 滚动条宽度            |
 | `scrollBarWidth`     | `scroll-bar-width`     |           | `number`         | 8       | 滚动条宽度                          |
-| `throttTime`         |                        |           | `number`         | 20      | 事件节流时间                         |
+| `throttTime`         | `throttTime`           |           | `number`         | 20      | 事件节流时间                         |
 | `wheelScrollChange`  |                        |           | `number`         | 120     |                                |
 
 ## Methods
@@ -737,7 +704,7 @@ panel 容器
 | `scroll-change` | `CustomEvent<{ scrollTop: number; scrollLeft: number; }>` | 滚动事件，detail scrollTop,detail scrollLeft 说明内容滚动位置, |
 | `scroll-x`      | `CustomEvent<{ value: number; oldValue: number; }>` | 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小 |
 | `scroll-x-end`  | `CustomEvent<{ value: number; }>`                | 水平滚动到最右侧触发      * detail.value 内容水平滚动大小          |
-| `scroll-y`      | `CustomEvent<{ value: number; oldValue: number; }>` | 竖直滚动的时触发, detail.value,内容滚动高度 detail.oldvalue,原来内容滚动高度 |
+| `scroll-y`      | `CustomEvent<{ value: number; oldValue: number; }>` | 水平滚动时触发 detail.value 内容区水平滚动大小 detail.oldValue 原始内容区水平滚动大小 |
 | `scroll-y-end`  | `CustomEvent<{ value: number; }>`                | 竖直滚动到底部时触发，detail.value,内容滚动高度                   |
 
 ## Slots
@@ -991,47 +958,51 @@ panel 容器
 
 # p-tree-node
 
+将数组对象根据转化为 root 子节点，
+
 ## Properties
 
-| Property      | Attribute    | Modifiers | Type             | Default |
-|---------------|--------------|-----------|------------------|---------|
-| `close`       | `close`      |           | `boolean`        | false   |
-| `closeable`   | `closeable`  |           | `boolean`        | true    |
-| `data`        | `data`       |           | `TreeNodeData`   | null    |
-| `icon`        | `icon`       |           | `string`         | null    |
-| `name`        | `name`       |           | `string`         | null    |
-| `nodeRender`  | `nodeRender` |           | `TreeNodeRender` | null    |
-| `subNodeSize` |              | readonly  | `number`         |         |
+| Property         | Attribute      | Modifiers | Type             | Default     |
+|------------------|----------------|-----------|------------------|-------------|
+| `close`          | `close`        |           | `boolean`        | false       |
+| `closeable`      | `closeable`    |           | `boolean`        | true        |
+| `directTreeNode` |                | readonly  | `PTreeNode[]`    |             |
+| `icon`           | `icon`         |           | `string`         | null        |
+| `name`           | `name`         |           | `string`         | null        |
+| `nodeRender`     | `nodeRender`   |           | `TreeNodeRender` | null        |
+| `subChildSize`   | `subChildSize` |           | `number`         | "undefined" |
 
 ## Methods
 
-| Method               | Type                   |
-|----------------------|------------------------|
-| `toogleNode`         | `(event: Event): void` |
-| `updateNodeDistance` | `(): void`             |
+| Method       | Type                   |
+|--------------|------------------------|
+| `toogleNode` | `(event: Event): void` |
 
 
 # p-tree
 
 ## Properties
 
-| Property           | Attribute          | Modifiers | Type               | Default |
-|--------------------|--------------------|-----------|--------------------|---------|
-| `allTreeNode`      |                    | readonly  | `PTreeNode[]`      |         |
-| `data`             | `data`             |           | `TreeNodeData`     | null    |
-| `filterData`       |                    | readonly  | `TreeNodeData`     |         |
-| `filterFn`         | `filterFn`         |           | `TreeFilter`       | null    |
-| `filterString`     | `filter-string`    |           | `string`           | null    |
-| `includeStartNode` | `includeStartNode` |           | `boolean`          | null    |
-| `nodeRender`       | `nodeRender`       |           | `TreeNodeRender`   | null    |
-| `rootCloseable`    | `rootCloseable`    |           | `boolean`          | true    |
-| `startKey`         | `startKey`         |           | `string \| number` | null    |
-| `startNode`        |                    | readonly  | `TreeNodeData`     |         |
+| Property           | Attribute          | Modifiers | Type               | Default         |
+|--------------------|--------------------|-----------|--------------------|-----------------|
+| `cacheNodeStatus`  | `cacheNodeStatus`  |           | `boolean`          | true            |
+| `data`             | `data`             |           | `TreeNodeData`     | null            |
+| `filterData`       |                    | readonly  | `TreeNodeData`     |                 |
+| `filterFn`         | `filterFn`         |           | `TreeFilter`       | "defaultFilter" |
+| `filterString`     | `filter-string`    |           | `string`           | null            |
+| `includeStartNode` | `includeStartNode` |           | `boolean`          | null            |
+| `nodeRender`       | `nodeRender`       |           | `TreeNodeRender`   | null            |
+| `rootCloseable`    | `rootCloseable`    |           | `boolean`          | true            |
+| `startKey`         | `startKey`         |           | `string \| number` | null            |
+| `startNode`        |                    | readonly  | `TreeNodeData`     |                 |
 
 ## Methods
 
-| Method               | Type                                             |
-|----------------------|--------------------------------------------------|
-| `renderNode`         | `(d: TreeNodeData, tree: PTree): TemplateResult` |
-| `renderSubNode`      | `(d: TreeNodeData, tree: PTree): TemplateResult \| TemplateResult[]` |
-| `updateNodeDistance` | `(): void`                                       |
+| Method            | Type                                             |
+|-------------------|--------------------------------------------------|
+| `doFilterData`    | `(): void`                                       |
+| `getNodeData`     | `(node: string \| PTreeNode): TreeNodeData`      |
+| `renderEmptyNode` | `(): TemplateResult`                             |
+| `renderNode`      | `(d: TreeNodeData): TemplateResult`              |
+| `renderSubNode`   | `(d: TreeNodeData): TemplateResult \| TemplateResult[]` |
+| `toJSONData`      | `(): any`                                        |
