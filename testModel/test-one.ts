@@ -34,7 +34,7 @@ export default class TestOne extends LitElement {
     array: Person2[] = [];
     constructor() {
         super();
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 5; i++) {
             let p = {
                 user: {
                     userName: 'wanggang' + i,

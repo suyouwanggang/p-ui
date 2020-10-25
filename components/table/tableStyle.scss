@@ -1,5 +1,6 @@
 :host{
-    display: flex;
+    display: block;
+    position: relative;
     min-height: 300px;
     --table-font-size: 12px;
     font-size:var(--table-font-size);
@@ -10,59 +11,77 @@
     --table-row-odd:#fafafa;
     --table-head-bg-color:#f2f2f2;
 }
-:host-context([border]) div[part=root-div]{
+:host([border]) div[part=root-div]{
     border:var(--table-border);
 }
 div[part=root-div]{
     border:none;
-    flex:1;
     font-size:inherit;
-    position: relative;
+    left:0;bottom: 0;
+    top:0;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: absolute;
     display: block;
-    background-color: transparent;
+    background-color: #FFF;
 }
+
 
 div[part=scroll-div]{
     overflow: auto;
     height: 100%;
+
     &::-webkit-scrollbar{
-        width:14px;
+        width:10px;
+        height: 10px;
     }
     &::-webkit-scrollbar-thumb {
         border-radius: 5px;
         background-color: #e1e1e1;
+        width: 6px;
         min-height: 50px;
         border: 2px solid transparent;
         background-clip: content-box;
+
+    }
+    &::-webkit-scrollbar-track {
+        border-radius: 5px; 
+        background-color: #f3f3f3;
+
+
     }
 }
 
-div[part=table-header-none]{
-    width: 100%;
+div[part=table-header-div]{
     position: absolute;
+    width: 0;
     top: 0;
     left: 0;
+
     border-bottom:var(--table-border);
-    background-color: var(--table-head-bg-color);
+    overflow: hidden;
 }
 
-
+:host([fixed]) table{
+    table-layout: fixed;
+}
 table {
-    /*table-layout: fixed;*/
     word-wrap: break-word;
-    text-align: center;
-    /*width: 100%;*/
+    /*table-layout: fixed;*/
     border:none;
     border-spacing: 0;
     box-sizing: border-box;
-    &[part=fixd-thead-table]{
+    &[part=fixed-thead-table]{
         position:absolute;
         top:0px;
         left:0px;
+        table-layout:auto;
+        background-color: #FFF;
     }
     
     thead{
-        background-color: var(--table-head-bg-color);
+       
         &::after{
             content: " ";
             width: 1px;
@@ -78,7 +97,8 @@ table {
             border-right:var(--table-border);
             margin:0;
             padding:0;
-   
+            background-color: var(--table-head-bg-color);
+
             div.thWrap{
                line-height: 18px;
                font-weight: normal;
@@ -99,7 +119,7 @@ table {
     }
      tbody{
         tr td {
-            
+            background-color: #FFF;
             border-bottom:var(--table-border);
         }
         tr:last-child td {

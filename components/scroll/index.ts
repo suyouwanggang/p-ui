@@ -1,12 +1,9 @@
 import { css, customElement, eventOptions, html, LitElement, property, query } from 'lit-element';
 import ResizeObserver from 'resize-observer-polyfill';
 import { throttle } from '../utils/eventHelper';
+import getStyleProperty from '../utils/styleUtils';
 import ScrollStyleObj from './style.scss';
-const getStyleProperty = function (oE: HTMLElement, sPr: string) {
-  sPr = sPr.replace(/([A-Z])/g, '-$1').toLowerCase();
-  const d = document.defaultView.getComputedStyle(oE);
-  return d.getPropertyValue(sPr);
-};
+
 /**
  * (x: number, y: number): void;
  */

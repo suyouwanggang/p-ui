@@ -7,6 +7,8 @@ export enum Sorting{
     ASC="ASC", DESC="DESC"
 };
 export type TdAgile='left'|'center'|'right';
+
+
 /**
  *定义表头
  */
@@ -19,7 +21,11 @@ export type ColumnData={
     /**
      * //渲染 td dom
      */
-    renderTd?:(rowData:any) =>TemplateResult|TemplateResult[]|null|undefined;
+    renderTd?:(rowData:any) =>TemplateResult|TemplateResult[]|{
+        template:TemplateResult|TemplateResult[];
+        colspan?:number;
+        rowspan?:number;
+    }|null|undefined;
      
     /**
      * //数据源属性,支持按照"."分割
@@ -47,7 +53,7 @@ export type ColumnData={
      *是否支持列固定
      *  程序内部使用，通过leftfixdColumns,rightfixedColumns 来改变和设置 
      */
-    fixed?:true|undefined;
+    fixed?:boolean;
     /**
      * 排序值
      */
@@ -56,15 +62,15 @@ export type ColumnData={
     /**
      * 宽度
      */
-    width?:string;
+    width?:number|string;
     /**
      * 最小宽度
      */
-    minWidth?:string;
+    minWidth?:number;
     /**
      * 最大宽度
      */
-    maxWidth?:string;
+    maxWidth?:number;
     
     /**
      * 子 表头
@@ -73,6 +79,19 @@ export type ColumnData={
 
     colspan?:number;//列多少
     rowspan?:number;//多少行
+    /**
+     * 内部使用属性
+     */
+    _isAuto?:boolean;
+    /**
+     * 列colIndex (内部使用)
+     */
+    _colIndex?:number;
+
+    /**
+     * 上级 data
+     */
+    _parentColumnData?:ColumnData;
 };
 /**
  * 定义需要table 表头 行
@@ -110,14 +129,19 @@ const  caculateColumnData=(columns:ColumnData[])=>{
     const levelMap=new Map<ColumnData ,number>();//key column, value,level
     levelMap.set(undefined,0);
     const iteratorColumn=(column:ColumnData, childArray:ColumnData[]) =>{
+       
        if(childArray&&childArray.length>0){
            const parentLevel=levelMap.get(column);
            childArray.forEach((c:ColumnData) => {
+               c._isAuto=c.width==undefined||c.width==='auto';
                levelMap.set(c,parentLevel+1);
                if(parentLevel+1>maxLevel){
                      maxLevel=parentLevel+1;
                 }
                getColSpan(c);
+               if(column!=undefined){
+                   c._parentColumnData=column;
+               }
                if(c.children&&c.children.length>0){
                    iteratorColumn(c,c.children);
                }
@@ -126,6 +150,23 @@ const  caculateColumnData=(columns:ColumnData[])=>{
     }
    
     iteratorColumn(undefined,columns);
+    const iteratorForColIndex=(startColIndex:number,column:ColumnData, childArray:ColumnData[]) =>{
+        
+        if(childArray&&childArray.length>0){
+            let colIndex=startColIndex;
+            childArray.forEach((c)=>{
+                c._colIndex=colIndex;
+                colIndex+=getColSpan(c);
+            }); 
+            childArray.forEach(((c) =>{
+                if(c.children){
+                    iteratorForColIndex(c._colIndex,c,c.children)
+                }
+            }))
+        } 
+     }
+     iteratorForColIndex(0,undefined,columns);
+    
     //console.log(maxLevel);
     const rows:RowHeader=[];
     for(let i=0,j=maxLevel;i<j;i++){
