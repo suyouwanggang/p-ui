@@ -73,12 +73,12 @@
 
 </p-scroll>
 <script>
-  var scroll=document.getElementById('scrollID');
+  const scroll=document.getElementById('scrollID');
   scroll.addEventListener('scroll-x', function(event){
-    console.log('scroll-x ' +event.detail.oldValue +' to '+event.detail.value);
+    console.log(`scroll-x ${ event.detail.oldValue } to ${event.detail.value}`);
   });
   scroll.addEventListener('scroll-y', function(event){
-    console.log('scroll-y '+ event.detail.oldValue +' to '+event.detail.value);
+    console.log(`scroll-y ${ event.detail.oldValue } to ${event.detail.value}`);
   });
   scroll.addEventListener('scroll-x-end', function(event){
     console.log('scroll-x-end' );
@@ -87,10 +87,10 @@
     console.log('scroll-y-end' );
   });
   scroll.addEventListener('scroll-change', function(event){
-    console.log('scroll-change scrollTop='+event.detail.scrollTop +" scrollLeft= "+event.detail.scrollLeft );
+    console.log(`scroll-change scrollTop=${event.detail.scrollTop } scrollLeft= ${event.detail.scrollLeft}` );
   });
-  var frag=document.createDocumentFragment();
-  for(var i=0,j=40;i<j;i++){
+  const frag=document.createDocumentFragment();
+  for(let i=0,j=40;i<j;i++){
     var div =document.createElement('div');
     div.innerHTML=`<div style='width:${300+Math.random()*500}px;border:1px solid #b2b2b2;margin:20px;'>${i}王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚王刚</div>`;
     frag.appendChild(div);
@@ -163,7 +163,7 @@ tipContent='bundles index.ts → build\index.js, docs\build\index.js...
   <p-img lazy  src="https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></p-img>
   <p-img lazy src="https://images.xxx.jpg" alt="image-keyboard" error-alt='加载错误拉。。。'></p-img>
 <script >
-        var pop=document.getElementById('popObj');
+        const pop=document.getElementById('popObj');
 
 </script>
     <script>
@@ -172,9 +172,9 @@ tipContent='bundles index.ts → build\index.js, docs\build\index.js...
           return response.json();
       })
       .then(function(myJson) {
-          var tree=document.getElementById('p-tree');
+          const tree=document.getElementById('p-tree');
           console.log(myJson);
-          let arry={"name":'地图',child:[]};
+          const arry={"name":'地图',child:[]};
           arry.child=[];
            for(let i=0;i<100;i++ ){
             for(let x=0,y=myJson.length;x<y;x++){

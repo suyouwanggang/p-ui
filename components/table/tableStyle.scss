@@ -39,17 +39,15 @@ div[part=scroll-div]{
     &::-webkit-scrollbar-thumb {
         border-radius: 5px;
         background-color: #e1e1e1;
-        width: 6px;
+        width: 8px;
+        border:1px solid transparent;
         min-height: 50px;
-        border: 2px solid transparent;
         background-clip: content-box;
 
     }
     &::-webkit-scrollbar-track {
         border-radius: 5px; 
-        background-color: #f3f3f3;
-
-
+        background-color: #FFF;
     }
 }
 
@@ -58,7 +56,6 @@ div[part=table-header-div]{
     width: 0;
     top: 0;
     left: 0;
-
     border-bottom:var(--table-border);
     overflow: hidden;
 }
@@ -81,7 +78,6 @@ table {
     }
     
     thead{
-       
         &::after{
             content: " ";
             width: 1px;
@@ -120,6 +116,8 @@ table {
      tbody{
         tr td {
             background-color: #FFF;
+            padding-left:3px ;
+            padding-right:3px;
             border-bottom:var(--table-border);
         }
         tr:last-child td {

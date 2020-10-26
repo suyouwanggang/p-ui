@@ -16,10 +16,10 @@
     "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
     "tsc:watch": "tsc --watch",
     "css:watch": "node watch.css.js",
-    "lint:eslint": "eslint --ext .ts,.html . --ignore-path .gitignore ./dist",
-    "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore ./dist",
-    "lint:prettier": "prettier \"**/*.js\" \"**/*.ts\" --check --ignore-path .gitignore",
-    "format:prettier": "prettier \"**/*.js\" \"**/*.ts\" --write --ignore-path .gitignore",
+    "lint:eslint": "eslint --ext .ts,.html . ",
+    "format:eslint": "eslint --ext .ts,.html . --fix ",
+    "lint:prettier": "prettier \"**/*.js\" \"**/*.ts\" --check ",
+    "format:prettier": "prettier \"**/*.js\" \"**/*.ts\" --write ",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "format": "npm run format:eslint && npm run format:prettier",
     "test": "tsc && web-test-runner --coverage",
@@ -31,11 +31,11 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "lit-element": "^2.2.1",
-    "lit-html": "^1.1.2",
+    "lit-element": "^2.4.0",
+    "lit-html": "^1.3.0",
     "number-precision": "^1.5.0"
   },
-  "devDependencies": {
+  "devDependencies": { 
     "@open-wc/building-rollup": "^1.0.0",
     "@open-wc/demoing-storybook": "^2.0.0",
     "@open-wc/eslint-config": "^2.0.0",

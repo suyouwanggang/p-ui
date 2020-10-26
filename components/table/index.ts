@@ -43,10 +43,14 @@ export default class PTable extends LitElement {
      /**
      * table 
      */
-    
-    get table():HTMLTableElement{
-        return this.renderRoot.querySelector('table#table');
-    }
+  private __tableElement:HTMLTableElement;
+   get  table(){
+       if(this.__tableElement==undefined || this.__tableElement==null){
+           this.__tableElement=this.renderRoot.querySelector('#tableID');
+       }
+    //    console.log(this.__tableElement);
+       return this.__tableElement;
+   }
 
 
     /**
@@ -132,8 +136,7 @@ export default class PTable extends LitElement {
             }
             const styleString=[];
             if(leftIndex>0){
-
-               for(let i=0,j=leftIndex;i<=j;i++){
+               for(let i=0,j=leftIndex;i<j;i++){
                    const selector=`th[colIndex="${i}"],td[colIndex="${i}"]`;
                    let left=0;
                    if(i>0){
@@ -144,7 +147,6 @@ export default class PTable extends LitElement {
                    }
                     styleString.push(`${selector}`,`{
                         position:sticky; left:${left}px;
-                        ${i==leftIndex?'z-index:3;box-shadow: 2px 0 4px #e8e8e8;':''}
                     }`);
 
                }
@@ -154,34 +156,34 @@ export default class PTable extends LitElement {
                 if(righColIndex<0){
                     righColIndex=maxColSpan+righColIndex;
                 }
-                
                 for(let i=righColIndex,j=maxColSpan;i<j;i++){
-                    const selector=`th[colIndex=${i}],td[colIndex=${i}]`;
+                    const selector=`th[colIndex="${i}"],td[colIndex="${i}"]`;
                     let right=0;
-                    
                     const td=div.querySelector(selector);
                     if(td!=null){
                         right=td.getBoundingClientRect().right-tableRectRight;
                     }
                      styleString.push(`${selector} `, `{
                          position:sticky; right:${right}px;
-                         ${i==righColIndex?'z-index:3;box-shadow: 2px 0 4px #e8e8e8;':''}
                      }`);
- 
                 }
             }
 
             if(this._fixedStyleElement){
-                this._fixedStyleElement.textContent=styleString.join('');
+                this._fixedStyle=styleString.join('');
+                this._fixedStyleElement.textContent=this._fixedStyle;
             }
         }
     }
     get fixedCol(){
         return this._fixedCol;
     }
-    
-    private get _fixedStyleElement():HTMLStyleElement{
-        return this.renderRoot.querySelector('#styleID');
+    private __oldstyleElement:HTMLStyleElement;
+    private get _fixedStyleElement(){
+        if(this.__oldstyleElement===undefined ||this.__oldstyleElement===null){
+           this.__oldstyleElement= this.renderRoot.querySelector('#styleID');
+        }
+        return this.__oldstyleElement;
     }
     private _fixedStyle:string='';
     set fixedStyle(style:string){
@@ -329,7 +331,7 @@ export default class PTable extends LitElement {
     }
    private  asynTableHeaderWidth(){
         const tablecurrentWidth=this.table.offsetWidth;
-        this.table_head_div.style.width=Math.max(parseInt(this._scroll_div.clientWidth.toFixed(0)),tablecurrentWidth)+'px';
+        this.table_head_div.style.width=Math.min(parseInt(this._scroll_div.clientWidth.toFixed(0)),tablecurrentWidth)+'px';
         const thArray=this.thead.querySelectorAll('td,th');
         const thFixedArray=this.theadFixed.querySelectorAll('td,th');
         for(let i=0,j=thArray.length;i<j;i++){
@@ -357,11 +359,10 @@ export default class PTable extends LitElement {
     @query("table[part=fixed-thead-table]")
     private fixedHeaderTable:HTMLTableElement;
     
-    private div_scrollLeft:number;
+   
     private handleScroll(){
         const div=this._scroll_div;
-        this.div_scrollLeft=parseInt(div.scrollLeft.toFixed(0));
-        this.table_head_div.style.marginLeft=(0-this.div_scrollLeft)+'px';
+        this.table_head_div.scrollLeft=parseInt(div.scrollLeft.toFixed(0));
     }
     //  async _getUpdateComplete(){
     //     await  super._getUpdateComplete();
@@ -381,7 +382,7 @@ export default class PTable extends LitElement {
         return html`<div part="root-div" >
             <style id="styleID">${this.getFixedStyle()}</style>
             <div part='scroll-div' @scroll=${this.handleScroll} @mousewheel=${this.handleScroll}  style='${this.scroll_heightStyle!=undefined?`height: calc ( ${this.scroll_heightStyle} )`:'' };--table-header-height:${this._rectHead_height}px;' >
-                    <table part="table" id="table"   style='${styleMap(styleTableObj)}'>
+                    <table part="table" id="tableID"  style='${styleMap(styleTableObj)}'>
                         ${this.renderTHead(false)}
                         ${this.renderTBodyData()}
                     </table>
