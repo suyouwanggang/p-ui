@@ -73,14 +73,19 @@ export type ColumnData={
     maxWidth?:number;
     
     /**
-     * 子 表头
+     * 子 表头 子单元格
      */
-    children?:Array<ColumnData>;//子单元格
-
-    colspan?:number;//列多少
-    rowspan?:number;//多少行
+    children?:Array<ColumnData>;
     /**
-     * 内部使用属性
+     * 占多少列
+     */
+    colspan?:number;
+    /**
+     * 多少行
+     */
+    rowspan?:number;
+    /**
+     * 内部使用属性（宽度是否等于'auto')
      */
     _isAuto?:boolean;
     /**
@@ -89,7 +94,7 @@ export type ColumnData={
     _colIndex?:number;
 
     /**
-     * 上级 data
+     * 上级 ColumnData 
      */
     _parentColumnData?:ColumnData;
 };
@@ -100,7 +105,7 @@ export type RowHeader=Array<Array<ColumnData>>;
 
 
 /**
- * 将表头排版布局，计算出 有多少行，每个单元格跨多少列，用于设置渲染表头，渲染tbody TD
+ * 将表头排版布局，计算出 有多少行，每个单元格跨多少行，多少列，用于渲染表头，取colspan=4 的columnData来渲染tbody TD
  * @param columns 表头
  * @returns {   
  *   rows: 有多少个 TR 
@@ -129,7 +134,6 @@ const  caculateColumnData=(columns:ColumnData[])=>{
     const levelMap=new Map<ColumnData ,number>();//key column, value,level
     levelMap.set(undefined,0);
     const iteratorColumn=(column:ColumnData, childArray:ColumnData[]) =>{
-       
        if(childArray&&childArray.length>0){
            const parentLevel=levelMap.get(column);
            childArray.forEach((c:ColumnData) => {

@@ -74,6 +74,11 @@ export default class PTable extends LitElement {
         const {rows,tdRenderColumnData}=caculateColumnData(value);
         this.columnTheadData=rows;
         this.tdRenderColumnData=tdRenderColumnData;
+        if(this.getFixedCol()!=undefined&&this.getFixedCol()!=null&&this.table!=null&&this.table!=undefined){
+            this.updateComplete.then(()=>{
+                this.fixedCol=[...this.getFixedCol()];
+            })
+        }
     }
     /**
      * 表头真实数据，有多少行，每个th 有rowspan ,colspan
@@ -121,13 +126,12 @@ export default class PTable extends LitElement {
         if(this._fixedStyleElement){
             this._fixedStyleElement.textContent='';
         }
-        if(this.fixedCol!=null&&this.table&&this.table.rows.length>0){
+        if(this._fixedCol!=null&&this.table&&this.table.rows.length>0){
             const div=this._scroll_div;
             const row0=this.table.rows[0];
             const rect=this.table.getBoundingClientRect();
             const tableRectLeft=rect.left;
             const tableRectRight=rect.right;
-
             let lastCell=row0.cells[row0.cells.length-1];
             let maxColSpan=lastCell.colSpan+ parseInt(lastCell.getAttribute('colIndex'),10);
             let leftIndex=this._fixedCol[0];
@@ -175,7 +179,7 @@ export default class PTable extends LitElement {
             }
         }
     }
-    get fixedCol(){
+    getFixedCol():Array<number>{
         return this._fixedCol;
     }
     private __oldstyleElement:HTMLStyleElement;
