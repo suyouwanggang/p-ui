@@ -1,9 +1,0 @@
-:host{
-    display:none  ;
-}
-:host([active]){
-    display:block;
-}
-#header[name=header],   ::slotted([slot=header]){
-    display:none !important;
-}
