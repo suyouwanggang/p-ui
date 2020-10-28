@@ -1,42 +1,48 @@
 import { customElement, html, LitElement, property, query } from 'lit-element';
-import { ColumnData } from '../components/table/tableHelper';
+import { ColumnData, SortingEnum } from '../components/table/tableHelper';
 import PTable from '../components/table/index';
 
 @customElement('p-test-table')
 export default class TestOne extends LitElement {
     constructor() {
         super();
-        // this.columnData=[
-        //     {key:'title',text:'标题',agile:'center',width:600},
-        //     {key:'简介',text:'简介',agile:'center',width:400},
-        //     {key:'博文数据',text:'博文数据',agile:'center',children:[
-        //         {key:'type',text:'博文分类',width:100},
-        //         {key:'activity',text:'博文互动',children:[
-        //             {text:'评论',width:100},
-        //             {text:'点赞',width:300},
-        //             {text:'阅读',width:100}
-        //         ]}
-
-        //     ]},
-        //     {key:'作者',text:'作者',agile:'left',children:[
-        //         {text:'头像',width:100},
-        //         {text:'昵称',width:100},
-        //         {text:'gitHub',width:500}
-        //     ]}
-            
-            
-        // ];
-
+        const renderTd=(rowData:any,index:number,col:ColumnData,tab:PTable)=>{
+            return html`<div>${col.text+index}</div>`;
+        }
         this.columnData=[
-            {key:'title',text:'标题',agile:'center',width:200},
-            {key:'简介',text:'简介',agile:'center',minWidth:300},
-            {key:'作者',text:'作者',agile:'left',width:200},
-            {key:'作者',text:'p-ui',agile:'left',width:'100%',minWidth:400},
-            {key:'作者',text:'create',agile:'center',width:150}
-            
-            
-            
+            {key:'title',text:'标题',agile:'center',width:200,resizeAble:true,renderTd:renderTd},
+            {key:'简介',text:'简介',agile:'center',width:100,sort:SortingEnum.ASC,sortAble:true,renderTd:renderTd},
+            {key:'博文数据',text:'博文数据',agile:'center',children:[
+                {key:'type',text:'博文分类',width:90,renderTd:renderTd},
+                {key:'activity',text:'博文互动',children:[
+                    {text:'评论',width:80,tdAgile:'center',maxWidth:200,minWidth:72,
+                    sort:SortingEnum.DESC,sortAble:true,resizeAble:true,
+                    renderTd:(rowData,index,table)=>{
+                        return html`<span>${(100*Math.random()).toFixed(0)}</span>`;
+                    }},
+                    {text:'点赞',width:90,tdAgile:'center',renderTd:(rowData,index,table)=>{
+                        return html`<span>${(200*Math.random()).toFixed(0)}</span>`;
+                    }},
+                    {text:'阅读',width:100, agile:'right',sortAble:true,sort:SortingEnum.ASC, tdAgile:'right',renderTd:(rowData,index,table)=>{
+                        return html`<span>${(300*Math.random()).toFixed(0)}</span>`;
+                    }}
+                ]}
+
+            ]},
+            {key:'作者',text:'作者',agile:'left',children:[
+                {text:'头像',width:90,renderTd:renderTd},
+                {text:'昵称',width:90,renderTd:renderTd},
+                {text:'gitHub',width:90,renderTd:renderTd}
+            ]}
         ];
+
+        // this.columnData=[
+        //     {key:'title',text:'标题',agile:'center',width:200,renderTd:renderTd},
+        //     {key:'简介',text:'简介',agile:'center',width:300,renderTd:renderTd},
+        //     {key:'作者',text:'作者',agile:'left',width:200,renderTd:renderTd},
+        //     {key:'作者',text:'p-ui',agile:'left',width:'100%',minWidth:200,renderTd:renderTd},
+        //     {key:'作者',text:'create',agile:'center',width:150,renderTd:renderTd}
+        // ];
         const array=new Array<any>();
         for(let i=0;i<100;i++){
             array.push(i+1);
@@ -59,7 +65,7 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        return html`<p-table style='height:500px;'  .columnData=${this.columnData} .data=${this.data}>
+        return html`<p-table style='height:500px;' table-width='80%' .fixedCol=${1}  .columnData=${this.columnData} .data=${this.data}>
         </p-table>`;
     }
 }

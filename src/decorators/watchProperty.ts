@@ -1,4 +1,4 @@
-import { PropertyDeclaration } from "lit-element";
+import { LitElement, PropertyDeclaration, UpdatingElement } from "lit-element";
 
 /**
  * 属性监听回调方法。
@@ -23,34 +23,30 @@ export type CallBackFunction<T> = (value: T, oldValue: T, name: PropertyKey, isF
 export default function watchProperty<T>(watchMethodName: string | CallBackFunction<T>, options?: PropertyDeclaration) {
     // tslint:disable-next-line: no-any
     return (protoOrDescriptor: any, name: PropertyKey) => {
-        const callBackFn: CallBackFunction<T> = typeof watchMethodName === 'string' ? protoOrDescriptor[watchMethodName] : watchMethodName;
+        const callBackFn: CallBackFunction<T> = typeof watchMethodName === 'string' ? (protoOrDescriptor as any)[watchMethodName] : watchMethodName;
         if (!callBackFn) {
             console.warn(`Cannot find method ${watchMethodName} in class ${protoOrDescriptor.constructor.name} or watchMethodName is not a function`);
         }
         const isFirstChangeKey = Symbol();
-        const key =  Symbol() ;
-        Object.defineProperty(protoOrDescriptor, name, {
+          (protoOrDescriptor.constructor as typeof UpdatingElement).createProperty(name,options);
+          const defaultDescriptor=Object.getOwnPropertyDescriptor(protoOrDescriptor,name);
+         Object.defineProperty(protoOrDescriptor, name, {
             configurable: true,
             enumerable: true,
             set(value) {
-                const oldValue = this[key];
+                const oldValue = defaultDescriptor.get.call(this);
                 const isFirst = this[isFirstChangeKey] === undefined;
                 if (!isFirst && oldValue === value) {
                     return;
                 }
-                this[key] = value;
                 if (callBackFn) {
                     callBackFn.call(this, value, oldValue, name, isFirst);
                 }
                 this[isFirstChangeKey] = false;
-                if (this && this.requestUpdateInternal) {
-                    this.requestUpdateInternal(name, oldValue, options);
-                }
+                defaultDescriptor.set.call(this,value);
             },
             // tslint:disable-next-line: no-any
-            get(this: any) {
-                return this[key];
-            }
+            get:defaultDescriptor.get
         });
     };
 }

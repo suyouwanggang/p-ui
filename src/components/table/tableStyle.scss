@@ -49,14 +49,23 @@ div[part=scroll-div]{
         border-radius: 5px; 
         background-color: #FFF;
     }
+
+    div.column-reisze-helper{
+        position: absolute;
+        border-left:1px solid #1890ff;
+        display: none;
+        z-index: 4;
+        cursor: w-resize;
+    }
 }
 
 div[part=table-header-div]{
     position: absolute;
-    width: 0;
+    width: 1;
     top: 0;
     left: 0;
-    border-bottom:var(--table-border);
+    z-index: 2;
+   /* border-bottom:var(--table-border);*/
     overflow: hidden;
 }
 
@@ -84,19 +93,47 @@ table {
             border-right:var(--table-border);
             margin:0;
             padding:0;
+            position: relative;
             background-color: var(--table-head-bg-color);
-            &:last-child{
-                border-right: none;
+            >div.resize-col{
+                display: block;
+                cursor: w-resize;
+                position: absolute;
+                top:0;
+                width:1px;
+                background-color: transparent;
+                right:0;
+                bottom:0;
             }
+
             div.thWrap{
-               line-height: 18px;
                font-weight: normal;
-               padding:6px ;
+               position: relative;
+               vertical-align: middle;
                box-sizing: border-box;
+               padding:6px ;
+               line-height: 1.8em;
                .thWrap-text{
                    white-space: nowrap;
                    overflow: hidden;
+                   vertical-align: middle;
                    text-overflow: ellipsis;
+               }
+               div.sortAble{
+                    display: inline-flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 24px;
+                    cursor: pointer;
+                    vertical-align: middle;
+                    cursor: pointer;
+                    overflow: initial;
+                    position: relative;
+                    color:#c0c4cc;
+                    font-size: 12px;
+                    .current{
+                        color:#333;
+                    }
                }
             }
    

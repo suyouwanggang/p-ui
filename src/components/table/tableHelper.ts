@@ -1,9 +1,9 @@
-import { customElement, html, LitElement, property, query, TemplateResult } from 'lit-element';
-import tableStyle from './tableStyle.scss';
+import { TemplateResult } from 'lit-element';
+import PTable from '.';
 /**
  * 定义排序，升序，降序
  */
-export enum Sorting{
+export enum SortingEnum{
     ASC="ASC", DESC="DESC"
 };
 export type TdAgile='left'|'center'|'right';
@@ -17,11 +17,11 @@ export type ColumnData={
     /**
      * //渲染th dom
      */
-    renderTh?:(d:ColumnData)=>TemplateResult|TemplateResult[]|null|undefined; 
+    renderTh?:(d:ColumnData,tab:PTable)=>TemplateResult|TemplateResult[]|null|undefined; 
     /**
      * //渲染 td dom
      */
-    renderTd?:(rowData:any) =>TemplateResult|TemplateResult[]|{
+    renderTd?:(rowData:any,index:number,col:ColumnData,tab:PTable) =>TemplateResult|TemplateResult[]|{
         template:TemplateResult|TemplateResult[];
         colspan?:number;
         rowspan?:number;
@@ -48,17 +48,16 @@ export type ColumnData={
     /**
      * 表头是否支持排序
      */
-    sortingAble?:boolean;//是否支持排序
-    /**
-     *是否支持列固定
-     *  程序内部使用，通过leftfixdColumns,rightfixedColumns 来改变和设置 
-     */
-    fixed?:boolean;
+    sortAble?:boolean;//是否支持排序
+    
     /**
      * 排序值
      */
-    sorting?:Sorting;//升序，降序
-
+    sort?:SortingEnum;//升序，降序
+    /**
+     * 是否可以拖动改变宽度
+     */
+    resizeAble?:boolean;
     /**
      * 宽度
      */

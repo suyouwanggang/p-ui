@@ -1,12 +1,16 @@
 import { customElement, html, internalProperty, LitElement, property, query } from 'lit-element';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import {  styleMap } from 'lit-html/directives/style-map';
 import ResizeObserver from 'resize-observer-polyfill';
 import watchProperty from '../../decorators/watchProperty';
 import getStyleProperty from '../utils/styleUtils';
-import { ColumnData, default as caculateColumnData, RowHeader } from './tableHelper';
+import { ColumnData, default as caculateColumnData, RowHeader, SortingEnum } from './tableHelper';
 import tableStyle from './tableStyle.scss';
-
+import '../icon/index';
+import { addEvent } from '../utils/eventHelper';
+import watch from '../../decorators/watch';
 /**
+ * 表格组件，支持列，表头固定
  * @part root_div  renderRoot 容器
  * @part scroll_div 滚动容器
  * 
@@ -156,7 +160,7 @@ export default class PTable extends LitElement {
                        }
                    }
                     styleString.push(`${selector}`,`{
-                        position:sticky; left:${left}px;
+                        position:sticky;z-index:1; left:${left}px;
                     }`);
 
                }
@@ -174,7 +178,7 @@ export default class PTable extends LitElement {
                         right=td.getBoundingClientRect().right-tableRectRight;
                     }
                      styleString.push(`${selector} `, `{
-                         position:sticky; right:${right}px;
+                         position:sticky;z-index:1; right:${right}px;
                      }`);
                 }
             }
@@ -195,7 +199,7 @@ export default class PTable extends LitElement {
         }
         return this.__oldstyleElement;
     }
-    private _fixedStyle:string='';
+    private _fixedStyle:string;
     set fixedStyle(style:string){
         this._fixedStyle=style;
         this._fixedStyleElement.textContent=style;
@@ -218,11 +222,71 @@ export default class PTable extends LitElement {
     </tr>`;
     }
    private  renderThSorting(colData:ColumnData){
-
+       if(colData.sortAble){
+        return html`<div class='sortAble'>
+            <p-icon class='up ${colData.sort===SortingEnum.ASC?'current':''}' path='M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z'></p-icon>
+            <p-icon class='down ${colData.sort===SortingEnum.DESC?'current':''}' path='M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z'></p-icon>
+        </div>`;
+       }
+       return '';
     }
-    
+    private dragThHandler(event:MouseEvent){
+        event.preventDefault();
+        const div=this._scroll_div;
+        const element:HTMLDivElement=event.target as HTMLDivElement;
+        const target:HTMLTableHeaderCellElement=element.closest('th,td');
+        const {left,top}=div.getBoundingClientRect();
+        const {right:thRight,top:thTop}=target.getBoundingClientRect();
+        const helper=this.columnReiszeHepler;
+        const position=thRight-left-2;
+        let change=0;
+        let x=event.clientX;
+        const col:ColumnData =(target as any).columnData;
+        // let color=getStyleProperty(target,'border-right-color');
+        helper.style.cssText=`left:${position}px;display:block;top:${thTop-top}px;height:${div.clientHeight-(thTop-top)}px;`;
+        let oldWidth= parseInt(getStyleProperty(target,'width').replace('px',''));
+        let width=oldWidth;
+        //console.log(`width=${width}`);
+       const moveObj= addEvent(document,'mousemove',(ev:MouseEvent)=>{
+            ev.preventDefault();
+            const nX = ev.clientX;
+            change=nX-x;//x 变大，右侧移动
+            width=oldWidth+change;
+            if(col.maxWidth!=undefined&& width>col.maxWidth){
+                width=col.maxWidth;
+                change=width-oldWidth;
+            }else if(col.minWidth!=undefined&&width<col.minWidth){
+                width=col.minWidth;
+                change=width-oldWidth;
+            }else if(width<20){
+                width=20;
+                change=width-oldWidth;
+            }
+            let newPostion=change+position;
+           //element.style.cssText=`right:${0-change}px;background-color:${color};z-index:14;`;
+            helper.style.left=newPostion+'px';
+        });
+        const upObj= addEvent(document,'mouseup',(ev:MouseEvent)=>{
+           // console.log(`oldWidth=${oldWidth}, width=${width}`)
+            col.width=width;
+            ev.preventDefault();
+            helper.style.cssText='';
+            // element.style.cssText='';
+            moveObj.destory();
+            upObj.destory();
+            if(this.tableWidth!=undefined){
+                this.tableWidth= parseInt(getStyleProperty(this.table,'width'),10)+change+'px';
+            }
+            this.updateComplete.then(()=>{
+                this.asynTableHeaderWidth();
+            })
+        });
+    }
     private  renderThDrag(colData:ColumnData){
-
+        if(colData.resizeAble!=false&&(!(colData.children!=null&&colData.children.length>1))){
+            return html`<div  @mousedown=${this.dragThHandler} class='resize-col'></div>`;
+        }
+        return null;
     }
     private renderTh(colData:ColumnData,fixed:boolean=false){
         const styleObj:any={ };
@@ -245,22 +309,19 @@ export default class PTable extends LitElement {
             }
 
             if(colData.maxWidth!=undefined){
-                styleObj['max-width']=colData.maxWidth;
+                let isNumber=typeof  colData.maxWidth == 'number';
+                styleObj['max-width']=isNumber?colData.maxWidth+'px':colData.maxWidth;
             }
         }
         
-       
-        
-        
-        return html`<th colIndex=${colData._colIndex} .columnData=${colData}  style='${styleMap(styleObj)}' .align=${colData.agile?colData.agile:'center'}
+        return html`<th class='${colData.sortAble?'sortAble':''}' colIndex=${colData._colIndex} .columnData=${colData}  style='${styleMap(styleObj)}' .align=${colData.agile?colData.agile:'center'}
             rowspan=${colData.rowspan==undefined?1:colData.rowspan}
             colspan=${colData.colspan==undefined?1:colData.colspan}
             >
             <div class='thWrap' part='colThDIV' >
-               <div part='colThWrap'> ${colData.renderHeader? colData.renderHeader(colData):html`<div class='thWrap-text'>${colData.text}</div>`}</div>
-                ${this.renderThSorting(colData)}
-                ${this.renderThDrag(colData)}
+    <div part='colThWrap'> ${colData.renderTh? colData.renderTh(colData,this):html`<span class='thWrap-text'>${colData.text} </span>`}${this.renderThSorting(colData)}</div>
             </div>
+            ${this.renderThDrag(colData)}
         </th>`;
     }
     /**
@@ -273,7 +334,6 @@ export default class PTable extends LitElement {
                return  this.renderRowData(item,index);
             }):''}
         </tbody>`;
-
     }
     /**
      * 渲染一个TBODY TR , 循环 @method tdRenderColumnData 调用 @method renderRowTD 来渲染一个单元格
@@ -287,7 +347,7 @@ export default class PTable extends LitElement {
             if(tdTemplate===undefined||tdTemplate===null){
                 return html``;
             }else{
-                return html`<td  colIndex=${c._colIndex}  .columnData=${c}  ><div >${tdTemplate}</div></td>`;
+                return html`<td  align=${ifDefined(c.tdAgile)} colIndex=${c._colIndex}  .columnData=${c}  ><div >${tdTemplate}</div></td>`;
             }
         })}</tr>`;
     }
@@ -299,7 +359,7 @@ export default class PTable extends LitElement {
      */
     renderRowTD(rowData:any,col:ColumnData,index:number){
         if(col&&col.renderTd){
-            return col.renderTd(rowData);
+            return col.renderTd(rowData,index,col,this);
         }else{
             return html`${index+1} .${col.text}${col.text}${col.text}${col.text}${col.text}${col.text}`;
         }
@@ -315,10 +375,9 @@ export default class PTable extends LitElement {
  
     firstUpdated(changedProperties: Map<string | number | symbol, unknown>){
         super.firstUpdated(changedProperties);
-
-        this._resizeObserver=new ResizeObserver((entrys =>{
+        this._resizeObserver=new ResizeObserver(()=>{
             this.resize();
-        }));
+        });
         this._resizeObserver.observe(this);
         this._resizeObserver.observe(this.table);
         this.resize();
@@ -352,10 +411,6 @@ export default class PTable extends LitElement {
             (thFixedArray[i] as HTMLTableHeaderCellElement).style.maxWidth=width;
             // d.style.width=width+'px';
         }
-        
-   
-
-       
     }
     disconnectedCallback(){
         this._resizeObserver.unobserve(this);
@@ -369,7 +424,13 @@ export default class PTable extends LitElement {
     @query("table[part=fixed-thead-table]")
     private fixedHeaderTable:HTMLTableElement;
     
-   
+    private _column_resize_helper:HTMLDivElement;
+    get columnReiszeHepler(){
+        if(this._column_resize_helper==undefined||this._column_resize_helper==null){
+            this._column_resize_helper=this.renderRoot.querySelector('#column-reisze-helper');
+        }
+        return this._column_resize_helper;
+    }
     private handleScroll(){
         const div=this._scroll_div;
         this.table_head_div.scrollLeft=parseInt(div.scrollLeft.toFixed(0));
@@ -383,9 +444,7 @@ export default class PTable extends LitElement {
         const styleTableObj:any={};
         if(this._rectHead_width){
             styleFixedObj['width']=this._rectHead_width+'px';
-            // styleTableObj['width']=this._rectHead_width+'px';
         }
-        //styleTableObj['marginTop']=(0-this._rectHead_height)+'px';
         if(this.tableWidth){
             styleTableObj.width=`calc( ${this.tableWidth} )`;
         }
@@ -396,10 +455,10 @@ export default class PTable extends LitElement {
                         ${this.renderTHead(false)}
                         ${this.renderTBodyData()}
                     </table>
-                
-                <div part='table-header-div'  style='${this._rectHead_height!=undefined?`height:${this._rectHead_height}px;`:''}'>
-                    <table part='fixed-thead-table' style='${styleMap(styleFixedObj)}'> ${this.renderTHead(true)}</table>
-                 </div>
+                    <div part='table-header-div'  style='${this._rectHead_height!=undefined?`height:${this._rectHead_height}px;`:''}'>
+                        <table part='fixed-thead-table' style='${styleMap(styleFixedObj)}'> ${this.renderTHead(true)}</table>
+                    </div>
+                    <div class='column-reisze-helper' id='column-reisze-helper' part='column-resize-helper'></div>
             </div>
         </div>`
     }

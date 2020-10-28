@@ -8,7 +8,7 @@ type ListenerResult = {
  * @param listener 监听
  * @param options 事件监听options
  */
-const addEvent = (el: Element | SVGAElement, event: string, listener: EventListener, options?: boolean | AddEventListenerOptions): ListenerResult => {
+const addEvent = (el: HTMLDocument| Element | SVGAElement, event: string, listener: EventListener, options?: boolean | AddEventListenerOptions): ListenerResult => {
     el.addEventListener(event, listener, options);
     return {
         destory: () => {

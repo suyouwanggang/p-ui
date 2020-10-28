@@ -27,7 +27,7 @@
 		"storybook": "concurrently --kill-others --names tsc,storybook \"npm run tsc:watch\" \"start-storybook --node-resolve --watch --open\"",
 		"storybook:build": "build-storybook",
 		"build": "rm -rf dist && tsc && rollup -c rollup.config.js",
-		"start:build": "concurrently --kill-others --names tsc, web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index index.html --node-resolve --open --watch\"",
+		"start:build": "web-dev-server --app-index index.html --node-resolve --open --watch",
 		"prepublish": "tsc"
 	},
 	"dependencies": {
