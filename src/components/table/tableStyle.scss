@@ -52,7 +52,8 @@ div[part=scroll-div]{
 
     div.column-reisze-helper{
         position: absolute;
-        border-left:1px solid #1890ff;
+        width:2px ;
+        background-color:  #1890ff;
         display: none;
         z-index: 4;
         cursor: w-resize;

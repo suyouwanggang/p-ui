@@ -263,15 +263,17 @@ export default class PTable extends LitElement {
                 change=width-oldWidth;
             }
             let newPostion=change+position;
-           //element.style.cssText=`right:${0-change}px;background-color:${color};z-index:14;`;
+            element.style.cssText=`pointer-events: none`;
             helper.style.left=newPostion+'px';
+            this.table.style.pointerEvents='none';
         });
         const upObj= addEvent(document,'mouseup',(ev:MouseEvent)=>{
            // console.log(`oldWidth=${oldWidth}, width=${width}`)
             col.width=width;
             ev.preventDefault();
             helper.style.cssText='';
-            // element.style.cssText='';
+            this.table.style.pointerEvents='';
+            element.style.cssText='';
             moveObj.destory();
             upObj.destory();
             if(this.tableWidth!=undefined){
