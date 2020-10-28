@@ -6,12 +6,12 @@
     "noEmitOnError": true,
     "lib": ["es2017", "dom"],
     "strict": false,
-	 "allowJs": true,
+	 "allowJs": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "outDir": "dist",
+    "outDir": "./dist",
     "sourceMap": true,
     "inlineSources": true,
     "rootDir": "./",
@@ -24,6 +24,6 @@
     "noImplicitThis": true,
     "declaration": true
   },
-  
-  "exclude": ["node_modules/@types/","scripts","ts","dist"]
+
+  "exclude": ["node_modules/@types/","./scripts","./ts","./dist"]
 }

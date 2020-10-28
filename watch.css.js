@@ -3,7 +3,7 @@ const fs=require('fs');
 console.log('start');
 const matchReg=/\.scss$/;
 const cache=new Map();
-const dir='./components';
+const dir='./src/components';
 var path=require('path');
 var join = path.join;
 var uglifycss = require('uglifycss');
