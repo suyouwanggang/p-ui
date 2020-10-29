@@ -75,7 +75,6 @@ div[part=table-header-div]{
 }
 table {
     word-wrap: break-word;
-    /*table-layout: fixed;*/
     border:none;
     border-spacing: 0;
     box-sizing: border-box;
@@ -95,7 +94,6 @@ table {
     }
     
     thead{
-        
         tr th,th td {
             border-top:var(--table-border);
             border-right:var(--table-border);

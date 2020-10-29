@@ -277,9 +277,9 @@ export default class PTable extends LitElement {
             element.style.cssText='';
             moveObj.destory();
             upObj.destory();
-            if(this.tableWidth!=undefined){
+            //if(this.tableWidth!=undefined){
                 this.tableWidth= parseInt(getStyleProperty(this.table,'width'),10)+change+'px';
-            }
+            //}
             this.updateComplete.then(()=>{
                 this.asynTableHeaderWidth();
             })
@@ -300,11 +300,14 @@ export default class PTable extends LitElement {
                 styleObj['max-width']=colData.width+'px';
             }else if(colData.width!=undefined &&"auto"!=colData.width){
                 styleObj['width']=colData.width;
-                styleObj['min-width']=colData.width;
-                styleObj['max-width']=colData.width;
+                const isNumber=typeof  colData.minWidth == 'number';
+                if(isNumber){
+                    styleObj['min-width']=colData.width;
+                    styleObj['max-width']=colData.width;
+                }
             }
             if(colData.minWidth!=undefined){
-                let isNumber=typeof  colData.minWidth == 'number';
+                const isNumber=typeof  colData.minWidth == 'number';
                 styleObj['min-width']= isNumber? colData.minWidth+'px':colData.minWidth;
                 if(colData.width==undefined){
                     styleObj['width']= isNumber? colData.minWidth+'px':colData.minWidth;
@@ -312,7 +315,7 @@ export default class PTable extends LitElement {
             }
 
             if(colData.maxWidth!=undefined){
-                let isNumber=typeof  colData.maxWidth == 'number';
+                const isNumber=typeof  colData.maxWidth == 'number';
                 styleObj['max-width']=isNumber?colData.maxWidth+'px':colData.maxWidth;
             }
         }
