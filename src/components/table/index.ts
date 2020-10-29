@@ -239,6 +239,7 @@ export default class PTable extends LitElement {
         const {right:thRight,top:thTop}=target.getBoundingClientRect();
         const helper=this.columnReiszeHepler;
         const position=thRight-left-2;
+        const oldCursor=getStyleProperty(document.body,'cursor');
         let change=0;
         let x=event.clientX;
         const col:ColumnData =(target as any).columnData;
@@ -247,7 +248,7 @@ export default class PTable extends LitElement {
         let oldWidth= parseInt(getStyleProperty(target,'width').replace('px',''));
         let width=oldWidth;
         //console.log(`width=${width}`);
-       const moveObj= addEvent(document,'mousemove',(ev:MouseEvent)=>{
+       const moveObj= addEvent(document.body,'mousemove',(ev:MouseEvent)=>{
             ev.preventDefault();
             const nX = ev.clientX;
             change=nX-x;//x 变大，右侧移动
@@ -262,17 +263,17 @@ export default class PTable extends LitElement {
                 width=20;
                 change=width-oldWidth;
             }
+            document.body.style.cursor='w-resize';
             let newPostion=change+position;
-            element.style.cssText=`pointer-events: none`;
+            // element.style.cssText=`pointer-events: none`;
             helper.style.left=newPostion+'px';
-            this.table.style.pointerEvents='none';
         });
-        const upObj= addEvent(document,'mouseup',(ev:MouseEvent)=>{
+        const upObj= addEvent(document.body,'mouseup',(ev:MouseEvent)=>{
            // console.log(`oldWidth=${oldWidth}, width=${width}`)
             col.width=width;
             ev.preventDefault();
             helper.style.cssText='';
-            this.table.style.pointerEvents='';
+            document.body.style.cursor=oldCursor;
             element.style.cssText='';
             moveObj.destory();
             upObj.destory();

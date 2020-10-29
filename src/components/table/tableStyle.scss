@@ -11,9 +11,7 @@
     --table-row-odd:#fafafa;
     --table-head-bg-color:#f2f2f2;
 }
-:host([border]) table {
-    border:var(--table-border);
-}
+
 div[part=root-div]{
     border:none;
     font-size:inherit;
@@ -56,7 +54,6 @@ div[part=scroll-div]{
         background-color:  #1890ff;
         display: none;
         z-index: 4;
-        cursor: w-resize;
     }
 }
 
@@ -73,6 +70,9 @@ div[part=table-header-div]{
 :host([fixed]) table{
     table-layout: fixed;
 }
+:host([border]) table {
+    border:var(--table-border);
+}
 table {
     word-wrap: break-word;
     /*table-layout: fixed;*/
@@ -85,6 +85,13 @@ table {
         left:0px;
         table-layout:auto;
         background-color: #FFF;
+        &::after{
+            width: 1px ;
+            content: '';
+            position: absolute;
+            right:0;
+            top:0;bottom:0;background-color: #FFF;
+        }
     }
     
     thead{
@@ -100,11 +107,11 @@ table {
                 display: block;
                 cursor: w-resize;
                 position: absolute;
-                top:0;
-                width:1px;
+                top:1px;
+                width:2px;
                 background-color: transparent;
-                right:0;
-                bottom:0;
+                right:1px;
+                bottom:1px;
             }
 
             div.thWrap{
@@ -122,18 +129,26 @@ table {
                }
                div.sortAble{
                     display: inline-flex;
+                    margin-left:2px;
                     flex-direction: column;
                     align-items: center;
-                    width: 24px;
                     cursor: pointer;
                     vertical-align: middle;
                     cursor: pointer;
                     overflow: initial;
                     position: relative;
                     color:#c0c4cc;
-                    font-size: 12px;
+                    font-size: 14px;
                     .current{
-                        color:#333;
+                        color:#000;
+                    }
+                    .up{
+                        top:2px;
+                        position: relative;
+                    }
+                    .down{
+                        position: relative;
+                        top:-2px;
                     }
                }
             }
@@ -147,8 +162,8 @@ table {
      tbody{
         tr td {
             background-color: #FFF;
-            padding-left:3px ;
-            padding-right:3px;
+            padding:4px;
+            line-height: 1.4em;
             border-bottom:var(--table-border);
         }
         tr:last-child td {
