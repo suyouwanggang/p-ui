@@ -106,9 +106,9 @@ table {
                 cursor: w-resize;
                 position: absolute;
                 top:1px;
-                width:2px;
+                width:3px;
                 background-color: transparent;
-                right:1px;
+                right:0px;
                 bottom:1px;
             }
 
@@ -141,7 +141,6 @@ table {
                         color:#000;
                     }
                     .up{
-                        top:2px;
                         position: relative;
                     }
                     .down{

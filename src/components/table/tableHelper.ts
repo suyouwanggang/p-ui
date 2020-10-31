@@ -1,59 +1,61 @@
-import { TemplateResult } from 'lit-element';
+import { TemplateResult } from 'lit-html';
 import PTable from '.';
+import PColumn from './tableColumn';
+
 /**
  * 定义排序，升序，降序
  */
-export enum SortingEnum{
-    ASC="ASC", DESC="DESC"
+export enum SortingEnum {
+    ASC = "ASC", DESC = "DESC"
 };
-export type TdAgile='left'|'center'|'right';
-
-
 /**
- *定义表头
+ * table 单元格对齐方式 'left','cener','right'
  */
-export type ColumnData={
-    [key:string]:any;//自定义属性
+export type TdAgile = 'left' | 'center' | 'right';
+/**
+ * 定义表头数据，同PColumn 对应
+ */
+export type ColumnHeaderData={
     /**
-     * //渲染th dom
+     * 自定义渲染th
      */
-    renderTh?:(d:ColumnData,tab:PTable)=>TemplateResult|TemplateResult[]|null|undefined; 
+    renderTh? :(this:PColumn,tab:PTable) =>TemplateResult|TemplateResult[]|null|undefined;
     /**
-     * //渲染 td dom
+     * 自定渲染 td 
      */
-    renderTd?:(rowData:any,index:number,col:ColumnData,tab:PTable) =>TemplateResult|TemplateResult[]|{
+    renderTd? :(this:PColumn,rowData:any, index:number,tab:PTable)=>TemplateResult|TemplateResult[]|{
         template:TemplateResult|TemplateResult[];
         colspan?:number;
         rowspan?:number;
     }|null|undefined;
-     
     /**
-     * //数据源属性,支持按照"."分割
+     * 是否隐藏
      */
-    key?:string;
+    hidden?:boolean;
     /**
-     * 标题
+     * 自定义渲染对象的属性，支持"."分隔取多重属性
+     */
+    prop?:string;
+    /**
+     * 表头显示内容
      */
     text?:string;
     /**
-     * 表头对齐方式
+     * 表头Th 内容对齐方式，默认是居中对齐
      */
     agile?:TdAgile;
     /**
-     * tbody td 对齐方式
+     * Td 内容对齐方式，默认同表头对齐方式
      */
     tdAgile?:TdAgile;
-   
-   
     /**
-     * 表头是否支持排序
+     * 是否支持排序
      */
-    sortAble?:boolean;//是否支持排序
-    
+    sortAble?:boolean;
     /**
      * 排序值
      */
-    sort?:SortingEnum;//升序，降序
+    sort?:SortingEnum;
     /**
      * 是否可以拖动改变宽度
      */
@@ -62,47 +64,78 @@ export type ColumnData={
      * 宽度
      */
     width?:number|string;
-    /**
+
+     /**
      * 最小宽度
      */
-    minWidth?:number;
+    minWidth?:number|string;
     /**
      * 最大宽度
      */
-    maxWidth?:number;
-    
-    /**
-     * 子 表头 子单元格
-     */
-    children?:Array<ColumnData>;
-    /**
-     * 占多少列
-     */
-    colspan?:number;
-    /**
-     * 多少行
-     */
-    rowspan?:number;
-    /**
-     * 内部使用属性（宽度是否等于'auto')
-     */
-    _isAuto?:boolean;
-    /**
-     * 列colIndex (内部使用)
-     */
-    _colIndex?:number;
+    maxWidth?:number|string;
 
     /**
-     * 上级 ColumnData 
+     * 下级th ，支持多层次嵌套
      */
-    _parentColumnData?:ColumnData;
+    children?:ColumnHeaderData[];
+
+    /**
+     * 其他自定义属性
+     */
+    [key:string]:unknown;
+
+
+};
+/**
+ * 将columnHeaderData 转化为 table 的孩子 PColumn
+ * @param columns
+ * @param table 
+ */
+export const convertHeaderDataToTableColumns=(columns:ColumnHeaderData[],table:PTable)=>{
+    const children=table.children;
+    while(children.length>0){
+        table.removeChild(children[0]);
+    }
+    const frag=document.createDocumentFragment();
+    const iteratorData=(parent:ColumnHeaderData,childs:ColumnHeaderData[] ,parentDom:Element|DocumentFragment )=>{
+        childs.forEach((item) =>{
+            const col=new PColumn();
+            parentDom.appendChild(col);
+            for(const key in item){
+                if(key!='children'){
+                    (col as any)[key]=item[key];
+                }else{
+                    const subChildren=item['children'];
+                    if(subChildren){
+                       iteratorData(item,subChildren,col);
+                    }
+                }
+            }
+        })
+    }
+    iteratorData(null,columns,frag);
+    table.appendChild(frag);
+    // table.columnData=table.childColumn;
 };
 /**
  * 定义需要table 表头 行
  */
-export type RowHeader=Array<Array<ColumnData>>;
+export type RowHeader = Array<Array<PColumn>>;
 
-
+/**
+ * 清除原来的 PColumn._childColumn;
+ * @param columns 
+ */
+ const clearColumnData = (columns: PColumn[]) => {
+    columns.forEach((item) => {
+        const childColumn = [...item.childColumn];
+        item._childColumn = undefined;
+        item.colspan = undefined;
+        item.rowspan = undefined;
+        item._colIndex = undefined;
+        clearColumnData(childColumn);
+    })
+}
 /**
  * 将表头排版布局，计算出 有多少行，每个单元格跨多少行，多少列，用于渲染表头，取colspan=4 的columnData来渲染tbody TD
  * @param columns 表头
@@ -111,97 +144,101 @@ export type RowHeader=Array<Array<ColumnData>>;
      tdRenderColumnData:叶子TH， 用于渲染tbody
  * }
  */
-const  caculateColumnData=(columns:ColumnData[])=>{
+ const caculateColumnData = (columns: PColumn[]): {rows: RowHeader, tdRenderColumnData: PColumn[] } => {
+    clearColumnData(columns);
     //const colspanMap=new Map<ColumnData,number>();//每个th 跨多少列
-   // const rowSpanMap=new Map<ColumnData,number>();//每个th 跨多少行
-    const getColSpan =(column:ColumnData)=>{
-        if(column.colspan!=undefined){
+    // const rowSpanMap=new Map<ColumnData,number>();//每个th 跨多少行
+    const getColSpan = (column: PColumn) => {
+        if (column.colspan != undefined) {
             return column.colspan;
         }
-        if(column.children&&column.children.length>0){
-            let size=0;
-            column.children.forEach((c:ColumnData) => {
-                size+=getColSpan(c);
-           });
-           column.colspan=size;
-           return size;
+        const childColumn = column.childColumn;
+        if (childColumn && childColumn.length > 0) {
+            let size = 0;
+            childColumn.forEach((c: PColumn) => {
+                size += getColSpan(c);
+            });
+            column.colspan = size;
+            return size;
         }
-        column.colspan=1;
+        column.colspan = 1;
         return 1;
     }
-    let maxLevel=0;
-    const levelMap=new Map<ColumnData ,number>();//key column, value,level
-    levelMap.set(undefined,0);
-    const iteratorColumn=(column:ColumnData, childArray:ColumnData[]) =>{
-       if(childArray&&childArray.length>0){
-           const parentLevel=levelMap.get(column);
-           childArray.forEach((c:ColumnData) => {
-               c._isAuto=c.width==undefined||c.width==='auto';
-               levelMap.set(c,parentLevel+1);
-               if(parentLevel+1>maxLevel){
-                     maxLevel=parentLevel+1;
+    let maxLevel = 0;
+    const levelMap = new Map<PColumn, number>();//key column, value,level
+    levelMap.set(undefined, 0);
+    const iteratorColumn = (column: PColumn, childArray: PColumn[]) => {
+        if (childArray && childArray.length > 0) {
+            const parentLevel = levelMap.get(column);
+            childArray.forEach((c: PColumn) => {
+                c._isAuto = c.width == undefined || c.width === 'auto';
+                levelMap.set(c, parentLevel + 1);
+                if (parentLevel + 1 > maxLevel) {
+                    maxLevel = parentLevel + 1;
                 }
-               getColSpan(c);
-               if(column!=undefined){
-                   c._parentColumnData=column;
-               }
-               if(c.children&&c.children.length>0){
-                   iteratorColumn(c,c.children);
-               }
-           });
-       } 
+                getColSpan(c);
+                const childColumn = c.childColumn;
+                if (childColumn && childColumn.length > 0) {
+                    iteratorColumn(c, childColumn);
+                }
+            });
+        }
     }
-   
-    iteratorColumn(undefined,columns);
-    const iteratorForColIndex=(startColIndex:number,column:ColumnData, childArray:ColumnData[]) =>{
-        
-        if(childArray&&childArray.length>0){
-            let colIndex=startColIndex;
-            childArray.forEach((c)=>{
-                c._colIndex=colIndex;
-                colIndex+=getColSpan(c);
-            }); 
-            childArray.forEach(((c) =>{
-                if(c.children){
-                    iteratorForColIndex(c._colIndex,c,c.children)
+
+    iteratorColumn(undefined, columns);
+    const iteratorForColIndex = (startColIndex: number, childArray: PColumn[]) => {
+        if (childArray && childArray.length > 0) {
+            let colIndex = startColIndex;
+            childArray.forEach((c) => {
+                c._colIndex = colIndex;
+                colIndex += getColSpan(c);
+            });
+            childArray.forEach(((c) => {
+                const childColumn = c.childColumn;
+                if (childColumn && childColumn.length > 0) {
+                    iteratorForColIndex(c._colIndex, c.childColumn)
                 }
             }))
-        } 
-     }
-     iteratorForColIndex(0,undefined,columns);
-    
+        }
+    }
+    iteratorForColIndex(0, columns);
+
     //console.log(maxLevel);
-    const rows:RowHeader=[];
-    for(let i=0,j=maxLevel;i<j;i++){
+    const rows: RowHeader = [];
+    for (let i = 0, j = maxLevel; i < j; i++) {
         rows.push([]);
     }
-    const renderThArray:ColumnData[]=[];
-    const iteratorColumnForRow= (col:ColumnData) =>{
-        const level=levelMap.get(col);
-        const rowThead=rows[level-1];
+    const renderThArray: PColumn[] = [];
+    const iteratorColumnForRow = (col: PColumn) => {
+        const level = levelMap.get(col);
+        const rowThead = rows[level - 1];
         rowThead.push(col);
-        if(col.children&&col.children.length>0){
-           col.rowspan=1;
-           col.children.forEach( (item:ColumnData)=> iteratorColumnForRow(item) );
-        }else{
-            const rowspan=maxLevel-level+1;
-            col.rowspan=rowspan;
+        const childColumn = col.childColumn;
+        if (childColumn && childColumn.length > 0) {
+            col.rowspan = 1;
+            childColumn.forEach((item: PColumn) => iteratorColumnForRow(item));
+        } else {
+            const rowspan = maxLevel - level + 1;
+            col.rowspan = rowspan;
             renderThArray.push(col);
         }
     };
-    columns.forEach((col:ColumnData) =>{
+    columns.forEach((col: PColumn) => {
         iteratorColumnForRow(col);
     });
 
-   
+
     return {
-        rows:rows,//有多少行
-        tdRenderColumnData:renderThArray,//叶子单元格
-       
+        rows: rows,//有多少行
+        tdRenderColumnData: renderThArray,//叶子单元格
+
     }
 
 }
 
+export const isNumberWidth =(col:Number|string)=>{
+    return typeof col =='number'|| !isNaN(Number(col));
+}
 export default caculateColumnData;
 
 
