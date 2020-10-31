@@ -94,7 +94,7 @@ table {
     }
     
     thead{
-        tr th,th td {
+        tr th,tr td {
             border-top:var(--table-border);
             border-right:var(--table-border);
             margin:0;
@@ -111,14 +111,18 @@ table {
                 right:0px;
                 bottom:1px;
             }
+            &.dragging{
+                background-color: #959ca7;
+               
+            }
 
             div.thWrap{
                font-weight: normal;
                position: relative;
                vertical-align: middle;
                box-sizing: border-box;
-               padding:6px ;
-               line-height: 1.8em;
+               padding:0.7em;
+               line-height: 1.5;
                .thWrap-text{
                    white-space: nowrap;
                    overflow: hidden;
@@ -157,20 +161,64 @@ table {
         }
     }
      tbody{
+        
         tr td {
-            background-color: #FFF;
-            padding:4px;
-            line-height: 1.4em;
+            padding:0.7em;
+            line-height: 1.5;
             border-bottom:var(--table-border);
+            background-color: #FFF;
         }
         tr:last-child td {
             border-bottom:none;
         }
-
+        tr.active td{
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        tr.primary td{
+            background-color: #b8daff;
+        }
+        tr.secondary td{
+            background-color: #d6d8db;
+        }
+        tr.success td{
+            background-color: #8fd19e;
+        }
+        tr.warnig td{
+            background-color: #ed969e;
+        }
+        tr.danger td{
+            background-color:#ffdf7e;
+        }
+        tr.info td{
+            background-color: #bee5eb;
+        }
+        tr.light td{
+            background-color: #fdfdfe;
+        }
+        tr.dark td{
+            background-color: #c6c8ca;
+        }
      }
-    
-     
+  
 }
 
 
+:host([table-striped]) table[part=table] tbody {
+    tr:nth-of-type(2n)  td{
+        background-color: #c6c8ca;
+    }
+}
+:host([table-hover] :not([table-striped])) table[part=table] tbody {
+    tr:hover  td{
+        color: #212529;
+        background-color: #fafafa;
+    }
+}
 
+:host([table-sm]) table[part=table]  tbody{
+    tr td{
+        padding:0.3em;
+    }
+   
+}

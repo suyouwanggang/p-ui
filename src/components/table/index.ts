@@ -4,7 +4,7 @@ import {  styleMap } from 'lit-html/directives/style-map';
 import ResizeObserver from 'resize-observer-polyfill';
 import watchProperty from '../../decorators/watchProperty';
 import getStyleProperty from '../utils/styleUtils';
-import caculateColumnData,{ isNumberWidth, RowHeader, SortingEnum } from './tableHelper';
+import caculateColumnData,{ clearColumnCacheData, findLastCanChangeWidth, getThCellByColumn, isNumberWidth, RowHeader, SortingEnum } from './tableHelper';
 import tableStyle from './tableStyle.scss';
 import '../icon/index';
 import { addEvent } from '../utils/eventHelper';
@@ -14,7 +14,9 @@ import PColumn from './tableColumn';
  * 表格组件，支持列，表头固定
  * @part root_div  renderRoot 容器
  * @part scroll_div 滚动容器
- * 
+ * @attribute table-striped 隔行变色
+ * @attribute table-hover 鼠标移动 行高亮
+ * @attribute table-sm 行高变小
  */
 @customElement("p-table")
 export default class PTable extends LitElement {
@@ -183,7 +185,7 @@ export default class PTable extends LitElement {
     private fixedStyleElement:HTMLStyleElement;
     private fixedStyleString:string;
     private  renderTHead(fixed:boolean=false){
-        return html`<thead part='thead-${fixed?'fixed':'hidden'}'  >
+        return html`<thead part='thead-${fixed?'fixed':'hidden'}' >
             ${this.theadRows!=undefined? 
                 this.theadRows.map((itemRow:PColumn[])=>
                      this.renderTHeaderRow(itemRow,fixed)
@@ -212,6 +214,9 @@ export default class PTable extends LitElement {
         const div=this._scroll_div;
         const element:HTMLDivElement=event.target as HTMLDivElement;
         const target:HTMLTableHeaderCellElement=element.closest('th,td');
+        const col:PColumn =(target as any).columnData;
+        const findCol=findLastCanChangeWidth(col);
+        const findTh=getThCellByColumn(findCol);
         const {left,top}=div.getBoundingClientRect();
         const {right:thRight,top:thTop}=target.getBoundingClientRect();
         const helper=this.columnReiszeHepler;
@@ -219,22 +224,26 @@ export default class PTable extends LitElement {
         const oldCursor=getStyleProperty(document.body,'cursor');
         let change=0;
         let x=event.clientX;
-        const col:PColumn =(target as any).columnData;
         // let color=getStyleProperty(target,'border-right-color');
         helper.style.cssText=`left:${position}px;display:block;top:${thTop-top}px;height:${div.clientHeight-(thTop-top)}px;`;
-        let oldWidth= parseInt(getStyleProperty(target,'width').replace('px',''));
+        let oldWidth= parseInt(getStyleProperty(findTh,'width').replace('px',''));
         let width=oldWidth;
+        let addclass=false;
         //console.log(`width=${width}`);
        const moveObj= addEvent(document.body,'mousemove',(ev:MouseEvent)=>{
             ev.preventDefault();
+            if(!addclass){
+                target.classList.add('dragging');
+                addclass=true;
+            }
             const nX = ev.clientX;
             change=nX-x;//x 变大，右侧移动
             width=oldWidth+change;
-            if(col.maxWidth!=undefined&& width>col.maxWidth){
-                width=col.maxWidth;
+            if(findCol.maxWidth!=undefined&& width>findCol.maxWidth){
+                width=findCol.maxWidth;
                 change=width-oldWidth;
-            }else if(col.minWidth!=undefined&&width<col.minWidth){
-                width=col.minWidth;
+            }else if(findCol.minWidth!=undefined&&width<findCol.minWidth){
+                width=findCol.minWidth;
                 change=width-oldWidth;
             }else if(width<20){
                 width=20;
@@ -248,12 +257,12 @@ export default class PTable extends LitElement {
         const upObj= addEvent(document.body,'mouseup',(ev:MouseEvent)=>{
             ev.preventDefault();
             helper.style.cssText='';
+            target.classList.remove('dragging');
             document.body.style.cursor=oldCursor;
-            element.style.cssText='';
             moveObj.destory();
             upObj.destory();
             this.tableWidth= parseInt(getStyleProperty(this.table,'width'),10)+change+'px';
-            col.width=width;
+            findCol.width=width;
             this.updateComplete.then(()=>{
                 this.asynTableHeaderWidth();
                 this.onChangefixedCol();
@@ -261,7 +270,7 @@ export default class PTable extends LitElement {
         });
     }
     private  renderThDrag(colData:PColumn){
-        if(colData.resizeAble!=false&&(!(colData.children!=null&&colData.children.length>1))){
+        if(colData.resizeAble!=false){
             return html`<div  @mousedown=${this.dragThHandler} class='resize-col'></div>`;
         }
         return null;
@@ -269,7 +278,7 @@ export default class PTable extends LitElement {
 
     private renderTh(colData:PColumn,fixed:boolean=false){
         const styleObj:any={ };
-        if(!fixed){
+        if(!fixed&&colData.colspan==1){
             if(colData.width){
                 const isNumber=isNumberWidth(colData.width);
                 styleObj['width']=colData.width+(isNumber?'px':'');
@@ -353,8 +362,14 @@ export default class PTable extends LitElement {
     private _resizeObserver:ResizeObserver;
     private _motationObserver:MutationObserver;
     
-    get childColumn():PColumn[]{
+    get childCanShowColumn():PColumn[]{
         return Array.from(this.children) .filter( (item:Element) =>{
+            return item instanceof PColumn&& !item.hidden;
+        }) as PColumn[];
+        
+    }
+    get childAllColumn():PColumn[]{
+        return Array.from(this.children).filter( (item:Element) =>{
             return item instanceof PColumn;
         }) as PColumn[];
         
@@ -365,7 +380,8 @@ export default class PTable extends LitElement {
         this._motationObserver=new MutationObserver(()=>{
            calledFirst=true;
            //console.log('_motationObserver_motationObserver');
-           this.columnData=this.childColumn;
+           clearColumnCacheData(this.childAllColumn);
+           this.columnData=this.childCanShowColumn;
         });
         this._motationObserver.observe(this,{
             childList:true,
@@ -373,7 +389,7 @@ export default class PTable extends LitElement {
             attributeFilter:['hidden']
         });
         if(!calledFirst){
-            this.columnData=this.childColumn;
+            this.columnData=this.childCanShowColumn;
         }
         
         this._resizeObserver=new ResizeObserver(()=>{

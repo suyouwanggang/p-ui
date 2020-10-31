@@ -123,17 +123,17 @@ export const convertHeaderDataToTableColumns=(columns:ColumnHeaderData[],table:P
 export type RowHeader = Array<Array<PColumn>>;
 
 /**
- * 清除原来的 PColumn._childColumn;
+ * 清除原来的 PColumn 缓存计算的一些属性;
  * @param columns 
  */
- const clearColumnData = (columns: PColumn[]) => {
+ export const clearColumnCacheData = (columns: PColumn[]) => {
     columns.forEach((item) => {
-        const childColumn = [...item.childColumn];
-        item._childColumn = undefined;
+        const childColumn = [...item.childAllColumn];
+        item._cacheCanShowColumn = undefined;
         item.colspan = undefined;
         item.rowspan = undefined;
         item._colIndex = undefined;
-        clearColumnData(childColumn);
+        clearColumnCacheData(childColumn);
     })
 }
 /**
@@ -145,14 +145,17 @@ export type RowHeader = Array<Array<PColumn>>;
  * }
  */
  const caculateColumnData = (columns: PColumn[]): {rows: RowHeader, tdRenderColumnData: PColumn[] } => {
-    clearColumnData(columns);
+    
     //const colspanMap=new Map<ColumnData,number>();//每个th 跨多少列
     // const rowSpanMap=new Map<ColumnData,number>();//每个th 跨多少行
     const getColSpan = (column: PColumn) => {
+        if(column.hidden){
+            return 0;
+        }
         if (column.colspan != undefined) {
             return column.colspan;
         }
-        const childColumn = column.childColumn;
+        const childColumn = column.childCanShowColumn;
         if (childColumn && childColumn.length > 0) {
             let size = 0;
             childColumn.forEach((c: PColumn) => {
@@ -164,44 +167,49 @@ export type RowHeader = Array<Array<PColumn>>;
         column.colspan = 1;
         return 1;
     }
+    const canShowColumns=columns;
     let maxLevel = 0;
     const levelMap = new Map<PColumn, number>();//key column, value,level
     levelMap.set(undefined, 0);
     const iteratorColumn = (column: PColumn, childArray: PColumn[]) => {
         if (childArray && childArray.length > 0) {
             const parentLevel = levelMap.get(column);
-            childArray.forEach((c: PColumn) => {
+            for(let i=0,j=childArray.length;i<j;i++){
+                let c=childArray[i];
                 c._isAuto = c.width == undefined || c.width === 'auto';
                 levelMap.set(c, parentLevel + 1);
                 if (parentLevel + 1 > maxLevel) {
                     maxLevel = parentLevel + 1;
                 }
                 getColSpan(c);
-                const childColumn = c.childColumn;
+                const childColumn = c.childCanShowColumn;
                 if (childColumn && childColumn.length > 0) {
                     iteratorColumn(c, childColumn);
                 }
-            });
+            }
         }
     }
-
-    iteratorColumn(undefined, columns);
+    iteratorColumn(undefined, canShowColumns);
     const iteratorForColIndex = (startColIndex: number, childArray: PColumn[]) => {
         if (childArray && childArray.length > 0) {
             let colIndex = startColIndex;
-            childArray.forEach((c) => {
-                c._colIndex = colIndex;
-                colIndex += getColSpan(c);
-            });
-            childArray.forEach(((c) => {
-                const childColumn = c.childColumn;
-                if (childColumn && childColumn.length > 0) {
-                    iteratorForColIndex(c._colIndex, c.childColumn)
+            for(let i=0,j=childArray.length;i<j;i++){
+                let c=childArray[i];
+                if(!c.hidden){
+                    c._colIndex = colIndex;
+                    colIndex += getColSpan(c);
                 }
-            }))
+            }
+            for(let i=0,j=childArray.length;i<j;i++){
+                let c=childArray[i];
+                const childColumn = c.childCanShowColumn;
+                if (childColumn && childColumn.length > 0) {
+                    iteratorForColIndex(c._colIndex, c.childCanShowColumn)
+                }
+            }
         }
     }
-    iteratorForColIndex(0, columns);
+    iteratorForColIndex(0, canShowColumns);
 
     //console.log(maxLevel);
     const rows: RowHeader = [];
@@ -213,7 +221,7 @@ export type RowHeader = Array<Array<PColumn>>;
         const level = levelMap.get(col);
         const rowThead = rows[level - 1];
         rowThead.push(col);
-        const childColumn = col.childColumn;
+        const childColumn = col.childCanShowColumn;
         if (childColumn && childColumn.length > 0) {
             col.rowspan = 1;
             childColumn.forEach((item: PColumn) => iteratorColumnForRow(item));
@@ -223,7 +231,7 @@ export type RowHeader = Array<Array<PColumn>>;
             renderThArray.push(col);
         }
     };
-    columns.forEach((col: PColumn) => {
+    canShowColumns.forEach((col: PColumn) => {
         iteratorColumnForRow(col);
     });
 
@@ -235,7 +243,31 @@ export type RowHeader = Array<Array<PColumn>>;
     }
 
 }
-
+/**
+ * 查找PColumn 最底层最后一个能够拖动的PColumn
+ * @param column 
+ */
+export const findLastCanChangeWidth=(column:PColumn) :PColumn=>{
+    const subColumns=column.childCanShowColumn;
+    if(subColumns.length==0){
+        return column;
+    }else{
+        return findLastCanChangeWidth(subColumns[subColumns.length-1]);
+    }
+}
+/**
+ * 查找PColumn 对应的th
+ * @param column 
+ *  
+ */
+export const getThCellByColumn=(column:PColumn): HTMLTableHeaderCellElement=>{
+    const table=column.tableDom;
+    const array=table.thead.querySelectorAll('th,td') ;
+    const result= Array.from(array).find( (item:Element) =>
+          ( item as any).columnData==column
+    )
+    return result as HTMLTableHeaderCellElement;
+}
 export const isNumberWidth =(col:Number|string)=>{
     return typeof col =='number'|| !isNaN(Number(col));
 }

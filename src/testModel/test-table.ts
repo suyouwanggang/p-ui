@@ -5,6 +5,9 @@ import PColumn from '../components/table/tableColumn';
 
 @customElement('p-test-table')
 export default class TestOne extends LitElement {
+    createRenderRoot(){
+        return this;
+    }
     constructor() {
         super();
         const renderTd=function(this:PColumn,rowData:any,index:number,tab:PTable){
@@ -19,17 +22,18 @@ export default class TestOne extends LitElement {
             {prop:'博文数据',text:'博文数据',agile:'center',children:[
                 {prop:'type',text:'博文分类',width:90,renderTd:renderTd},
                 {prop:'activity',text:'博文互动',children:[
-                    {text:'评论',width:80,tdAgile:'center',maxWidth:200,minWidth:72,renderTh:renderTH,
-                    sort:SortingEnum.DESC,sortAble:true,resizeAble:true,
-                    renderTd:(rowData,index,table)=>{
-                        return html`<span>${(100*Math.random()).toFixed(0)}</span>`;
-                    }},
+                    
                     {text:'点赞',width:90,tdAgile:'center',renderTd:(rowData,index,table)=>{
                         return html`<span>${(200*Math.random()).toFixed(0)}</span>`;
                     }},
                     {text:'阅读',width:100, agile:'right',sortAble:true,sort:SortingEnum.ASC, tdAgile:'right',renderTh:renderTH,renderTd:(rowData,index,table)=>{
                         return html`<span>${(300*Math.random()).toFixed(0)}</span>`;
-                    }}
+                    }},
+                    {text:'评论',width:80,tdAgile:'center',maxWidth:200,minWidth:72,renderTh:renderTH,
+                    sort:SortingEnum.DESC,sortAble:true,resizeAble:true,
+                    renderTd:(rowData,index,table)=>{
+                        return html`<span>${(100*Math.random()).toFixed(0)}</span>`;
+                    }},
                 ]}
 
             ]},
@@ -70,7 +74,7 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        return html`<p-table style='height:500px;'   .fixedCol=${1}   .data=${this.data}>
+        return html`<p-table style='height:500px;' table-hover   table-striped  .fixedCol=${1}   .data=${this.data}>
         </p-table>`;
     }
 }

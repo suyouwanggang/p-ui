@@ -86,7 +86,7 @@ export default class PColumn extends LitElement {
     sort:SortingEnum;//升序，降序
 
     /**
-     * 是否可以拖动改变宽度
+     * 是否可以拖动改变宽度,false
      */
     @watch('changeProperty')
     @property({type:Boolean,reflect:true,attribute:true})
@@ -136,18 +136,24 @@ export default class PColumn extends LitElement {
     firstUpdated(_changedProperties: Map<string | number | symbol, unknown>){
         super.firstUpdated(_changedProperties);
     }
+    _cacheCanShowColumn:PColumn[];
     /**
      * 缓存 子孩子
      */
-    _childColumn:PColumn[];
-    get childColumn():PColumn[]{
-        this._childColumn= Array.from(this.children) .filter( (item:Element) =>{
-            return item instanceof PColumn;
-        }) as PColumn[];
-        
-        return this._childColumn;
+    get childCanShowColumn():PColumn[]{
+        if(!this._cacheCanShowColumn){
+            this._cacheCanShowColumn=  Array.from(this.children) .filter( (item:Element) =>{
+                return item instanceof PColumn &&item.hidden!=true;
+            }) as PColumn[];
+        }
+      return this._cacheCanShowColumn;
     }
 
+    get childAllColumn(){
+        return Array.from(this.children) .filter( (item:Element) =>{
+            return item instanceof PColumn 
+        }) as PColumn[];
+    }
     get tableDom() :PTable{
         return this.closest('p-table');
     }
