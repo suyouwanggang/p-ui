@@ -102,16 +102,21 @@ export default class PColumn extends LitElement {
      * 最小宽度
      */
     @watch('changeProperty')
-    @property({type:Number, reflect:true,attribute:true,converter:properConverter})
+    @property({type:Number, reflect:true,attribute:true})
     minWidth?:number;
     /**
      * 最大宽度
      */
     @watch('changeProperty')
-    @property({type:Number,reflect:true,attribute:true,converter:properConverter})
+    @property({type:Number,reflect:true,attribute:true})
     maxWidth?:number;
 
-
+    /**
+     * 是否能够拖动改变列顺序
+     */
+    @watch('changeProperty')
+    @property({type:Boolean,reflect:true,attribute:true})
+    canDrag:boolean;
     /**
      * 占多少列
      */

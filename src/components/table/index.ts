@@ -10,6 +10,7 @@ import '../icon/index';
 import { addEvent } from '../utils/eventHelper';
 import watch from '../../decorators/watch';
 import PColumn from './tableColumn';
+import { customStyle } from '../../decorators/customStyle';
 /**
  * 表格组件，支持列，表头固定
  * @part root_div  renderRoot 容器
@@ -19,6 +20,7 @@ import PColumn from './tableColumn';
  * @attribute table-sm 行高变小
  */
 @customElement("p-table")
+@customStyle()
 export default class PTable extends LitElement {
     static get styles() {
         return tableStyle;
@@ -216,6 +218,9 @@ export default class PTable extends LitElement {
         const target:HTMLTableHeaderCellElement=element.closest('th,td');
         const col:PColumn =(target as any).columnData;
         const findCol=findLastCanChangeWidth(col);
+        if(findCol==null){
+            return ;
+        }
         const findTh=getThCellByColumn(findCol);
         const {left,top}=div.getBoundingClientRect();
         const {right:thRight,top:thTop}=target.getBoundingClientRect();
@@ -269,7 +274,7 @@ export default class PTable extends LitElement {
             })
         });
     }
-    private  renderThDrag(colData:PColumn){
+    private  renderThResizble(colData:PColumn){
         if(colData.resizeAble!=false){
             return html`<div  @mousedown=${this.dragThHandler} class='resize-col'></div>`;
         }
@@ -299,15 +304,78 @@ export default class PTable extends LitElement {
             }
         }
         
-        return html`<th class='${colData.sortAble?'sortAble':''}' colIndex=${colData._colIndex} .columnData=${colData}  style='${styleMap(styleObj)}' .align=${colData.agile?colData.agile:'center'}
+        return html`<th draggable=${colData.canDrag!=false?'true':'false'}
+           @dragend=${this.handlerDragColumn} @drop=${this.handlerDragColumn}
+           @dragleave=${this.handlerDragColumn} @dragover=${this.handlerDragColumn}
+            @dragstart=${this.handlerDragColumn} class='${colData.sortAble?'sortAble':''}' colIndex=${ifDefined(colData._colIndex)} .columnData=${colData}  style='${styleMap(styleObj)}' .align=${colData.agile?colData.agile:'center'}
             rowspan=${colData.rowspan==undefined?1:colData.rowspan}
             colspan=${colData.colspan==undefined?1:colData.colspan}
             >
             <div class='thWrap' part='colThWrap' >
                 ${colData.renderTh? colData.renderTh.call(colData,this):html`<span class='thWrap-text'>${colData.text} </span>`}${this.renderThSorting(colData)}
             </div>
-            ${this.renderThDrag(colData)}
+            ${this.renderThResizble(colData)}
         </th>`;
+    }
+
+    private _dragContext:{
+        dragNode?:HTMLElement,
+        dragColumn?:PColumn,
+        isStart?:boolean,
+        enterNode?:HTMLElement
+    };
+    private handlerDragColumn(event:DragEvent){
+        const element=(event.target as HTMLElement ).closest('th,td') as HTMLElement;
+        const column=(element as any).columnData as PColumn;
+        const type=event.type;
+        if(type=='dragstart'){
+            // console.log('start ==');
+            // console.log(column);
+            // element.style.opacity='0.8px';
+            element.classList.add('dragging');
+           // event.dataTransfer.setData('text','');
+           // event.dataTransfer.effectAllowed='move';
+            this._dragContext={
+                isStart:true,
+                dragNode:element,
+                dragColumn:column
+            }
+        }else if(type=='dragover'||type=='dragenter'&&this._dragContext ){
+            if(this._dragContext ){
+                // console.log('stdragleveaart dragenter==');
+                event.preventDefault();
+                if(element!=this._dragContext.dragNode  && !this._dragContext.dragNode.contains(element)){
+                    event.dataTransfer.dropEffect='move';
+                }else{
+                    event.dataTransfer.dropEffect='none';
+                }
+            }
+            
+        }else if(type=='drop'&&this._dragContext){
+            if(!this._dragContext){
+                return ;
+            }
+            event.preventDefault();
+            // console.log('drop drop==');
+            if(this._dragContext.dragNode!=element && !this._dragContext.dragNode.contains(element)){
+                // console.log('drop===',element);
+                // console.log('drop===',column);
+                if(this._dragContext.dragColumn.previousElementSibling===column){
+                    column.parentElement.insertBefore(this._dragContext.dragColumn,column);
+                }else{
+                    const targetColumn=element.nextElementSibling;
+                    column.parentElement.insertBefore(this._dragContext.dragColumn, targetColumn!=null?((targetColumn as any).columnData as PColumn):null);
+                }
+                this.columnData=this.childCanShowColumn;
+                this.updateComplete.then(()=>{this.resize()});
+            }
+        }else if(type=='dragend'&&this._dragContext){
+            // console.log('dragend==');
+            // this._dragContext.dragNode.style.opacity='';
+            this._dragContext.dragNode.classList.remove('dragging');
+            this._dragContext=undefined;
+        }
+        
     }
     /**
      * 渲染TBODY 
@@ -333,7 +401,7 @@ export default class PTable extends LitElement {
                 if(tdTemplate===undefined||tdTemplate===null){
                     return null;
                 }else{
-                    return html`<td  align=${ifDefined(c.tdAgile)} colIndex=${c._colIndex}  .columnData=${c}  ><div class='tdWrap' >${tdTemplate}</div></td>`;
+                    return html`<td prop=${c.prop} align=${ifDefined(c.tdAgile)} colIndex=${ifDefined(c._colIndex)}  .columnData=${c}  ><div class='tdWrap' >${tdTemplate}</div></td>`;
                 }
             })}</tr>`;
         }
@@ -379,7 +447,7 @@ export default class PTable extends LitElement {
         let calledFirst=false;
         this._motationObserver=new MutationObserver(()=>{
            calledFirst=true;
-           //console.log('_motationObserver_motationObserver');
+        //    console.log('_motationObserver_motationObserver');
            clearColumnCacheData(this.childAllColumn);
            this.columnData=this.childCanShowColumn;
         });
@@ -398,6 +466,7 @@ export default class PTable extends LitElement {
         this._resizeObserver.observe(this);
         this._resizeObserver.observe(this.table);
         this.resize();
+        // console.log('_motationObserver_motationObserver');
     }
     update(changedProperties: Map<string | number | symbol, unknown>){
         super.update(changedProperties);

@@ -73,6 +73,10 @@ export type ColumnHeaderData={
      * 最大宽度
      */
     maxWidth?:number|string;
+    /**
+     * 是否能够拖动改变列顺序
+     */
+    canDrag?:boolean;
 
     /**
      * 下级th ，支持多层次嵌套
