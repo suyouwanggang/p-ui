@@ -26,10 +26,10 @@ const node_icon_up = 'M715.8 493.5L335 165.1c-14.2-12.2-35-1.2-35 18.5v656.8c0 1
  */
 @customElement('p-tree-node')
 class PTreeNode extends LitElement {
-    @property({ type: Object }) nodeRender: TreeNodeRender = null;
-    @property({ type: Number }) subChildSize: number = undefined;
-    @property({ type: String }) name: string = null;
-    @property({ type: String }) icon: string = null;
+    @property({ type: Object }) nodeRender: TreeNodeRender;
+    @property({ type: Number }) subChildSize: number;
+    @property({ type: String }) name: string ;
+    @property({ type: String }) icon: string ;
     @property({ type: Boolean }) close: boolean = false;
     @property({ type: Boolean }) closeable: boolean = true;
     private _fireNodeEvent(eventName: string) {

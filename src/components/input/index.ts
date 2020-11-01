@@ -14,19 +14,19 @@ class MinInputClass extends LitElement {
     public get input(): HTMLInputElement | unknown {
         return this;
     }
-    @property({ type: String, reflect: true }) name?: string;
-    @property({ type: String, reflect: false }) value?: string = '';
-    @property({ type: Boolean, reflect: true }) invalid?: boolean = false;
-    @property({ type: Boolean, reflect: true }) novalidate?: boolean = false;
-    @property({ type: Boolean, reflect: true }) required?: boolean = false;
-    @property({ type: String, reflect: true }) errorMessage?: string = undefined;
-    @property({ type: String, reflect: true }) pattern?: string = undefined;
-    @property({ type: Number, reflect: true }) minLength?: number = undefined;
-    @property({ type: Number, reflect: true }) maxLength?: number = undefined;
-    @property({ type: Number, reflect: true }) min?: number = undefined;
-    @property({ type: Number, reflect: true }) max?: number = undefined;
+    @property({ type: String, reflect: true }) name: string;
+    @property({ type: String, reflect: false }) value: string = '';
+    @property({ type: Boolean, reflect: true }) invalid: boolean = false;
+    @property({ type: Boolean, reflect: true }) novalidate: boolean = false;
+    @property({ type: Boolean, reflect: true }) required: boolean = false;
+    @property({ type: String, reflect: true }) errorMessage: string ;
+    @property({ type: String, reflect: true }) pattern: string ;
+    @property({ type: Number, reflect: true }) minLength: number ;
+    @property({ type: Number, reflect: true }) maxLength: number ;
+    @property({ type: Number, reflect: true }) min: number ;
+    @property({ type: Number, reflect: true }) max: number ;
     @property({ type: Number, reflect: true }) step?: number = 1;
-    @property({ type: Object, attribute: false }) customValidateMethod?: CustomValidateMethode = undefined;
+    @property({ type: Object, attribute: false }) customValidateMethod?: CustomValidateMethode ;
     get validity(): boolean {
         return getValidityResult(this).valid;
     }

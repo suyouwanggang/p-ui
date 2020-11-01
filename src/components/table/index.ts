@@ -4,7 +4,7 @@ import {  styleMap } from 'lit-html/directives/style-map';
 import ResizeObserver from 'resize-observer-polyfill';
 import watchProperty from '../../decorators/watchProperty';
 import getStyleProperty from '../utils/styleUtils';
-import caculateColumnData,{ clearColumnCacheData, findLastCanChangeWidth, getThCellByColumn, isNumberWidth, RowHeader, SortingEnum } from './tableHelper';
+import caculateColumnData,{ clearColumnCacheData, findLastCanChangeWidth, getThCellByColumn, isColumnContainsColumn, isNumberWidth, RowHeader, SortingEnum } from './tableHelper';
 import tableStyle from './tableStyle.scss';
 import '../icon/index';
 import { addEvent } from '../utils/eventHelper';
@@ -317,6 +317,41 @@ export default class PTable extends LitElement {
             ${this.renderThResizble(colData)}
         </th>`;
     }
+    /**
+     * 获取 tbale 行 数据源
+     * @param rowIndexOrChildElement  rowIndex ,或者是行所在dom 的子元素
+     */
+    public getRowData(rowIndexOrChildElement:number|Element):any{
+        if(typeof rowIndexOrChildElement=='number'){
+            const row=this.table.rows[rowIndexOrChildElement];
+            return row!=null? (row as any).rowData :null;
+        }
+        const row=rowIndexOrChildElement.closest('tr');
+        if(row&&row.parentElement && row.parentElement.tagName.toLocaleLowerCase()=='tbody'&&row.parentElement.parentElement===this.table){
+            return (row as any).rowData;
+        }else if(row&&row.parentElement){
+            return this.getRowData(row.parentElement);
+        }
+        return null;
+        
+    }
+    /**
+     * 获取 td 对应的列模型
+     * @param cellChildElement td,th 所在的子元素
+     */
+    public getCellColumn(cellChildElement:Element):PColumn{
+        if(!cellChildElement){
+            return null;
+        }
+        const th=cellChildElement.closest('th,td');
+        if((th&&th.parentElement.parentElement==this.table) || (th&&th.parentElement.parentElement==this.fixedHeaderTable)){
+            return (th as any).columnData as PColumn;
+        }else if(th&&th.parentElement){
+            return  this.getCellColumn(th.parentElement);
+        }
+        return null;
+
+    }
 
     private _dragContext:{
         dragNode?:HTMLElement,
@@ -324,6 +359,10 @@ export default class PTable extends LitElement {
         isStart?:boolean,
         enterNode?:HTMLElement
     };
+    /**
+     * 处理表格列拖动
+     * @param event 
+     */
     private handlerDragColumn(event:DragEvent){
         const element=(event.target as HTMLElement ).closest('th,td') as HTMLElement;
         const column=(element as any).columnData as PColumn;
@@ -344,7 +383,7 @@ export default class PTable extends LitElement {
             if(this._dragContext ){
                 // console.log('stdragleveaart dragenter==');
                 event.preventDefault();
-                if(element!=this._dragContext.dragNode  && !this._dragContext.dragNode.contains(element)){
+                if(element!=this._dragContext.dragNode  && !isColumnContainsColumn(this._dragContext.dragColumn,column)){
                     event.dataTransfer.dropEffect='move';
                 }else{
                     event.dataTransfer.dropEffect='none';
@@ -355,16 +394,21 @@ export default class PTable extends LitElement {
             if(!this._dragContext){
                 return ;
             }
-            event.preventDefault();
             // console.log('drop drop==');
-            if(this._dragContext.dragNode!=element && !this._dragContext.dragNode.contains(element)){
+            if(this._dragContext.dragNode!=element && !isColumnContainsColumn(this._dragContext.dragColumn,column)){
+                event.preventDefault();
                 // console.log('drop===',element);
                 // console.log('drop===',column);
                 if(this._dragContext.dragColumn.previousElementSibling===column){
                     column.parentElement.insertBefore(this._dragContext.dragColumn,column);
                 }else{
                     const targetColumn=element.nextElementSibling;
-                    column.parentElement.insertBefore(this._dragContext.dragColumn, targetColumn!=null?((targetColumn as any).columnData as PColumn):null);
+                    const relColumn=targetColumn!=null? ((targetColumn as any).columnData as PColumn):null;
+                    if(relColumn){
+                        relColumn.parentElement.insertBefore(this._dragContext.dragColumn, relColumn);
+                    }else{
+                        column.parentElement.appendChild(this._dragContext.dragColumn);
+                    }
                 }
                 this.columnData=this.childCanShowColumn;
                 this.updateComplete.then(()=>{this.resize()});
@@ -395,13 +439,13 @@ export default class PTable extends LitElement {
      */
     renderRowData(rowData:any,index:number) {
         if(this.rendersTdArray!=undefined){
-            return html`<tr> ${this.rendersTdArray.map((c:PColumn) =>{
+            return html`<tr .rowData=${rowData}> ${this.rendersTdArray.map((c:PColumn) =>{
                 //console.log(rowData);
                 const tdTemplate=this.renderRowTD(rowData,c,index);
                 if(tdTemplate===undefined||tdTemplate===null){
                     return null;
                 }else{
-                    return html`<td prop=${c.prop} align=${ifDefined(c.tdAgile)} colIndex=${ifDefined(c._colIndex)}  .columnData=${c}  ><div class='tdWrap' >${tdTemplate}</div></td>`;
+                    return html`<td prop=${ifDefined(c.prop)} align=${ifDefined(c.tdAgile)} colIndex=${ifDefined(c._colIndex)}  .columnData=${c}  ><div class='tdWrap' >${tdTemplate}</div></td>`;
                 }
             })}</tr>`;
         }

@@ -11,14 +11,18 @@ export default class TestOne extends LitElement {
     constructor() {
         super();
         const renderTd=function(this:PColumn,rowData:any,index:number,tab:PTable){
-            return html`<div>${this.text+index}</div>`;
+            return html`<div >${this.text+index}</div>`;
         }
         const renderTH=function(this:PColumn,tab:PTable){
-            return html`<div style='display:inline-block;'>${this.text} ${this.width}</div>`;
+            return html`<div  class='red' style='display:inline-block;'>${this.text} ${this.width}</div>`;
         }
         this.columnData=[
-            {prop:'title',text:'标题',agile:'center',width:200,resizeAble:true,renderTd:renderTd,renderTh:renderTH},
-            {prop:'简介',text:'简介',agile:'center',width:100,sort:SortingEnum.ASC,sortAble:true,renderTd:renderTd,renderTh:renderTH},
+            {prop:'title',text:'标题',agile:'center',width:200,resizeAble:true,renderTd:renderTd,renderTh:function(tab){
+                return renderTH.call(this,tab);
+            }},
+            {prop:'简介',text:'简介',agile:'center',width:100,sort:SortingEnum.ASC,sortAble:true,renderTd:renderTd,renderTh:function(tab){
+                return renderTH.call(this,tab);
+            }},
             {prop:'博文数据',text:'博文数据',agile:'center',children:[
                 {prop:'type',text:'博文分类',width:90,renderTd:renderTd},
                 {prop:'activity',text:'博文互动',children:[
@@ -26,21 +30,25 @@ export default class TestOne extends LitElement {
                     {text:'点赞',width:90,tdAgile:'center',renderTd:(rowData,index,table)=>{
                         return html`<span>${(200*Math.random()).toFixed(0)}</span>`;
                     }},
-                    {text:'阅读',width:100, agile:'right',sortAble:true,sort:SortingEnum.ASC, tdAgile:'right',renderTh:renderTH,renderTd:(rowData,index,table)=>{
+                    {text:'阅读',width:100,hidden:true, agile:'right',sortAble:true,sort:SortingEnum.ASC, tdAgile:'right',renderTh:function(tab){
+                        return renderTH.call(this,tab);
+                    },renderTd:(rowData,index,table)=>{
                         return html`<span>${(300*Math.random()).toFixed(0)}</span>`;
                     }},
-                    {text:'评论',width:80,tdAgile:'center',maxWidth:200,minWidth:72,renderTh:renderTH,
+                    {text:'评论',width:80,tdAgile:'center',maxWidth:200,minWidth:72,renderTh:function(tab){
+                        return renderTH.call(this,tab);
+                    },
                     sort:SortingEnum.DESC,sortAble:true,resizeAble:true,
                     renderTd:(rowData,index,table)=>{
-                        return html`<span>${(100*Math.random()).toFixed(0)}</span>`;
+                        return html`<span class='red'>${(100*Math.random()).toFixed(0)}</span>`;
                     }},
                 ]}
 
             ]},
             {prop:'作者',text:'作者',agile:'left',children:[
-                {text:'头像',width:90,renderTd:renderTd},
-                {text:'昵称',width:90,renderTd:renderTd},
-                {text:'gitHub',width:90,renderTd:renderTd}
+                {text:'头像',width:90,renderTd:renderTd,prop:'头像'},
+                {text:'昵称',width:90,renderTd:renderTd,prop:'昵称'},
+                {text:'gitHub',width:90,renderTd:renderTd,prop:'github'}
             ]}
         ];
 
@@ -74,7 +82,13 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        return html`<p-table style='height:500px;' table-hover   table-striped  .fixedCol=${1}   .data=${this.data}>
+        return html`<p-table style='height:500px;' .customStyle=${`
+        
+            .red{
+                color:red;
+                font-weight:bold;
+            }
+        `}  .fixedCol=${[1,-1]}   .data=${this.data}>
         </p-table>`;
     }
 }

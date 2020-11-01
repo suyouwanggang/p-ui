@@ -272,6 +272,17 @@ export const getThCellByColumn=(column:PColumn): HTMLTableHeaderCellElement=>{
     )
     return result as HTMLTableHeaderCellElement;
 }
+/**
+ * 判断列 是否包含 子列
+ * @param column  父级列
+ * @param subColumn  子列
+ */
+export const isColumnContainsColumn=(column:PColumn ,subColumn:PColumn) =>{
+   const result=Array.from( column.querySelectorAll('p-column')).find(( item )=>{
+        return item===subColumn;
+    });
+    return result!=null;
+}
 export const isNumberWidth =(col:Number|string)=>{
     return typeof col =='number'|| !isNaN(Number(col));
 }
