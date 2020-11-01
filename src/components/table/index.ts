@@ -407,7 +407,12 @@ export default class PTable extends LitElement {
                     if(relColumn){
                         relColumn.parentElement.insertBefore(this._dragContext.dragColumn, relColumn);
                     }else{
-                        column.parentElement.appendChild(this._dragContext.dragColumn);
+                        try{
+                            column.parentElement.appendChild(this._dragContext.dragColumn);
+                        }catch(ex){
+                            this._dragContext.dragColumn.parentElement.appendChild(this._dragContext.dragColumn);
+                        }
+                        
                     }
                 }
                 this.columnData=this.childCanShowColumn;
