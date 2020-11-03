@@ -97,10 +97,10 @@ export  class POrganizationChartNode extends LitElement{
 
   }
   get _childNodeSize(){
-    return this.node.children ? this.node.children.length:0;
+    return this.node&&this.node.children ? this.node.children.length:0;
   }
   get colspan(){
-    return this._childNodeSize==0? this._childNodeSize*2:1;
+    return this._childNodeSize>0? this._childNodeSize*2:1;
   }
   
   onNodeClick(event:Event){
