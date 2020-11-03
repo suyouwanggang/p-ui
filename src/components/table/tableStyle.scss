@@ -4,12 +4,14 @@
     min-height: 300px;
     --table-font-size: 12px;
     font-size:var(--table-font-size);
-    --table-border: 1px solid #e8e8e8;
+    --table-border: 1px solid #EBE8EF;
     --table-border-high: 1px solid #ccc;
     --table-border-active: 1px solid #aacbe1;
     --table-row: #fff;
     --table-row-odd:#fafafa;
-    --table-head-bg-color:#f2f2f2;
+    --table-head-bg-color:#F5F5F5;
+
+    --table-dragging-color:rgb(219,219,220);
 }
 
 div[part=root-div]{
@@ -89,7 +91,8 @@ table {
             content: '';
             position: absolute;
             right:0;
-            top:0;bottom:0;background-color: #FFF;
+            z-index: 1;
+            top:0;bottom:0;background-color:var(--table-head-bg-color);
         }
     }
     
@@ -112,8 +115,7 @@ table {
                 bottom:1px;
             }
             &.dragging{
-                background-color: #959ca7;
-               
+                background-color: var(--table-dragging-color);
             }
 
             div.thWrap{
@@ -209,10 +211,11 @@ table {
         background-color: #c6c8ca;
     }
 }
-:host([table-hover] :not([table-striped])) table[part=table] tbody {
+
+:host([table-hover]) table[part=table] tbody {
     tr:hover  td{
         color: #212529;
-        background-color: #fafafa;
+        background-color:  rgb(240,240,240);
     }
 }
 

@@ -1,5 +1,5 @@
 
-const fs: any = require('fs-extra');
+const fs = require('fs-extra');
 
 const param: string = process.argv[2];
 // Check if required parameter is provided
@@ -9,7 +9,7 @@ if(!param) {
 }
 
 
-const dir: string = `./components/${param}`;
+const dir: string = `./src/components/${param}`;
 const files: Array<string> = [
   `${param}.ts`,
   `${param}.scss`

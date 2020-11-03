@@ -17,14 +17,14 @@ export default class TestOne extends LitElement {
             return html`<div  class='red' style='display:inline-block;'>${this.text} ${this.width}</div>`;
         }
         this.columnData=[
-            {prop:'title',text:'标题',agile:'center',width:200,resizeAble:true,renderTd:renderTd,renderTh:function(tab){
+            {prop:'title',text:'标题',agile:'center',sortAble:true,width:200,resizeAble:true,renderTd:renderTd,renderTh:function(tab){
                 return renderTH.call(this,tab);
             }},
             {prop:'简介',text:'简介',agile:'center',width:100,sort:SortingEnum.ASC,sortAble:true,renderTd:renderTd,renderTh:function(tab){
                 return renderTH.call(this,tab);
             }},
             {prop:'博文数据',text:'博文数据',agile:'center',children:[
-                {prop:'type',text:'博文分类',width:90,renderTd:renderTd},
+                {prop:'type',text:'博文分类',width:90,renderTd:renderTd,sortAble:true},
                 {prop:'activity',text:'博文互动',children:[
                     
                     {text:'点赞',width:90,tdAgile:'center',renderTd:(rowData,index,table)=>{
@@ -88,7 +88,7 @@ export default class TestOne extends LitElement {
                 color:red;
                 font-weight:bold;
             }
-        `}  .fixedCol=${[1,-1]}   .data=${this.data}>
+        `}  .fixedCol=${[1,-1]}  table-hover .data=${this.data}>
         </p-table>`;
     }
 }

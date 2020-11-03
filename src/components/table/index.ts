@@ -147,9 +147,13 @@ export default class PTable extends LitElement {
             if(leftIndex>0){
                for(let i=0,j=leftIndex;i<j;i++){
                    const selector=`th[colIndex="${i}"],td[colIndex="${i}"]`;
+                   const selectorDom=`th[colIndex="${i}"][colspan="1"],td[colIndex="${i}"][colspan="1"]`;
                    let left=0;
                    if(i>0){
-                       const td=div.querySelector(selector);
+                       let td=div.querySelector(selectorDom);
+                        if(td==null){
+                            td=div.querySelector(selector);
+                        }
                        if(td!=null){
                            left=td.getBoundingClientRect().left-tableRectLeft;
                        }
@@ -167,10 +171,14 @@ export default class PTable extends LitElement {
                 }
                 for(let i=righColIndex,j=maxColSpan;i<j;i++){
                     const selector=`th[colIndex="${i}"],td[colIndex="${i}"]`;
+                    const selectorDom=`th[colIndex="${i}"][colspan="1"],td[colIndex="${i}"][colspan="1"]`;
                     let right=0;
-                    const td=div.querySelector(selector);
+                    let td=div.querySelector(selectorDom);
+                    if(td==null){
+                        td=div.querySelector(selector);
+                    }
                     if(td!=null){
-                        right=td.getBoundingClientRect().right-tableRectRight;
+                        right=tableRectRight-td.getBoundingClientRect().right;
                     }
                      styleString.push(`${selector} `, `{
                          position:sticky;z-index:1; right:${right}px;
@@ -317,41 +325,7 @@ export default class PTable extends LitElement {
             ${this.renderThResizble(colData)}
         </th>`;
     }
-    /**
-     * 获取 tbale 行 数据源
-     * @param rowIndexOrChildElement  rowIndex ,或者是行所在dom 的子元素
-     */
-    public getRowData(rowIndexOrChildElement:number|Element):any{
-        if(typeof rowIndexOrChildElement=='number'){
-            const row=this.table.rows[rowIndexOrChildElement];
-            return row!=null? (row as any).rowData :null;
-        }
-        const row=rowIndexOrChildElement.closest('tr');
-        if(row&&row.parentElement && row.parentElement.tagName.toLocaleLowerCase()=='tbody'&&row.parentElement.parentElement===this.table){
-            return (row as any).rowData;
-        }else if(row&&row.parentElement){
-            return this.getRowData(row.parentElement);
-        }
-        return null;
-        
-    }
-    /**
-     * 获取 td 对应的列模型
-     * @param cellChildElement td,th 所在的子元素
-     */
-    public getCellColumn(cellChildElement:Element):PColumn{
-        if(!cellChildElement){
-            return null;
-        }
-        const th=cellChildElement.closest('th,td');
-        if((th&&th.parentElement.parentElement==this.table) || (th&&th.parentElement.parentElement==this.fixedHeaderTable)){
-            return (th as any).columnData as PColumn;
-        }else if(th&&th.parentElement){
-            return  this.getCellColumn(th.parentElement);
-        }
-        return null;
-
-    }
+    
 
     private _dragContext:{
         dragNode?:HTMLElement,
@@ -599,6 +573,42 @@ export default class PTable extends LitElement {
                     <div class='column-reisze-helper' id='column-reisze-helper' part='column-resize-helper'></div>
             </div>
         </div>`
+    }
+
+    /**
+     * 获取 tbale 行 数据源
+     * @param rowIndexOrChildElement  rowIndex ,或者是行所在dom 的子元素
+     */
+    public getRowData(rowIndexOrChildElement:number|Element):any{
+        if(typeof rowIndexOrChildElement=='number'){
+            const row=this.table.rows[rowIndexOrChildElement];
+            return row!=null? (row as any).rowData :null;
+        }
+        const row=rowIndexOrChildElement.closest('tr');
+        if(row&&row.parentElement && row.parentElement.tagName.toLocaleLowerCase()=='tbody'&&row.parentElement.parentElement===this.table){
+            return (row as any).rowData;
+        }else if(row&&row.parentElement){
+            return this.getRowData(row.parentElement);
+        }
+        return null;
+        
+    }
+    /**
+     * 获取 td 对应的列模型
+     * @param cellChildElement td,th 所在的子元素
+     */
+    public getCellColumn(cellChildElement:Element):PColumn{
+        if(!cellChildElement){
+            return null;
+        }
+        const th=cellChildElement.closest('th,td');
+        if((th&&th.parentElement.parentElement==this.table) || (th&&th.parentElement.parentElement==this.fixedHeaderTable)){
+            return (th as any).columnData as PColumn;
+        }else if(th&&th.parentElement){
+            return  this.getCellColumn(th.parentElement);
+        }
+        return null;
+
     }
 }
 
