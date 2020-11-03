@@ -28,6 +28,7 @@ import './accordionPanel/index';
 import './step';
 import './scroll/index';
 import './table/index';
+import './organization-chart/index';
 
 declare global {
     interface Window {

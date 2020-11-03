@@ -214,7 +214,6 @@ table {
 
 :host([table-hover]) table[part=table] tbody {
     tr:hover  td{
-        color: #212529;
         background-color:  rgb(240,240,240);
     }
 }

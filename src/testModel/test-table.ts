@@ -2,7 +2,8 @@ import { customElement, html, LitElement, property, query } from 'lit-element';
 import { ColumnHeaderData, convertHeaderDataToTableColumns, SortingEnum } from '../components/table/tableHelper';
 import PTable from '../components/table/index';
 import PColumn from '../components/table/tableColumn';
-
+import  orgData from './orginData';
+import { OrganiazationNodeType } from '../components/organization-chart';
 @customElement('p-test-table')
 export default class TestOne extends LitElement {
     createRenderRoot(){
@@ -82,8 +83,12 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        return html`<p-table style='height:500px;' .customStyle=${`
-        
+        const nodeRender=(node:OrganiazationNodeType)=>{
+            return html`<div >${node.data.label}</div>`;
+        };
+        return html`
+            <p-org-chart  .node=${orgData} .nodeRender=${nodeRender}>  </p-org-chart>
+            <p-table style='height:500px;' .customStyle=${`
             .red{
                 color:red;
                 font-weight:bold;
