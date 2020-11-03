@@ -83,11 +83,15 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        const nodeRender=(node:OrganiazationNodeType)=>{
-            return html`<div >${node.data.label}</div>`;
-        };
+        
         return html`
-            <p-org-chart  .node=${orgData} .nodeRender=${nodeRender}>  </p-org-chart>
+            <p-org-chart 
+
+            .customStyle=${`
+                // .p-person{
+                //     --org-chart-role-bg-color:#e9286f;
+                // }
+            `}  .data=${orgData} ></p-org-chart>  
             <p-table style='height:500px;' .customStyle=${`
             .red{
                 color:red;

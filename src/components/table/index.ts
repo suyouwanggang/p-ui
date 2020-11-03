@@ -1,4 +1,4 @@
-import { customElement, html, internalProperty, LitElement, property, query } from 'lit-element';
+import { customElement, html, internalProperty, LitElement, property, PropertyValues, query } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import {  styleMap } from 'lit-html/directives/style-map';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -465,7 +465,7 @@ export default class PTable extends LitElement {
         }) as PColumn[];
         
     }
-    firstUpdated(changedProperties: Map<string | number | symbol, unknown>){
+    firstUpdated(changedProperties: PropertyValues){
         super.firstUpdated(changedProperties);
         let calledFirst=false;
         this._motationObserver=new MutationObserver(()=>{
@@ -491,7 +491,7 @@ export default class PTable extends LitElement {
         this.resize();
         // console.log('_motationObserver_motationObserver');
     }
-    update(changedProperties: Map<string | number | symbol, unknown>){
+    update(changedProperties: PropertyValues){
         super.update(changedProperties);
         if(changedProperties.has('fixedCol')){
             this.onChangefixedCol();

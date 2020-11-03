@@ -1,36 +1,54 @@
 import { OrganiazationNodeType } from '../components/organization-chart';
 
 const orgiData:OrganiazationNodeType={key: '0',
-    data: {label: 'F.C. Barcelona'},
+    data: {roleName: 'EasyTrack'},styleClass:'p-person',
     children: [
         {
             key: '0_0',
-            data: {label: 'F.C. Barcelona'},
+            data: {roleName:'CEO',userName: 'F.C. Barcelona'},
             children: [
                 {
-                    key: '0_0_0',
-                    data: {label: 'Chelsea F.C.'}
+                    data: {roleName:'CFO',userName: 'Chelsea F.C.'},styleClass:'p-person',
+                    children:[
+                        {
+                            data:{roleName:'Tax',userName: 'F.C. Barcelona'},styleClass:'p-person'
+                        },
+                        {
+                            data:{roleName:'Legal',userName: 'F.C. Barcelona'},styleClass:'p-person'
+                        },
+                        {
+                            data:{roleName:'Operations',userName: 'F.C. Barcelona'},styleClass:'p-person'
+                        }
+                    ]
                 },
                 {
-                    key: '0_0_1',
-                    data: {label: 'F.C. Barcelona'}
-                }
-            ]
-        },
-        {
-            key: '0_1',
-            data: {label: 'Real Madrid'},
-            children: [
-                {
-                    key: '0_1_0',
-                    data: {label: 'Bayern Munich'}
+                    data: {roleName:'COO', userName:'F.C. Barcelona'},
+                    children:[{
+                        data:{roleName:'Operations'}
+
+                    }]
                 },
                 {
-                    key: '0_1_1',
-                    data: {label: 'Real Madrid'}
+                    data: {roleName:'CTO',userName: 'Jesse Pinkman'},children:[
+                        {
+                            data:{  roleName:'Development'},
+                            children:[
+                                {data:{roleName:'AnalySis'},styleClass:'p-person'},
+                                {data:{roleName:'Front End'},styleClass:'p-person'},
+                                {data:{roleName:'Back End'},styleClass:'p-person'}
+                            ]
+                        },
+                        {
+                            data:{  roleName:'QA'},
+                        },
+                        {
+                            data:{  roleName:'R&D'},
+                        }
+                    ]
                 }
             ]
         }
+        
     ]
 }
 export default orgiData;
