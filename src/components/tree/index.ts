@@ -1,13 +1,15 @@
 import { customElement, html, internalProperty, LitElement, property, TemplateResult } from 'lit-element';
+import { nothing } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import  '../icon';
+import '../icon';
+import PLoading from '../loading';
 import TreeStyleObj from './tree.scss';
 import { defaultFilter, filterTreeData, findDataByKey, toJSONTreeData, TreeFilter, TreeNodeData } from './treeFillter';
 import TreeNodeStyle from './treeNode.scss';
 
 
 export interface TreeNodeRender {
-    (data: PTreeNode, html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult): TemplateResult;
+    (data: PTreeNode): TemplateResult;
 }
 /* 默认渲染节点 template*/
 const defaultNodeRender = (data: TreeNodeData) => {
@@ -30,7 +32,7 @@ class PTreeNode extends LitElement {
     @property({ type: Number }) subChildSize: number;
     @property({ type: String }) name: string ;
     @property({ type: String }) icon: string ;
-    @property({ type: Boolean }) close: boolean = false;
+    @property({ type: Boolean }) close: boolean = true;
     @property({ type: Boolean }) closeable: boolean = true;
     private _fireNodeEvent(eventName: string) {
         this.dispatchEvent(new CustomEvent(eventName, {
@@ -64,6 +66,12 @@ class PTreeNode extends LitElement {
         });
         return <PTreeNode[]>array;
     }
+    get directTreeNodeSize(){
+        return this.directTreeNode.length;
+    }
+    get _loadingDom():PLoading{
+        return this.querySelector('p-loading.loadding');
+    }
     render() {
         const nodeRender = this.nodeRender;
         return html`
@@ -75,7 +83,7 @@ class PTreeNode extends LitElement {
                     ${this.icon ? html`<p-icon class='node_icon' name=${this.icon}></p-icon>` : ''}
                     <slot name="node_name" @click=${this._clickNode}> ${this.nodeRender == null ? html`<span
                             class='node_span'>${this.name}</span>` :
-                     nodeRender(this, html)}</slot>
+                     nodeRender(this)}</slot>
                 </div>
                 <div class='node_child' part='node_child'>
                     <slot id="slots" ></slot>
@@ -83,6 +91,7 @@ class PTreeNode extends LitElement {
             </div>
         `;
     }
+    
     private _clickNode(ev: MouseEvent) {
         this._fireNodeEvent('node-name-click');
     }
@@ -94,13 +103,18 @@ class PTree extends LitElement {
         return TreeStyleObj;
     }
     @property({ type: String, reflect: true }) startKey: string | number = null;
-    @property({ type: Boolean, reflect: true }) includeStartNode: boolean = null;
-    @property({ type: Boolean, reflect: true }) rootCloseable: boolean = true;
-    @property({ type: Boolean, reflect: true }) cacheNodeStatus: boolean = true;
-    @property({ type: String, reflect: true, attribute: 'filter-string' }) filterString: string = null;
-    @property({ type: Object }) data: TreeNodeData = null;
+    @property({ type: Boolean, reflect: true }) includeStartNode: boolean ;
+    @property({ type: Boolean }) rootCloseable: boolean = true;
+    @property({ type: Boolean }) cacheNodeStatus: boolean = true;
+    @property({ type: String}) filterString: string ;
+    @property({ type: Object }) data: TreeNodeData;
+    /**
+     * 对于数据 树，控制是否懒加载
+     */
+    @property({ type: Boolean }) lazy: boolean;
+    @property({ type: Number }) batchSize=20;
     @property({ type: Object }) filterFn: TreeFilter = defaultFilter;
-    @property({ type: Object }) nodeRender: TreeNodeRender = null;
+    @property({ type: Object }) nodeRender: TreeNodeRender ;
     constructor() {
         super();
     }
@@ -110,6 +124,7 @@ class PTree extends LitElement {
             this.doFilterData();
         }
     }
+    
     @internalProperty()
     private _filterData: TreeNodeData = null;
     @internalProperty()
@@ -117,6 +132,7 @@ class PTree extends LitElement {
     public doFilterData() {
         this._dataUpdate = Math.random();
         this._filterData = this.data != null ? filterTreeData(this.data, this.filterFn, this.filterString) : null;
+        this.loadeSubChildMap.clear();
         if (this._filterData) {
             this._filterData.closeable = this.rootCloseable;
         }
@@ -134,12 +150,88 @@ class PTree extends LitElement {
             } else {
                 this.data.closeable = true;
             }
-            if (this.startKey == null) {
+            if (!this.startKey ) {
                 this.startKey = this.data.key;
             }
         }
-        this.requestUpdate();
+        this.observerChildrenNode();
+        
     }
+    private _insectionObserver:IntersectionObserver;
+    private  lazyLodNodeInsetionObserver(){
+        if(this._insectionObserver){
+            return ;
+        }
+        const tree=this;
+        this._insectionObserver= new IntersectionObserver((entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+            entries.forEach((ioe) => {
+                const el:PLoading = ioe.target as PLoading;
+                const intersectionRatio = ioe.intersectionRatio;
+                if (intersectionRatio > 0 && intersectionRatio <= 1) {
+                    const node=el.closest('p-tree-node')as PTreeNode;
+                    const data=(node as any).data as TreeNodeData;
+                    let size:number=this.loadeSubChildMap.get(data);
+                    if(size==undefined){
+                        size=0;
+                    }
+                    const length=data._children?data._children.length:0;
+                    size+=this.batchSize;
+                    if(size>length){
+                        size=length;
+                        this._insectionObserver.unobserve(el);
+                    }
+                    this.loadeSubChildMap.set(data,size);
+                    tree.requestUpdate();
+                }
+            });
+        },{
+            root:this,
+            rootMargin:'10px'
+        });
+        
+    }
+    private observerChildrenNode(){
+        const callBack=()=>{
+           
+            this.lazyLodNodeInsetionObserver();
+            const iteratorSub=(node:PTreeNode)=>{
+                const children=node.directTreeNode;
+                node.subChildSize=children.length;
+                children.forEach((item) =>{
+                    iteratorSub(item);
+                })
+            }
+            let nodeList=Array.from(this.children);
+            nodeList.forEach((item)=>{
+                if(item instanceof PTreeNode){
+                    iteratorSub(item);
+                }
+            });
+            nodeList=Array.from(this.renderRoot.querySelector('#container').children);
+            nodeList.forEach((item)=>{
+                if(item instanceof PTreeNode){
+                    iteratorSub(item);
+                }
+            });
+        }
+        this._motaionObersever=new MutationObserver(callBack);
+        this._motaionObersever.observe(this,{
+            childList:true,
+            subtree:true
+        });
+        this._motaionObersever.observe(this.renderRoot.querySelector("#container"),{
+            childList:true,
+            subtree:true
+        });
+        callBack();
+    }
+    disconnectedCallback(){
+        super.disconnectedCallback();
+        this._insectionObserver.disconnect();
+        this._motaionObersever.disconnect();
+    }
+    private _motaionObersever:MutationObserver;
+
     public toJSONData() {
         return toJSONTreeData(this.data);
     }
@@ -160,13 +252,16 @@ class PTree extends LitElement {
         }
         return null;
     }
+    
+    private loadeSubChildMap=new  Map<TreeNodeData,number> ();
     renderNode(d: TreeNodeData): TemplateResult {
         if (d.closeable === undefined) {
             d.closeable = true;
         }
         return html`<p-tree-node .data=${d} .close=${d.close} .closeable=${d.closeable} .name=${d.name} .icon=${d.icon}
-    key=${ifDefined(d.key)} .nodeRender=${this.nodeRender} .subChildSize=${d._children ? d._children.length : 0}>
-    ${this.renderSubNode(d)}
+            key=${ifDefined(d.key)} .nodeRender=${this.nodeRender} 
+           >
+         ${this.renderSubNode(d)}
 </p-tree-node>`;
     }
     private _fireNodeEvent(eventName: string, event: Event, node: PTreeNode) {
@@ -178,25 +273,45 @@ class PTree extends LitElement {
         }));
         // tslint:disable-next-line: no-any
         const data = <TreeNodeData>(node as any).data;
-        if (this.cacheNodeStatus) {
+        if (data&&this.cacheNodeStatus) {
             data.close = node.close;
         }
     }
     private _nodeHandler(event: Event) {
         const treeNode = <PTreeNode>event.target;
         this._fireNodeEvent(event.type, event, treeNode);
-
     }
-
-    renderSubNode(d: TreeNodeData): TemplateResult | Array<TemplateResult> {
+    private renderLoadingNode(d:TreeNodeData){
+        const dom=document.createElement('p-loading');
+        dom.classList.add('loadding');
+        if(!this._insectionObserver){
+            this.lazyLodNodeInsetionObserver();
+        }
+        this._insectionObserver.observe(dom);
+        return dom;
+    }
+   
+    renderSubNode(d: TreeNodeData):unknown {
         const child = d._children;
         if (child == null || child.length === 0) {
-            return html``;
+            return nothing;
         } else {
-            const result: Array<TemplateResult> = [];
-            child.map((item: TreeNodeData) => {
-                result.push(this.renderNode(item));
-            });
+            const result: Array<TemplateResult|Element> = [];
+            let index=this.loadeSubChildMap.get(d);
+            if(index===undefined){
+                index=this.batchSize;
+            }
+            const length=child.length;
+            let item:TreeNodeData;
+            const endIndex=Math.min(index,length);
+            for(let i=0;i<endIndex;i++){
+                 item=child[i];
+                 result.push(this.renderNode(item));
+            }
+            if(index<length){
+                result.push(this.renderLoadingNode(d));
+            }
+            this.loadeSubChildMap.set(d,endIndex);
             return result;
         }
     }
@@ -215,7 +330,7 @@ class PTree extends LitElement {
                 child.map((item: TreeNodeData) => tree.renderNode(item))
                 : this.renderEmptyNode()
             }
-    <slot id="slots"></slot>
+        <slot id="slots"></slot>
 </div>`;
 
     }

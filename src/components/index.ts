@@ -29,7 +29,7 @@ import './step';
 import './scroll/index';
 import './table/index';
 import './organization-chart/index';
-
+import './utils/cloneNode';
 declare global {
     interface Window {
         PDialog: typeof PDialog;
