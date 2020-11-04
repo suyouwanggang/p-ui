@@ -1,7 +1,6 @@
 
     .p-organizationchart-table {
         border-spacing: 0;
-        border-collapse: separate;
     }
     :host([center]) .p-organizationchart-table{
         margin: 0 auto;
@@ -25,7 +24,6 @@
            flex-direction: column;
            .roleName{
                 flex:1;
-                margin:0 -1px;
                 background-color: var(--org-chart-role-bg-color,#495ebb);
                 color:var(--org-char-role-color,#FFF);
                 border:1px solid var(--org-chart-role-bg-color,#495ebb);

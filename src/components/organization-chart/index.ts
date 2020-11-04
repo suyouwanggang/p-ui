@@ -1,4 +1,4 @@
-import {  property,  html,  customElement,  CSSResult,  css,  TemplateResult,  LitElement, eventOptions} from 'lit-element';
+import {  property,  html,  customElement,  CSSResult,  css,  TemplateResult,  LitElement, eventOptions, internalProperty, query, queryAll} from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import { styleMap } from 'lit-html/directives/style-map';
 import { customStyle } from '../../decorators/customStyle';
@@ -8,9 +8,21 @@ import  '../../components/icon';
 import { nothing } from 'lit-html';
 import props from '../../directives/props';
 export type OrganiazationNodeType={
+  /**
+   * 内置组织架构图数据
+   */
   data:{
+    /**
+     * 角色
+     */
     roleName?:string;
+    /**
+     * 用户名
+     */
     userName?:string;
+    /**
+     * 用户图片路径
+     */
     userImage?:string;
     [key:string]:unknown;
   }
@@ -20,10 +32,17 @@ export type OrganiazationNodeType={
   children?:OrganiazationNodeType[];
   [key:string]:unknown;
 }
-@customStyle()
+
 @customElement('p-org-node')
 export  class POrganizationChartNode extends LitElement{
+  
   static styles: CSSResult = styleObj;
+  /**
+   * 从上层接收 自定义样式
+   */
+  @property({type:String})
+  customStyle:string;
+
   /**
    * 节点数据
    */
@@ -37,18 +56,19 @@ export  class POrganizationChartNode extends LitElement{
 
 
    /**
-   * 节点容器样式
+   * 组织架构节点自定义样式
    */
   @property({type:String})
   styleClass:string;
 
   /**
-   * 节点是展开，还是收拢
+   * 节点是展开，还是收拢，默认是展开
    */
   @property({type:Boolean})
   expanded:boolean=true;
 
-  
+  // @internalProperty()
+  // private _subChildSize=0;
   /**
    * 节点自定义渲染
    */
@@ -63,6 +83,7 @@ export  class POrganizationChartNode extends LitElement{
     }
   }
   render(){
+    // this._subChildSize=this._childNodeSize;
     return html`<table  class='p-organizationchart-table'>
       <tbody>
         ${this.data? 
@@ -97,7 +118,7 @@ export  class POrganizationChartNode extends LitElement{
             `:nothing}
         `:nothing}
       </tbody>
-    </table>`;
+    </table><style type='text/css'>${this.customStyle}</style>`;
   }
   onNodeClick(event:Event){
       this._dispatchCustomeEvent('node-click');
@@ -121,19 +142,22 @@ export  class POrganizationChartNode extends LitElement{
     for(let i=0,j=this._childNodeSize;i<j;i++){
       const subNode=child[i];
       result.push(html`<td colspan='2'><p-org-node 
-       center=${this.hasAttribute('center')}  .customStyle=${(this as any).customStyle } ..=${props(subNode,'children','data','nodeRender','customStyle')} .nodeRender=${this.nodeRender} .data=${subNode}></p-org-node></td>`);
+      center=${this.hasAttribute('center')}  .customStyle=${(this as any).customStyle } ..=${props(subNode,'children','data','nodeRender','customStyle')} .nodeRender=${this.nodeRender} .data=${subNode}></p-org-node></td>`);
     }
     return result;
   }
   private _renderChildNodeLines(){
     const result=[];
     for(let i=0,j=this._childNodeSize;i<j;i++){
-      result.push(html`<td class="p-organizationchart-line-left ${!(i === 0)?'p-organizationchart-line-top':''}" >&nbsp;</td>
-      <td class="p-organizationchart-line-right ${!(i===j-1)?'p-organizationchart-line-top':''} ">&nbsp;</td>`);
+      result.push(html`<td class="p-organizationchart-line-left ${!(i === 0)?'p-organizationchart-line-top':''}" ></td>
+      <td class="p-organizationchart-line-right ${!(i===j-1)?'p-organizationchart-line-top':''} "></td>`);
     }
     return result;
   }
  
+  @queryAll('p-org-node')
+  subOrgNodes:POrganizationChartNode[];
+
   get leaf(){
     return this._childNodeSize==0;
   }
@@ -169,7 +193,7 @@ export default class POrganizationChart extends LitElement {
   nodeRender:(node:OrganiazationNodeType) =>TemplateResult|TemplateResult[]=defaultRoleRender;
   render() {
     return html`<div class='p-organizationchart' part='container'>
-        ${this.data? html`<p-org-node 
+        ${this.data? html`<p-org-node id='node'
         .data=${this.data}
            ..=${props(this.data,'children','data','nodeRender')} .customStyle=${(this as any).customStyle}
         ?center=${this.center} @node-click=${this._nodeClickHander}  @toogle-node=${this._toogleNodeHander} 
@@ -177,6 +201,8 @@ export default class POrganizationChart extends LitElement {
     </div>      
     `;
   }
+  @query('#node',true)
+  rootOrgNode:POrganizationChartNode;
   protected _dispatchCustomeEvent(event:string,node:POrganizationChartNode){
     this.dispatchEvent(new CustomEvent(event,{
       bubbles:true,
@@ -195,4 +221,6 @@ export default class POrganizationChart extends LitElement {
     this._dispatchCustomeEvent('org-node-toogle',event.target as POrganizationChartNode)
 
   }
+
+ 
 }
