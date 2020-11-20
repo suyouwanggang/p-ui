@@ -81,7 +81,7 @@ export  class POrganizationChartNode extends LitElement{
             ${!isLeaf&&this.collapsable ?html`<span class="org-tree-node-btn ${this.expanded?'expanded':''}"  @click=${this.onToogleNode}></span>`:''}
           </div>
         </div>
-        ${!isLeaf&&this.expanded?html`<div class='org-tree-node-children' >${this._renderChildNode()}</div>`:''}
+        ${!isLeaf&&this.expanded?html`<div class='org-tree-node-children'>${this._renderChildNode()}</div>`:''}
   `;
   }
   onNodeClick(event:Event){
@@ -111,17 +111,15 @@ export  class POrganizationChartNode extends LitElement{
           'is-leaf':(!(subNode.children&&subNode.children.length>0))
         };
         result.push(html`<p-org-node class='org-tree-node ${classMap(classObj)}'
-        .customStyle=${(this as any).customStyle } 
-        ..=${props(subNode,'children','data','nodeRender','customStyle')} 
+         .tree=${this.tree}
+        ..=${props(subNode,'children','data','nodeRender')} 
         .nodeRender=${this.nodeRender} .data=${subNode}></p-org-node>`);
       }
     }
     return result;
   }
  
-  get tree(){
-    return this.closest('p-org-tree');
-  }
+  tree:POrganizationTree;
   @queryAll('p-org-node')
   subOrgNodes:POrganizationChartNode[];
   
@@ -147,11 +145,11 @@ export default class POrganizationTree extends LitElement {
   nodeRender:(node:OrganiazationNodeType) =>TemplateResult|TemplateResult[]=defaultRoleRender;
   render() {
     const tree:POrganizationTree=this;
-    return html`<div class='org-tree-container ' part='container'   >
+    return html`<div class='org-tree-container ' part='container'  >
         <div class='org-tree collapsable ${this.horizontal?'horizontal':''}' part='tree'>
           ${this.data? html`<p-org-node id='node'  class='org-tree-node' .style=${this.horizontal?'display:table':''}
-            .data=${this.data}
-            ..=${props(this.data,'children','data','nodeRender')} 
+            .data=${this.data} .tree=${this}
+            ..=${props(this.data,'children','data')} 
           .nodeRender=${this.nodeRender}
           @click-node=${this.handNodeEvent}
           @toogle-node=${this.handNodeEvent}

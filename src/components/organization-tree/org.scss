@@ -1,11 +1,13 @@
-:host{
-  display:block;
-  display:flex;
-  
+:host {
+  display: block;
+  display: flex;
+
 }
-:host([center]) .org-tree-container{
-  margin:0 auto;
+
+:host([center]) .org-tree-container {
+  margin: 0 auto;
 }
+
 .org-tree-container {
   display: inline-block;
   box-sizing: border-box;
@@ -18,7 +20,8 @@
   display: table;
   text-align: center;
 
-  &:before, &:after {
+  &:before,
+  &:after {
     content: '';
     display: table;
   }
@@ -35,13 +38,17 @@
   margin: 0;
   padding: 0;
   list-style-type: none;
-  &:before, &:after {
+
+  &:before,
+  &:after {
     transition: all .35s;
   }
 }
-.org-tree-node-children{
-    width:100%;
+
+.org-tree-node-children {
+  width: 100%;
 }
+
 .org-tree-node-label {
   position: relative;
   display: inline-block;
@@ -53,6 +60,7 @@
     box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
   }
 }
+
 .org-tree-node-btn {
   position: absolute;
   top: 100%;
@@ -74,7 +82,8 @@
     transform: scale(1.15);
   }
 
-  &:before, &:after {
+  &:before,
+  &:after {
     content: '';
     position: absolute;
   }
@@ -99,17 +108,20 @@
     border: none;
   }
 }
+
 .org-tree-node {
   padding-top: 20px;
   display: table-cell;
   vertical-align: top;
 
-  &.is-leaf, &.collapsed {
+  &.is-leaf,
+  &.collapsed {
     padding-left: 10px;
     padding-right: 10px;
   }
 
-  &:before, &:after {
+  &:before,
+  &:after {
     content: '';
     position: absolute;
     top: 0;
@@ -129,6 +141,7 @@
   }
 
 }
+
 .collapsable .org-tree-node.collapsed {
   padding-bottom: 30px;
 
@@ -142,13 +155,15 @@
     border-right: 1px solid #ddd;
   }
 }
-.org-tree > .org-tree-node {
+
+.org-tree>.org-tree-node {
   padding-top: 0;
 
   &:after {
     border-left: 0;
   }
 }
+
 .org-tree-node-children {
   padding-top: 20px;
   display: table;
@@ -177,12 +192,14 @@
     padding-top: 0;
     padding-left: 20px;
 
-    &.is-leaf, &.collapsed {
+    &.is-leaf,
+    &.collapsed {
       padding-top: 10px;
       padding-bottom: 10px;
     }
 
-    &:before, &:after {
+    &:before,
+    &:after {
       width: 19px;
       height: 50%;
     }
@@ -239,7 +256,7 @@
     margin-left: 9px;
   }
 
-  & > .org-tree-node:only-child:before {
+  &>.org-tree-node:only-child:before {
     border-bottom: 0;
   }
 
@@ -261,7 +278,7 @@
       display: none;
     }
 
-    & > .org-tree-node {
+    &>.org-tree-node {
       display: block;
     }
   }

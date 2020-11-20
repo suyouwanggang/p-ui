@@ -123,11 +123,13 @@ class PTree extends LitElement {
             this.doFilterData();
         }
     }
-    
     @internalProperty()
+    private _lastFilterID: number ;
     private _filterData: TreeNodeData ;
     public doFilterData() {
-        this._filterData = this.data != null ? filterTreeData(this.data, this.filterFn, this.filterString) : null;
+        this._lastFilterID=Math.random();//保证tree-update 
+        this._filterData = this.data != null ? filterTreeData(this.data, this.filterFn, this.filterString) : null; 
+        //过滤返回的是同一个对象，所以不会触发事件
         this.loadeSubChildMap.clear();
         if (this._filterData) {
             this._filterData.closeable = this.rootCloseable;

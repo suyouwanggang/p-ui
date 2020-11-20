@@ -16,7 +16,8 @@ const baseConfig = createSpaConfig({
   developmentMode: process.env.ROLLUP_WATCH === 'true',
 
   // set to true to inject the service worker registration into your index.html
-  injectServiceWorker: true,
+  injectServiceWorker: true
+  
 });
 
 export default merge(baseConfig, {
@@ -26,5 +27,7 @@ export default merge(baseConfig, {
 
   // alternatively, you can use your JS as entrypoint for rollup and
   // optionally set a HTML template manually
-   input: './index.html'
+   input: './index.html',
+   
+   
 });
