@@ -1,4 +1,4 @@
-import { OrganiazationNodeType } from '../components/organization-tree';
+import { OrganiazationNodeType } from '../components/organization-tree/index';
 
 const orgiData:OrganiazationNodeType={key: '0',
     data: {roleName: 'EasyTrack'},styleClass:'p-person',
@@ -49,8 +49,12 @@ const orgiData:OrganiazationNodeType={key: '0',
                     ]
                 }
             ]
+            
+        },
+        {
+            key: '0_1',
+            data: {roleName:'CEO 02',userName: 'F.C. Barcelona'},
         }
-        
     ]
 }
 export default orgiData;

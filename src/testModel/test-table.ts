@@ -3,7 +3,7 @@ import { ColumnHeaderData, convertHeaderDataToTableColumns, SortingEnum } from '
 import PTable from '../components/table/index';
 import PColumn from '../components/table/tableColumn';
 import  orgData from './orginData';
-import { OrganiazationNodeType } from '../components/organization-tree';
+import { OrganiazationNodeType } from '../components/organization-tree/index';
 @customElement('p-test-table')
 export default class TestOne extends LitElement {
     createRenderRoot(){
