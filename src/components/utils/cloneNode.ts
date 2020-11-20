@@ -1,8 +1,11 @@
 import { LitElement } from "lit-element";
-
-class DeepClone extends HTMLElement{
-    cloneNode(deep?:boolean){
-       const clondeNodeElement:any=super.cloneNode(deep);
+/**
+ * 复制LitElement webcomponent 
+ * @param element 需要clone 的组件
+ * @param deep 是否复制子孩子
+ */
+ const cloneHelper= (element:Element ,deep?:boolean) =>{
+       const clondeNodeElement:any=element.cloneNode(deep);
        const iteratorNode=(old:Element, newNode:Element) =>{
            if(old instanceof LitElement){
                const properties:Map<PropertyKey,any>=((old as LitElement).constructor as any)._classProperties;
@@ -15,26 +18,16 @@ class DeepClone extends HTMLElement{
                }
            }
            if(deep){
-            const old_children=old.children;
-            if(old_children){
-                const new_children=newNode.children;
-                for(let i=0,j=old_children.length;i<j;i++){
-                    iteratorNode(old_children[i],new_children[i]);
+                const old_children=old.children;
+                if(old_children){
+                    const new_children=newNode.children;
+                    for(let i=0,j=old_children.length;i<j;i++){
+                        iteratorNode(old_children[i],new_children[i]);
+                    }
                 }
             }
-         }
        }
-       iteratorNode(this,clondeNodeElement);
-       return clondeNodeElement;
-    }
+    iteratorNode(element,clondeNodeElement);
+    return clondeNodeElement;
 }
-const applyMixins=(derivedCtor: any, baseCtors: any[],methods:string[])=> {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-            if(methods.includes(name)){
-                derivedCtor.prototype[name] = baseCtor.prototype[name];
-            }
-        })
-    }); 
-}
-applyMixins(LitElement,[DeepClone],['cloneNode']);
+export default cloneHelper;

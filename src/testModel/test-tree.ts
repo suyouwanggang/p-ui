@@ -85,7 +85,7 @@ export default class Test_Tree extends LitElement {
     static index=0;
     renderRight(){
         const renderNode:TreeNodeRender=( t:PTreeNode)=>{
-            return html`<span>${t.name}${Test_Tree.index++}</span>`;
+            return html`<span>${t.name}</span>`;
         }
         return html`
         <div class='flexTree' style='max-height:500px;'>
@@ -99,7 +99,7 @@ export default class Test_Tree extends LitElement {
     render(){
         return html`<p-row column='12' grap='10'>  
             <p-col style='max-height:500px;overflow:auto;' span='6'>${this.renderLeftTree()}</p-col>
-    <p-col  .span=${6} >${this.renderRight()} </p-col>
+            <p-col  .span=${6} >${this.renderRight()} </p-col>
     </p-row>`;
        
     }

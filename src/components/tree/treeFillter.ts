@@ -1,9 +1,9 @@
 
-type TreeNodeData = {
+ type TreeNodeData = {
     name?: string; /*节点名称*/
     key?: string | number; /* ID  */
     close?: boolean; /* 是否关闭 */
-    seqNo?: number; /*同层序号*/
+    seqNo?: number; /*同层序号，暂时没有用*/
     icon?: string; /*节点图标 */
     child?: TreeNodeData[]; /*下级节点 */
     closeable?: boolean; /*false,表示节点不能折叠起来 */
@@ -14,21 +14,25 @@ type TreeNodeData = {
 
 
 /* 节点过滤器*/
-interface TreeFilter {
+ interface TreeFilter {
     (data: TreeNodeData, ...arg: unknown[]): boolean;
 }
+/**
+ * 默认树节点过滤实现， 根据data.name 匹配
+ * @param data 
+ * @param name 
+ * @param args 
+ */
 const defaultFilter: TreeFilter = (data: TreeNodeData, name: string, ...args: unknown[]) => {
-
     if (name == null || name === undefined || name === '' || name.trim() === '') {
         return true;
     }
-    if (data && data.name !== undefined) {
+    if (data && data.name) {
         name = name.toLowerCase().trim();
         return data.name.toLowerCase().indexOf(name) !== -1;
     }
     return false;
 };
-
 const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterObject: unknown[]): TreeNodeData => {
     const map = new Map<TreeNodeData, Array<TreeNodeData>>();
     const setAddNode = new Set<TreeNodeData>();
@@ -92,7 +96,7 @@ const filterTreeData = (root: TreeNodeData, filter: TreeFilter, ...args: unknown
 
 
 /**
- * 将数组对象根据转化为 root 子节点，
+ * 将数组对象根据转化为 root 子节点，通过key 来链接上级，下级
  * @param nodeList 节点列表，通过节点key, 将其递归加入到root 节点孩子中
  * @param root 根节点
  * @returns 返回根节点
@@ -124,7 +128,11 @@ const listTreeDataToRoot = (nodeList: TreeNodeData[], root: TreeNodeData = {}): 
     return root;
 };
 
-
+/**
+ * 根据key 查找节点数据，找不到则返回null
+ * @param data 
+ * @param key 
+ */
 const findDataByKey = function (data: TreeNodeData, key: string | number): TreeNodeData {
     if (data.key === key) {
         return data;
@@ -142,9 +150,12 @@ const findDataByKey = function (data: TreeNodeData, key: string | number): TreeN
     }
     return null;
 };
-// tslint:disable-next-line: no-any
-const toJSONTreeData = (data: TreeNodeData): any => {
 
+/**
+ * 返回树节点JSON数据，去掉程序自动占用的属性
+ * @param data 
+ */
+const toJSONTreeData = (data: TreeNodeData): any => {
     return JSON.stringify(data, (key: string,value:any) => {
         if (key.startsWith('_')) {
             return undefined;

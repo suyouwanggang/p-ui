@@ -1,11 +1,13 @@
-import { OrganiazationNodeType } from '../components/organization-chart';
+import { OrganiazationNodeType } from '../components/organization-tree';
 
 const orgiData:OrganiazationNodeType={key: '0',
     data: {roleName: 'EasyTrack'},styleClass:'p-person',
+    collapsable:true,
     children: [
         {
             key: '0_0',
             data: {roleName:'CEO',userName: 'F.C. Barcelona'},
+            collapsable:true,
             children: [
                 {
                     data: {roleName:'CFO',userName: 'Chelsea F.C.'},styleClass:'p-person',
@@ -39,7 +41,7 @@ const orgiData:OrganiazationNodeType={key: '0',
                             ]
                         },
                         {
-                            data:{  roleName:'QA'},
+                            data:{  roleName:'QA'},children:[{data:{roleName:'B'}}]
                         },
                         {
                             data:{  roleName:'R&D'},

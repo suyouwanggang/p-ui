@@ -3,7 +3,7 @@ import { ColumnHeaderData, convertHeaderDataToTableColumns, SortingEnum } from '
 import PTable from '../components/table/index';
 import PColumn from '../components/table/tableColumn';
 import  orgData from './orginData';
-import { OrganiazationNodeType } from '../components/organization-chart';
+import { OrganiazationNodeType } from '../components/organization-tree';
 @customElement('p-test-table')
 export default class TestOne extends LitElement {
     createRenderRoot(){
@@ -83,14 +83,16 @@ export default class TestOne extends LitElement {
      @query("p-table",true)
     table :PTable;
     render(){
-        
         return html`
-            <p-org-chart 
+            <p-org-tree .nodeRender=${(node:OrganiazationNodeType)=>html`<span class='p-person'>${node.data.roleName}</span>`}
+             @tree-toogle-node=${(event:CustomEvent)=>{
+                 console.log(event.detail.data);
+             }} 
             .customStyle=${`
                 .p-person{
                      --org-chart-role-bg-color:#e9286f;
                  }
-            `}  .data=${orgData} ></p-org-chart>  
+            `}  .data=${orgData} ></p-org-tree>  
             <p-table style='height:500px;' .customStyle=${`
             .red{
                 color:red;
