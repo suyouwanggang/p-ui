@@ -1,2 +1,0 @@
-import {css} from 'lit-element';
-export default css`.p-organizationchart{padding-top:.7em;padding-bottom:1.2em;--org-chart-border-color:var(--org-chart-border-color,#dee2e6);--org-chart-role-bg-color:var(--org-chart-role-bg-color,#495ebb)}`; 
