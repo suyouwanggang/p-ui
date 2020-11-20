@@ -138,6 +138,9 @@ export default class POrganizationTree extends LitElement {
   static styles: CSSResult[] = [orgStyleObj];
   @property({type:Object})
   data:OrganiazationNodeType;
+
+  @property({type:Boolean,reflect:true})
+  center:boolean=true;
   @property({type:Boolean,reflect:true})
   horizontal:boolean=false;
   @property({type:Object})
@@ -146,7 +149,7 @@ export default class POrganizationTree extends LitElement {
     const tree:POrganizationTree=this;
     return html`<div class='org-tree-container ' part='container'   >
         <div class='org-tree collapsable ${this.horizontal?'horizontal':''}' part='tree'>
-          ${this.data? html`<p-org-node id='node'  class='org-tree-node' style='${this.horizontal?'display:table':''}'
+          ${this.data? html`<p-org-node id='node'  class='org-tree-node' .style=${this.horizontal?'display:table':''}
             .data=${this.data}
             ..=${props(this.data,'children','data','nodeRender')} 
           .nodeRender=${this.nodeRender}

@@ -1,3 +1,11 @@
+:host{
+  display:block;
+  display:flex;
+  
+}
+:host([center]) .org-tree-container{
+  margin:0 auto;
+}
 .org-tree-container {
   display: inline-block;
   box-sizing: border-box;
