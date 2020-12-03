@@ -40,8 +40,8 @@ export class PRadio extends LitElement {
             this._changeEvent();
         });
         this.radio.addEventListener('keydown', (ev: KeyboardEvent) => {
-            switch (ev.keyCode) {
-                case 13://Enter
+            switch (ev.key) {
+                case 'Enter'://Enter
                     ev.stopPropagation();
                     this.tocheck();
                     break;

@@ -1,11 +1,12 @@
 import { LitElement, html, customElement, property, css } from 'lit-element';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import styleSwitchObj from './style.scss';
 @customElement('p-switch')
 export class PSwitch extends LitElement {
     @property({ type: Boolean ,reflect:true}) disabled: boolean = false;
     @property({ type: String ,reflect:true}) value: string = '';
     @property({ type: Boolean,reflect:true }) checked: boolean = false;
-    @property({ type: String, reflect:true}) name: string = '';
+    @property({ type: String, reflect:true}) name: string ;
     static get formAssociated() {
         return true;
     }
@@ -33,7 +34,7 @@ export class PSwitch extends LitElement {
     }
     
     render() {
-        return html`<label data-disabled=${this.disabled} value=${this.value} ?checked=${this.checked} name=${this.name}  @click="${this.changeCheck}"></label>`;
+        return html`<label data-disabled=${this.disabled} value=${this.value} ?checked=${this.checked} name=${ifDefined(this.name)}  @click="${this.changeCheck}"></label>`;
     }
     log(methodName: string, array: any[]) {
        

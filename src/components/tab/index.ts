@@ -1,4 +1,5 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from 'lit-element';
+import cloneHelper from '../utils/cloneNode';
 import styleTabObj from './style.scss';
 import styleTabPanelObj from './styleTabPanel.scss';
 /**
@@ -27,7 +28,7 @@ class PTab extends LitElement {
             } else if (el.nodeType === 1) {
                 const EL = el as HTMLElement;
                 // EL.style.display = '';
-                const elClone = el.cloneNode(true) as HTMLElement;
+                const elClone = cloneHelper(EL,true);
                 // elClone.removeAttribute('slot');
                 array.push(elClone);
                 // EL.style.display = 'none';

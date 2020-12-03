@@ -33,7 +33,7 @@ const defaultFilter: TreeFilter = (data: TreeNodeData, name: string, ...args: un
     }
     return false;
 };
-const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterObject: unknown[]): TreeNodeData => {
+const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterObject: unknown[]):TreeNodeData => {
     const map = new Map<TreeNodeData, Array<TreeNodeData>>();
     const setAddNode = new Set<TreeNodeData>();
     //key 为node, value:为下级满足的节点
@@ -44,7 +44,7 @@ const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterOb
         parentMap.set(node, parent);
         node._parent = parent; //设置上级
        // console.log(node.name);
-        if (node !== root && (filter === null || filter.apply(null, [node, ...filterObject]))) {
+        if (!filter|| filter(node,...filterObject)) {
             //console.log('match=='+node.name);
             let tempNode = node;
             while (tempNode&& !setAddNode.has(tempNode)) {
@@ -75,7 +75,7 @@ const filterTreeDataArray = (root: TreeNodeData, filter: TreeFilter, ...filterOb
         }
     };
     iteratorMap(root);
-    return setAddNode.size === 0 ? null : root;
+    return setAddNode.size==0?null:root;
 };
 
 
@@ -90,8 +90,7 @@ const filterTreeData = (root: TreeNodeData, filter: TreeFilter, ...args: unknown
     if (filter == null) {
         return root;
     }
-    const argArray = [root, filter, ...args];
-    return filterTreeDataArray.apply(null, argArray);
+    return filterTreeDataArray(root,filter,...args);
 }
 
 
@@ -165,5 +164,29 @@ const toJSONTreeData = (data: TreeNodeData): any => {
     });
 
 };
-
-export { TreeNodeData, TreeFilter, listTreeDataToRoot, filterTreeData, defaultFilter, findDataByKey, toJSONTreeData };
+/**
+ * 获取 节点的数量
+ * @param data 
+ * @param includeRoot 
+ * @param proper 
+ */
+const getTreeNodeSize =(data:TreeNodeData, includeRoot:boolean ,proper:'child'|'_children'):number=>{
+    let i=0;
+    const iteratorFun=(d:TreeNodeData)=>{
+        const sub=d[proper];
+        if(sub){
+            i+=sub.length;
+            sub.forEach((s)=>iteratorFun(s) );
+        }
+    }
+    if(includeRoot){
+        iteratorFun(data);
+    }else{
+        const sub=data[proper];
+        if(sub){
+            sub.forEach((s)=>iteratorFun(s));
+        }
+    }
+    return i;
+}
+export { TreeNodeData, TreeFilter, listTreeDataToRoot, filterTreeData, defaultFilter, findDataByKey,getTreeNodeSize, toJSONTreeData };

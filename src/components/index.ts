@@ -10,6 +10,7 @@ import './text/index';
 import './rate/index';
 import './input/index';
 import './slider/index';
+import './page-btn/index';
 import './switch/index';
 import './tab/index';
 import * as treeHepler from './tree/treeFillter';

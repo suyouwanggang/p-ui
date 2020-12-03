@@ -256,7 +256,7 @@ export class PScroll extends LitElement {
       container.classList.remove('showXScroll');
     }
     const elCompontent = this;
-    if (this._resizeDispachFun == null) {
+    if (!this._resizeDispachFun ) {
       this._resizeDispachFun = throttle(() => {
         /**
          * resize事件，当容器或者子孩子放生变化，此时触发

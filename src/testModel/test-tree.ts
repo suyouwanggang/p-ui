@@ -34,10 +34,14 @@ export default class Test_Tree extends LitElement {
     }
     firstUpdated(changeProperityMap:PropertyValues){
         super.firstUpdated(changeProperityMap);
-        fetch("./test.json").then((response) =>{
+        fetch("/test.json").then((response) =>{
             return response.json();
         }).then((json:any) =>{
             const root={'name':'地图',child:json,close:false};
+            for(let i=0,j=root.child.length;i<200;i++ ){
+                let n=i%j;
+                root.child.push(JSON.parse(JSON.stringify(root.child[n])));
+            }
             root.child.forEach((d:TreeNodeData)=> {
                 d.close=false;
             });
@@ -47,9 +51,10 @@ export default class Test_Tree extends LitElement {
     @query("#p-tree")
    private tree:PTree;
     renderLeftTree(){
+       
         const array=Array.from({length:20});
         return html`
-            <p-tree includestartnode>
+            <p-tree includestartnode  >
                ${array.map((obj,i)=>
                     html` <p-tree-node name="test_01"  icon="search" >
                     <p-tree-node name="test_01" icon="lock"  >
@@ -87,12 +92,15 @@ export default class Test_Tree extends LitElement {
         const renderNode:TreeNodeRender=( t:PTreeNode)=>{
             return html`<span>${t.name}</span>`;
         }
+
         return html`
         <div class='flexTree' style='max-height:500px;'>
             <p-input type='text' debounce=500 @input="${(event:Event) =>{
                 this.tree.filterString=(event.target as HTMLInputElement).value;
             }}"></p-input>
-        <p-tree id="p-tree" class='tree' .nodeRender=${renderNode} includestartnode style='overflow: auto;' > </p-tree>
+        <p-tree lazy id="p-tree" .batchSize=${10} class='tree' .nodeRender=${renderNode} includestartnode style='overflow: auto;' > 
+            <div slot='empty'>没有匹配的节点</div>
+    </p-tree>
         </div>
         `;
     }

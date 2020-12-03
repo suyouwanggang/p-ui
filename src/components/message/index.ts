@@ -133,4 +133,3 @@ export default class PMessage extends LitElement {
         return PMessage._mergerConfig(defaultInfoConfig, text, duration, onclose);
     }
 }
-

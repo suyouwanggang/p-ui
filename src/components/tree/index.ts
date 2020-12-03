@@ -4,13 +4,11 @@ import { ifDefined } from 'lit-html/directives/if-defined';
 import '../icon';
 import PLoading from '../loading';
 import TreeStyleObj from './tree.scss';
-import { defaultFilter, filterTreeData, findDataByKey, toJSONTreeData, TreeFilter, TreeNodeData } from './treeFillter';
+import { defaultFilter, filterTreeData, findDataByKey, getTreeNodeSize, toJSONTreeData, TreeFilter, TreeNodeData } from './treeFillter';
 import TreeNodeStyle from './treeNode.scss';
 
+export type TreeNodeRender=(treeNode:PTreeNode)=>TemplateResult;
 
-export interface TreeNodeRender {
-    (treeNode: PTreeNode): TemplateResult;
-}
 /* 默认渲染节点 template*/
 const defaultNodeRender = (data: TreeNodeData) => {
     return html`<span class='node_span'>${data == null ? '' : data.name}</span>`;
@@ -80,7 +78,7 @@ class PTreeNode extends LitElement {
                      @click="${this.toogleNode}" path=${!this.close ? node_icon_down : node_icon_up}>
                     </p-icon>`: html``}
                     ${this.icon ? html`<p-icon class='node_icon' name=${this.icon}></p-icon>` : ''}
-                    <slot name="node_name" @click=${this._clickNode}> ${this.nodeRender == null ? html`<span
+                    <slot name="node_name" @click=${this._clickNode}> ${!this.nodeRender ? html`<span
                             class='node_span'>${this.name}</span>` :
                      nodeRender(this)}</slot>
                 </div>
@@ -101,7 +99,7 @@ class PTree extends LitElement {
     static get styles() {
         return TreeStyleObj;
     }
-    @property({ type: String, reflect: true }) startKey: string | number = null;
+   
     @property({ type: Boolean, reflect: true }) includeStartNode: boolean ;
     @property({ type: Boolean }) rootCloseable: boolean = true;
     @property({ type: Boolean }) cacheNodeStatus: boolean = true;
@@ -110,8 +108,8 @@ class PTree extends LitElement {
     /**
      * 对于数据树，控制是否懒加载
      */
-    @property({ type: Boolean }) lazy: boolean;
-    @property({ type: Number }) batchSize=20;
+    @property({ type: Boolean,attribute:true,reflect:true }) lazy: boolean;
+    @property({ type: Number }) batchSize=100;
     @property({ type: Object }) filterFn: TreeFilter = defaultFilter;
     @property({ type: Object }) nodeRender: TreeNodeRender ;
     constructor() {
@@ -130,17 +128,21 @@ class PTree extends LitElement {
         this._lastFilterID=Math.random();//保证tree-update 
         this._filterData = this.data != null ? filterTreeData(this.data, this.filterFn, this.filterString) : null; 
         //过滤返回的是同一个对象，所以不会触发事件
-        this.loadeSubChildMap.clear();
+        this.cacheLoadingSubChildMap.clear();
         if (this._filterData) {
             this._filterData.closeable = this.rootCloseable;
+            this._tree_node_size=getTreeNodeSize(this._filterData,this.includeStartNode,'_children');
         }
+        
     }
     get filterData(): TreeNodeData {
-        if (this._filterData == null) {
+        if (this._filterData == undefined) {
             this.doFilterData();
         }
         return this._filterData;
     }
+    @internalProperty()
+    private _firstUpdateFlag=false;
     firstUpdated() {
         if (this.data != null) {
             if (this.rootCloseable === false) {
@@ -148,10 +150,8 @@ class PTree extends LitElement {
             } else {
                 this.data.closeable = true;
             }
-            if (!this.startKey ) {
-                this.startKey = this.data.key;
-            }
         }
+        this._firstUpdateFlag=true;
         this.observerChildrenNode();
         this.lazyLodNodeInsetionObserver();
     }
@@ -168,7 +168,7 @@ class PTree extends LitElement {
                 if (intersectionRatio > 0 && intersectionRatio <= 1) {
                     const node=el.closest('p-tree-node')as PTreeNode;
                     const data=(node as any).data as TreeNodeData;
-                    let size:number=this.loadeSubChildMap.get(data);
+                    let size:number=this.cacheLoadingSubChildMap.get(data);
                     if(size==undefined){
                         size=0;
                     }
@@ -178,7 +178,7 @@ class PTree extends LitElement {
                         size=length;
                     }
                     this._insectionObserver.unobserve(el);
-                    this.loadeSubChildMap.set(data,size);
+                    this.cacheLoadingSubChildMap.set(data,size);
                     tree.requestUpdate();
                 }
             });
@@ -227,6 +227,7 @@ class PTree extends LitElement {
         super.disconnectedCallback();
         this._insectionObserver.disconnect();
         this._motaionObersever.disconnect();
+        this.cacheLoadingSubChildMap.clear();
     }
     private _motaionObersever:MutationObserver;
 
@@ -243,20 +244,12 @@ class PTree extends LitElement {
     }
     get startNode(): TreeNodeData {
         const filterData = this.filterData;
-        if (!this.startKey) {
-            return filterData;
-        } else if (filterData != null) {
-            return findDataByKey(filterData, this.startKey);
-        }
-        return null;
+        return filterData;
     }
-    /**
-     * 缓存每个节点 渲染了多少个节点。
-     */
-    private loadeSubChildMap=new  Map<TreeNodeData,number> ();
+   
     renderNode(d: TreeNodeData): TemplateResult {
-        if (d.closeable === undefined) {
-            d.closeable = true;
+        if (d.close === undefined) {
+            d.close = true;
         }
         return html`<p-tree-node .data=${d} .close=${d.close} .closeable=${d.closeable} .name=${d.name} .icon=${d.icon}
             key=${ifDefined(d.key)} .nodeRender=${this.nodeRender} >
@@ -279,14 +272,28 @@ class PTree extends LitElement {
         const treeNode = <PTreeNode>event.target;
         this._fireNodeEvent(event.type, treeNode);
     }
+     /**
+     * 缓存每个节点 渲染了多少个子孩子节点。
+     */
+    private cacheLoadingSubChildMap=new  Map<TreeNodeData,number> ();
+    private cacheDataLoadingDomMap=new WeakMap<TreeNodeData,HTMLElement>();
+    
     private renderLoadingNode(d:TreeNodeData){
-        const dom=document.createElement('p-loading');
-        dom.classList.add('loadding');
         if(!this._insectionObserver){
             this.lazyLodNodeInsetionObserver();
         }
-        this._insectionObserver.observe(dom);
-        return dom;
+        if(this.cacheDataLoadingDomMap.has(d)){
+            const dom= this.cacheDataLoadingDomMap.get(d);
+            this._insectionObserver.unobserve(dom);
+            this._insectionObserver.observe(dom);
+            return dom;
+        }else{
+            const dom=document.createElement('p-loading');
+            dom.classList.add('loadding');
+            this._insectionObserver.observe(dom);
+            this.cacheDataLoadingDomMap.set(d,dom);
+            return dom;
+        }
     }
    
     renderSubNode(d: TreeNodeData):unknown {
@@ -295,27 +302,38 @@ class PTree extends LitElement {
             return nothing;
         } else {
             const result: Array<TemplateResult|Element> = [];
-            let index=this.loadeSubChildMap.get(d);
-            if(index===undefined){
-                index=this.batchSize;
+            if(this.lazy){
+                const length=child.length;
+                let index=this.cacheLoadingSubChildMap.get(d);
+                if(index===undefined){
+                    index=this.batchSize;
+                }
+                const endIndex=Math.min(index,length);
+                for(let i=0;i<endIndex;i++){
+                     result.push(this.renderNode(child[i]));
+                }
+                if(index<length){
+                    result.push(this.renderLoadingNode(d));
+                }
+                this.cacheLoadingSubChildMap.set(d,endIndex);
+            }else{
+                for(let i=0,j=child.length;i<j;i++){
+                   result.push(this.renderNode(child[i]));
+                }
             }
-            const length=child.length;
-            let item:TreeNodeData;
-            const endIndex=Math.min(index,length);
-            for(let i=0;i<endIndex;i++){
-                 item=child[i];
-                 result.push(this.renderNode(item));
-            }
-            if(index<length){
-                result.push(this.renderLoadingNode(d));
-            }
-            this.loadeSubChildMap.set(d,endIndex);
             return result;
         }
     }
     renderEmptyNode() {
-        return html`<slot name='emptyNode'></slot>`;
+        return html`<slot name='empty'></slot>`;
     }
+    /**
+     * 存储 要渲染的节点数量
+     */
+     private _tree_node_size:number;
+     get  treeNodeSize(){
+         return this._tree_node_size;
+     }
     render() {
         const startNode = this.startNode;
         const child = startNode  ? startNode._children : null;
@@ -326,7 +344,9 @@ class PTree extends LitElement {
                 (startNode?tree.renderNode(startNode):this.renderEmptyNode()) :
                 child != null ?child.map((item: TreeNodeData) => tree.renderNode(item)): this.renderEmptyNode()
             }
-        <slot id="slots"></slot>
+            ${this.data? html``:html`<slot ></slot>`}
+            ${this.data&&this.treeNodeSize==0? this.renderEmptyNode():''}
+            
 </div>`;
 
     }

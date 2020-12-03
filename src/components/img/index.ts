@@ -136,9 +136,6 @@ export default class PImage extends LitElement {
     get img(): HTMLImageElement {
         return this.renderRoot.querySelector('#img');
     }
-    private get placeholder() {
-        return this.renderRoot.querySelector('div.placeholder');
-    }
 
     focus() {
         this.img.focus();
